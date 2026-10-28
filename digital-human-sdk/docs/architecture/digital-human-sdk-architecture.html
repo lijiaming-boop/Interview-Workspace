@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="archify-fallback (offline hand-authored)">
+<title>Digital Human SDK 系统架构</title>
+<style>
+  :root, [data-theme="dark"] {
+    --canvas-bg:#0e1116; --panel:#151b23;
+    --frontend-stroke:#4a9eff; --frontend-fill:#12233a;
+    --backend-stroke:#58a6ff;  --backend-fill:#122030;
+    --external-stroke:#d29922; --external-fill:#2a2312;
+    --region-stroke:#7a5fd0;   --region-fill:rgba(122,95,208,0.07);
+    --region-text:#b197fc;
+    --edge-default:#7d8590; --edge-emphasis:#f778ba; --edge-feed:#56d364;
+    --text-1:#e6edf3; --text-2:#8b949e;
+    --sep:#30363d;
+  }
+  [data-theme="light"] {
+    --canvas-bg:#ffffff; --panel:#f6f8fa;
+    --frontend-stroke:#0969da; --frontend-fill:#ddf4ff;
+    --backend-stroke:#0969da;  --backend-fill:#ddf4ff;
+    --external-stroke:#9a6700; --external-fill:#fff8c5;
+    --region-stroke:#8250df;   --region-fill:rgba(130,80,223,0.06);
+    --region-text:#8250df;
+    --edge-default:#57606a; --edge-emphasis:#bf3989; --edge-feed:#1a7f37;
+    --text-1:#1f2328; --text-2:#57606a;
+    --sep:#d0d7de;
+  }
+  * { box-sizing:border-box; }
+  body { margin:0; background:var(--canvas-bg); color:var(--text-1);
+         font:14px/1.5 -apple-system,"Segoe UI","Microsoft YaHei",system-ui,sans-serif; }
+  header { display:flex; align-items:center; justify-content:space-between;
+           gap:1rem; padding:14px 22px; border-bottom:1px solid var(--sep); }
+  header h1 { margin:0; font-size:18px; font-weight:600; letter-spacing:.2px; }
+  header p { margin:2px 0 0; color:var(--text-2); font-size:12px; }
+  #theme-btn { cursor:pointer; border:1px solid var(--sep); background:var(--panel);
+               color:var(--text-1); border-radius:8px; padding:6px 12px; font-size:12px; }
+  #theme-btn:hover { border-color:var(--edge-default); }
+  .wrap { max-width:2200px; margin:0 auto; padding:18px 22px; }
+  .figure { border:1px solid var(--sep); border-radius:12px; background:var(--panel); padding:14px; }
+  svg { display:block; width:100%; height:auto; }
+  .legend { display:flex; flex-wrap:wrap; gap:6px 22px; padding:12px 4px 0;
+            font-size:12px; color:var(--text-2); }
+  .legend b { color:var(--text-1); font-weight:600; }
+  .dot { display:inline-block; width:11px; height:11px; border-radius:3px;
+         vertical-align:-1px; margin-right:5px; }
+  .dot.frontend{background:var(--frontend-stroke)} .dot.backend{background:var(--backend-stroke)}
+  .dot.external{background:var(--external-stroke)} .dot.region{background:var(--region-stroke)}
+  .sw { display:inline-block; width:22px; border-top:2px solid var(--edge-default); margin-right:5px; vertical-align:3px; }
+  .sw.dash{border-top-style:dashed} .sw.emb{border-top-color:var(--edge-emphasis)}
+  .sw.feed{border-top-color:var(--edge-feed)}
+  footer { margin-top:16px; font-size:12px; color:var(--text-2); border-top:1px solid var(--sep); padding-top:12px; }
+  footer code { color:var(--edge-emphasis); }
+</style>
+</head>
+<body>
+<header>
+  <div>
+    <h1>Digital Human SDK 系统架构</h1>
+    <p>四层分层 + 数据流向 + 关键组件职责（docs/architecture 技术文档图）</p>
+  </div>
+  <button id="theme-btn" type="button" aria-label="切换明暗主题">主题: 暗</button>
+</header>
+<div class="wrap">
+  <div class="figure">
+  <svg viewBox="0 0 2120 1900" role="img" aria-label="Digital Human SDK 系统架构图"
+       xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <marker id="ah" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+        <polygon points="0 0,10 3.5,0 7" class="m-def"/>
+      </marker>
+      <marker id="ahe" markerWidth="11" markerHeight="8" refX="10" refY="4" orient="auto">
+        <polygon points="0 0,11 4,0 8" class="m-emp"/>
+      </marker>
+      <marker id="ahf" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+        <polygon points="0 0,10 3.5,0 7" class="m-feed"/>
+      </marker>
+    </defs>
+    <style>
+      .m-def{fill:var(--edge-default)} .m-emp{fill:var(--edge-emphasis)} .m-feed{fill:var(--edge-feed)}
+      .a-default{stroke:var(--edge-default);stroke-width:1.5;fill:none}
+      .a-emb{stroke:var(--edge-emphasis);stroke-width:2;fill:none}
+      .a-feed{stroke:var(--edge-feed);stroke-width:2;fill:none}
+      .a-dash{stroke:var(--edge-default);stroke-width:1.5;stroke-dasharray:6 5;fill:none}
+      .c-region{fill:var(--region-fill);stroke:var(--region-stroke);stroke-width:1.3;stroke-dasharray:1 0}
+      .c-node{stroke-width:1.5}
+      .c-frontend{fill:var(--frontend-fill);stroke:var(--frontend-stroke)}
+      .c-backend{fill:var(--backend-fill);stroke:var(--backend-stroke)}
+      .c-external{fill:var(--external-fill);stroke:var(--external-stroke)}
+      text{font-family:-apple-system,"Segoe UI","Microsoft YaHei",system-ui,sans-serif}
+      .t-region{fill:var(--region-text);font-size:15px;font-weight:700;letter-spacing:1px}
+      .t-title{fill:var(--text-1);font-size:14px;font-weight:700}
+      .t-sub{fill:var(--text-2);font-size:10.5px}
+      .t-tag{fill:var(--edge-feed);font-size:9.5px;font-weight:600;letter-spacing:.4px}
+      .t-edge{fill:var(--text-2);font-size:11px;font-weight:600}
+      .t-edge.emp{fill:var(--edge-emphasis)}
+      .t-edge.feed{fill:var(--edge-feed)}
+      .t-edge.dim{fill:var(--text-2);font-weight:400}
+    </style>
+
+    <!-- ===== 区域带（四层） ===== -->
+    <rect x="430" y="300" width="1370" height="220" rx="14" class="c-region"/>
+    <text x="452" y="324" class="t-region">接入层 · 公共 API</text>
+    <rect x="430" y="650" width="1370" height="310" rx="14" class="c-region"/>
+    <text x="452" y="674" class="t-region">会话层 · 对话编排</text>
+    <rect x="430" y="1100" width="1370" height="290" rx="14" class="c-region"/>
+    <text x="452" y="1124" class="t-region">流水线层 · 实时音视频处理</text>
+    <rect x="430" y="1530" width="1370" height="230" rx="14" class="c-region"/>
+    <text x="452" y="1554" class="t-region">媒体层 · 编码与推流</text>
+
+    <!-- ===== 连线（先画线，节点后置遮住端头） ===== -->
+    <!-- host -> C API -->
+    <path d="M 300 200 L 300 410 L 540 410" class="a-default" marker-end="url(#ah)"/>
+    <!-- host -> session (会话模式) -->
+    <path d="M 220 200 L 220 800 L 540 800" class="a-dash" marker-end="url(#ah)"/>
+    <text x="236" y="660" class="t-edge dim">Start/文本/底图</text>
+    <!-- C API -> Facade -->
+    <path d="M 800 410 L 980 410" class="a-default" marker-end="url(#ah)"/>
+    <text x="840" y="402" class="t-edge dim">封装转发</text>
+    <!-- Facade Push PCM -> AudioProcessor -->
+    <path d="M 1150 470 L 1150 600 L 250 600 L 250 1170 L 580 1170 L 580 1190" class="a-feed" marker-end="url(#ahf)"/>
+    <text x="1055" y="545" class="t-edge feed">Push PCM</text>
+    <!-- Facade Push BGR -> VideoProcessor -->
+    <path d="M 1500 470 L 1500 560 L 380 560 L 380 1165 L 880 1165 L 880 1190" class="a-feed" marker-end="url(#ahf)"/>
+    <text x="1448" y="530" class="t-edge feed">Push BGR 帧</text>
+    <!-- session -> llmc -->
+    <path d="M 820 765 L 1000 765" class="a-default" marker-end="url(#ah)"/>
+    <!-- session -> ttsc -->
+    <path d="M 820 890 L 1000 890" class="a-default" marker-end="url(#ah)"/>
+    <!-- llmc -> LLM svc -->
+    <path d="M 1240 775 L 1840 775" class="a-default" marker-end="url(#ah)"/>
+    <text x="1490" y="766" class="t-edge">SSE 增量文本请求/回复</text>
+    <!-- ttsc -> TTS svc -->
+    <path d="M 1240 895 L 1840 895" class="a-default" marker-end="url(#ah)"/>
+    <text x="1490" y="886" class="t-edge">HTTP · PCM 分块回传</text>
+    <!-- AudioProcessor -> InferenceWorker (mel) -->
+    <path d="M 660 1320 L 660 1352 L 1300 1352 L 1300 1320" class="a-default" marker-end="url(#ah)"/>
+    <text x="1360" y="1350" class="t-edge dim">Mel 特征行</text>
+    <!-- VideoProcessor -> InferenceWorker (face) -->
+    <path d="M 930 1320 L 930 1372 L 1340 1372 L 1340 1320" class="a-default" marker-end="url(#ah)"/>
+    <text x="1395" y="1370" class="t-edge dim">对齐脸 + 遮罩</text>
+    <!-- InferenceWorker -> RenderThread -->
+    <path d="M 1480 1255 L 1520 1255" class="a-default" marker-end="url(#ah)"/>
+    <!-- 流水线 -> 媒体层 -->
+    <path d="M 1250 1390 L 1250 1530" class="a-emb" marker-end="url(#ahe)"/>
+    <text x="1250" y="1470" class="t-edge emp" text-anchor="middle">渲染 BGR + PTS / 原始 PCM</text>
+    <!-- session -> bridge (emphasis dashed) -->
+    <path d="M 620 920 L 620 1010 L 160 1010 L 160 1680 L 540 1680" class="a-emb" stroke-dasharray="6 5" fill="none" marker-end="url(#ahe)"/>
+    <text x="220" y="1000" class="t-edge emp">PCM · 底图帧（IDigitalHumanSink）</text>
+    <!-- bridge -> pub -->
+    <path d="M 900 1670 L 1000 1670" class="a-default" marker-end="url(#ah)"/>
+    <!-- pub -> target -->
+    <path d="M 1560 1680 L 1840 1680" class="a-emb" marker-end="url(#ahe)"/>
+    <text x="1700" y="1671" class="t-edge emp" text-anchor="middle">H.264 + AAC 推流</text>
+
+    <!-- ===== 外部节点 ===== -->
+    <!-- 宿主应用 -->
+    <rect x="60" y="70" width="280" height="130" rx="10" class="c-node c-frontend"/>
+    <text x="200" y="118" class="t-title" text-anchor="middle">宿主应用 / 调用方</text>
+    <text x="200" y="138" class="t-sub" text-anchor="middle">前端 · 终端 · 网关</text>
+    <text x="200" y="176" class="t-tag" text-anchor="middle">FRONTEND</text>
+    <!-- LLM 服务 -->
+    <rect x="1840" y="730" width="240" height="90" rx="10" class="c-node c-external"/>
+    <text x="1960" y="762" class="t-title" text-anchor="middle">LLM 服务</text>
+    <text x="1960" y="782" class="t-sub" text-anchor="middle">llama.cpp / OpenAI 兼容</text>
+    <text x="1960" y="806" class="t-tag" text-anchor="middle">HTTP · SSE</text>
+    <!-- TTS 服务 -->
+    <rect x="1840" y="850" width="240" height="90" rx="10" class="c-node c-external"/>
+    <text x="1960" y="882" class="t-title" text-anchor="middle">TTS 服务</text>
+    <text x="1960" y="902" class="t-sub" text-anchor="middle">HTTP · PCM s16/f32</text>
+    <text x="1960" y="926" class="t-tag" text-anchor="middle">16 kHz mono</text>
+    <!-- 流媒体接收端 -->
+    <rect x="1840" y="1630" width="240" height="100" rx="10" class="c-node c-external"/>
+    <text x="1960" y="1666" class="t-title" text-anchor="middle">流媒体接收端</text>
+    <text x="1960" y="1686" class="t-sub" text-anchor="middle">RTMP / RTSP 服务或 FLV</text>
+    <text x="1960" y="1712" class="t-tag" text-anchor="middle">外部 · 业务方提供</text>
+
+    <!-- ===== 接入层节点 ===== -->
+    <rect x="540" y="360" width="260" height="100" rx="10" class="c-node c-backend"/>
+    <text x="670" y="392" class="t-title" text-anchor="middle">C API</text>
+    <text x="670" y="412" class="t-sub" text-anchor="middle">c_api.h · ABI 桥</text>
+    <text x="670" y="444" class="t-tag" text-anchor="middle">include/digital_human/c_api.h</text>
+    <rect x="980" y="350" width="720" height="120" rx="10" class="c-node c-backend"/>
+    <text x="1340" y="382" class="t-title" text-anchor="middle">DigitalHumanSDK（C++ Facade）</text>
+    <text x="1340" y="404" class="t-sub" text-anchor="middle">Init/Start · PushAudio · PushVideo · GetOutputFrame · ProcessFile</text>
+    <text x="1340" y="446" class="t-tag" text-anchor="middle">include/digital_human_sdk.h</text>
+
+    <!-- ===== 会话层节点 ===== -->
+    <rect x="540" y="720" width="280" height="200" rx="10" class="c-node c-backend"/>
+    <text x="680" y="760" class="t-title" text-anchor="middle">ConversationSession</text>
+    <text x="680" y="784" class="t-sub" text-anchor="middle">回合状态机（IDLE→GENERATING…）</text>
+    <text x="680" y="802" class="t-sub" text-anchor="middle">增量分句 · 历史预算 · 打断</text>
+    <text x="680" y="838" class="t-tag" text-anchor="middle">dialog/</text>
+    <text x="680" y="892" class="t-sub" text-anchor="middle">每回合恰好一次 on_turn_complete</text>
+    <rect x="1000" y="730" width="240" height="90" rx="10" class="c-node c-backend"/>
+    <text x="1120" y="762" class="t-title" text-anchor="middle">文本生成客户端</text>
+    <text x="1120" y="782" class="t-sub" text-anchor="middle">LlamaCpp / HTTP 适配 · SSE</text>
+    <text x="1120" y="806" class="t-tag" text-anchor="middle">dialog/ + net/</text>
+    <rect x="1000" y="850" width="240" height="90" rx="10" class="c-node c-backend"/>
+    <text x="1120" y="882" class="t-title" text-anchor="middle">TTS 客户端</text>
+    <text x="1120" y="902" class="t-sub" text-anchor="middle">HttpTTSClient · PCM 契约</text>
+    <text x="1120" y="926" class="t-tag" text-anchor="middle">tts/</text>
+
+    <!-- ===== 流水线层节点 ===== -->
+    <rect x="520" y="1190" width="230" height="130" rx="10" class="c-node c-backend"/>
+    <text x="635" y="1224" class="t-title" text-anchor="middle">AudioProcessor</text>
+    <text x="635" y="1246" class="t-sub" text-anchor="middle">降噪→分帧→VAD</text>
+    <text x="635" y="1264" class="t-sub" text-anchor="middle">PCM → Mel(1×80)</text>
+    <text x="635" y="1300" class="t-tag" text-anchor="middle">core/audio_processor.h</text>
+    <rect x="780" y="1190" width="230" height="130" rx="10" class="c-node c-backend"/>
+    <text x="895" y="1224" class="t-title" text-anchor="middle">VideoProcessor</text>
+    <text x="895" y="1246" class="t-sub" text-anchor="middle">SCRFD 检测 → 2D106 对齐</text>
+    <text x="895" y="1264" class="t-sub" text-anchor="middle">口唇遮罩 · 底图缓存</text>
+    <text x="895" y="1300" class="t-tag" text-anchor="middle">core/video_processor.h</text>
+    <rect x="1180" y="1190" width="300" height="130" rx="10" class="c-node c-backend"/>
+    <text x="1330" y="1224" class="t-title" text-anchor="middle">InferenceWorker · AVMatcher</text>
+    <text x="1330" y="1246" class="t-sub" text-anchor="middle">装配 16 帧 Mel 窗 · Wav2Lip 推理</text>
+    <text x="1330" y="1264" class="t-sub" text-anchor="middle">结果融合到原图 ROI</text>
+    <text x="1330" y="1300" class="t-tag" text-anchor="middle">ncnn · Vulkan 优先</text>
+    <rect x="1520" y="1190" width="240" height="130" rx="10" class="c-node c-backend"/>
+    <text x="1640" y="1224" class="t-title" text-anchor="middle">RenderThread</text>
+    <text x="1640" y="1246" class="t-sub" text-anchor="middle">帧节奏调度 · EOS 收尾</text>
+    <text x="1640" y="1264" class="t-sub" text-anchor="middle">输出队列供取帧</text>
+    <text x="1640" y="1300" class="t-tag" text-anchor="middle">core/render_thread.h</text>
+
+    <!-- ===== 媒体层节点 ===== -->
+    <rect x="540" y="1600" width="360" height="140" rx="10" class="c-node c-backend"/>
+    <text x="720" y="1636" class="t-title" text-anchor="middle">ConversationStreamBridge</text>
+    <text x="720" y="1658" class="t-sub" text-anchor="middle">TTS PCM 扇出（SDK + 编码器）</text>
+    <text x="720" y="1676" class="t-sub" text-anchor="middle">轮询 SDK 渲染帧 → 编码</text>
+    <text x="720" y="1716" class="t-tag" text-anchor="middle">media/conversation_stream_bridge.h</text>
+    <rect x="1000" y="1600" width="560" height="140" rx="10" class="c-node c-backend"/>
+    <text x="1280" y="1636" class="t-title" text-anchor="middle">StreamPublisher</text>
+    <text x="1280" y="1658" class="t-sub" text-anchor="middle">H.264（硬编回退） + AAC · FLV 封装</text>
+    <text x="1280" y="1676" class="t-sub" text-anchor="middle">FFmpeg 编码/复用</text>
+    <text x="1280" y="1716" class="t-tag" text-anchor="middle">media/stream_publisher.h</text>
+  </svg>
+
+  <div class="legend">
+    <span><b>图例</b></span>
+    <span><i class="dot frontend"></i>前端 / 调用方</span>
+    <span><i class="dot backend"></i>SDK 内部模块</span>
+    <span><i class="dot external"></i>外部服务</span>
+    <span><i class="dot region"></i>四层边界</span>
+    <span><i class="sw"></i>调用/数据流</span>
+    <span><i class="sw dash"></i>反向/可选流</span>
+    <span><i class="sw emb"></i>核心链路</span>
+    <span><i class="sw feed"></i>SDK 音视频输入</span>
+  </div>
+  </div>
+
+  <footer>
+    阅读要点：① <b>四层职责</b>从上至下为接入层（公共 API）、会话层（编排）、流水线层（口型渲染）、媒体层（编码推流）；
+    ② 深色/浅色主题可点右上角切换；③ 会话文本经 LLM/TTS 外部 HTTP 服务回环，TTS PCM 与底图帧经
+    <code>IDigitalHumanSink</code> 汇入核心流水线，渲染帧最终经编码器输出 RTMP/RTSP/FLV；
+    ④ 关键模块均已标注对应 <code>include/</code> 路径便于回溯源码。
+  </footer>
+</div>
+
+<script>
+  (function () {
+    var btn = document.getElementById('theme-btn');
+    var root = document.documentElement;
+    function set(t) {
+      root.setAttribute('data-theme', t);
+      btn.textContent = '主题: ' + (t === 'dark' ? '暗' : '亮');
+      try { localStorage.setItem('archify-theme', t); } catch (_) {}
+    }
+    try { var s = localStorage.getItem('archify-theme'); if (s === 'light' || s === 'dark') set(s); } catch (_) {}
+    btn.addEventListener('click', function () {
+      set(root.getAttribute('data-theme') === 'dark' ? 'light' : 'dark');
+    });
+  })();
+</script>
+</body>
+</html>

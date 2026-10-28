@@ -1,0 +1,156 @@
+{
+  "run_id": "20260829_111232",
+  "summary": {
+    "total": 6,
+    "outcome_accuracy": 0.5,
+    "interrupt_correctness": "1/1",
+    "rate_evaluated": 2,
+    "rate_pass": 1,
+    "rate_pass_rate": 0.5,
+    "rate_deviation_mean_pp": 1.23,
+    "rate_deviation_max_pp": 2.13,
+    "rate_tolerance_pp": 2.0,
+    "region_accuracy": 1.0
+  },
+  "results": [
+    {
+      "key": "complete_huizhou",
+      "expected_outcome": "completed",
+      "actual_outcome": "completed",
+      "outcome_correct": true,
+      "expected_rate": 15.2,
+      "rate_min": 0.08560191677246111,
+      "rate_max": 0.13069342352732158,
+      "rate_range": "8.6% - 13.1%",
+      "rate_deviation_pp": 2.13,
+      "rate_pass": false,
+      "expected_region": "华南",
+      "actual_region": "华南",
+      "region_correct": true,
+      "note": "数据齐全，高置信度",
+      "duration_s": 5.4,
+      "agent_summary": "测算完成。节能率范围为 8.6% - 13.1%（下限为保守估计，上限为理想情况）。数据完整度 100%。详细分项节能量与完整计算表请查看结果面板。",
+      "steps": [
+        "extract_survey",
+        "suggest_filling",
+        "apply_filling",
+        "calculate_saving_rate",
+        "finish"
+      ]
+    },
+    {
+      "key": "missing_winter",
+      "expected_outcome": "completed",
+      "actual_outcome": "completed",
+      "outcome_correct": true,
+      "expected_rate": 10.4,
+      "rate_min": 0.07374731531198182,
+      "rate_max": 0.10058862621223866,
+      "rate_range": "7.4% - 10.1%",
+      "rate_deviation_pp": 0.34,
+      "rate_pass": true,
+      "expected_region": "华北",
+      "actual_region": "华北",
+      "region_correct": true,
+      "note": "缺冬季数据，需填充",
+      "duration_s": 4.9,
+      "agent_summary": "测算完成。节能率范围为 7.4% - 10.1%（下限为保守估计，上限为理想情况）。数据完整度 96%。详细分项节能量与完整计算表请查看结果面板。",
+      "steps": [
+        "extract_survey",
+        "suggest_filling",
+        "apply_filling",
+        "calculate_saving_rate",
+        "finish"
+      ]
+    },
+    {
+      "key": "missing_summer",
+      "expected_outcome": "completed",
+      "actual_outcome": "needs_input",
+      "outcome_correct": false,
+      "expected_rate": 12.1,
+      "rate_min": null,
+      "rate_max": null,
+      "rate_range": null,
+      "rate_deviation_pp": null,
+      "rate_pass": null,
+      "expected_region": "华东",
+      "actual_region": "华东",
+      "region_correct": true,
+      "note": "缺夏季能耗数据，需填充",
+      "duration_s": 1.2,
+      "agent_summary": "当前数据不满足继续测算的条件",
+      "steps": [
+        "extract_survey",
+        "request_user_input"
+      ]
+    },
+    {
+      "key": "patchy",
+      "expected_outcome": "completed",
+      "actual_outcome": "needs_input",
+      "outcome_correct": false,
+      "expected_rate": 11.9,
+      "rate_min": null,
+      "rate_max": null,
+      "rate_range": null,
+      "rate_deviation_pp": null,
+      "rate_pass": null,
+      "expected_region": null,
+      "actual_region": "华南",
+      "region_correct": null,
+      "note": "月份间隔填写，插值填充",
+      "duration_s": 1.3,
+      "agent_summary": "需填充字段过多（37 项，占比 44%），建议补充原始数据后重新测算",
+      "steps": [
+        "extract_survey",
+        "suggest_filling",
+        "request_user_input"
+      ]
+    },
+    {
+      "key": "summer_only",
+      "expected_outcome": "completed",
+      "actual_outcome": "needs_input",
+      "outcome_correct": false,
+      "expected_rate": 6.5,
+      "rate_min": null,
+      "rate_max": null,
+      "rate_range": null,
+      "rate_deviation_pp": null,
+      "rate_pass": null,
+      "expected_region": null,
+      "actual_region": "西南",
+      "region_correct": null,
+      "note": "仅夏季数据；含中温/热回收机组，可能触发站房类型拦截",
+      "duration_s": 1.2,
+      "agent_summary": "当前数据不满足继续测算的条件",
+      "steps": [
+        "extract_survey",
+        "request_user_input"
+      ]
+    },
+    {
+      "key": "insufficient",
+      "expected_outcome": "needs_input",
+      "actual_outcome": "needs_input",
+      "outcome_correct": true,
+      "expected_rate": null,
+      "rate_min": null,
+      "rate_max": null,
+      "rate_range": null,
+      "rate_deviation_pp": null,
+      "rate_pass": null,
+      "expected_region": null,
+      "actual_region": null,
+      "region_correct": null,
+      "note": "模板级缺失，必须中断并要求补充数据",
+      "duration_s": 1.2,
+      "agent_summary": "当前数据不满足继续测算的条件",
+      "steps": [
+        "extract_survey",
+        "request_user_input"
+      ]
+    }
+  ]
+}

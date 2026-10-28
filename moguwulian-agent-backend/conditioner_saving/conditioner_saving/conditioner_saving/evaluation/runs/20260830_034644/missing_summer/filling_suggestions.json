@@ -1,0 +1,495 @@
+{
+  "defaults_version": "1.0.0",
+  "can_proceed": true,
+  "unfillable_fields": [],
+  "fillable_suggestions": [
+    {
+      "field": "monthly_data[0].cooling_pump_freq",
+      "original_value": null,
+      "suggested_value": 45,
+      "method": "industry_default",
+      "confidence": "low",
+      "reasoning": "该参数缺少足够数据支撑,使用冬季行业默认值(45)"
+    },
+    {
+      "field": "monthly_data[0].freezing_pump_freq",
+      "original_value": null,
+      "suggested_value": 50,
+      "method": "industry_default",
+      "confidence": "low",
+      "reasoning": "该参数缺少足够数据支撑,使用冬季行业默认值(50)"
+    },
+    {
+      "field": "monthly_data[0].cooling_water_temp_diff",
+      "original_value": null,
+      "suggested_value": 4.0,
+      "method": "industry_default",
+      "confidence": "low",
+      "reasoning": "该参数缺少足够数据支撑,使用冬季行业默认值(4.0)"
+    },
+    {
+      "field": "monthly_data[0].freezing_water_temp_diff",
+      "original_value": null,
+      "suggested_value": 4.0,
+      "method": "industry_default",
+      "confidence": "low",
+      "reasoning": "该参数缺少足够数据支撑,使用冬季行业默认值(4.0)"
+    },
+    {
+      "field": "monthly_data[0].cooling_tower_outlet_temp",
+      "original_value": null,
+      "suggested_value": 20,
+      "method": "industry_default",
+      "confidence": "low",
+      "reasoning": "该参数缺少足够数据支撑,使用冬季行业默认值(20)"
+    },
+    {
+      "field": "monthly_data[1].cooling_pump_freq",
+      "original_value": null,
+      "suggested_value": 45,
+      "method": "industry_default",
+      "confidence": "low",
+      "reasoning": "该参数缺少足够数据支撑,使用冬季行业默认值(45)"
+    },
+    {
+      "field": "monthly_data[1].freezing_pump_freq",
+      "original_value": null,
+      "suggested_value": 50,
+      "method": "industry_default",
+      "confidence": "low",
+      "reasoning": "该参数缺少足够数据支撑,使用冬季行业默认值(50)"
+    },
+    {
+      "field": "monthly_data[1].cooling_water_temp_diff",
+      "original_value": null,
+      "suggested_value": 4.0,
+      "method": "industry_default",
+      "confidence": "low",
+      "reasoning": "该参数缺少足够数据支撑,使用冬季行业默认值(4.0)"
+    },
+    {
+      "field": "monthly_data[1].freezing_water_temp_diff",
+      "original_value": null,
+      "suggested_value": 4.0,
+      "method": "industry_default",
+      "confidence": "low",
+      "reasoning": "该参数缺少足够数据支撑,使用冬季行业默认值(4.0)"
+    },
+    {
+      "field": "monthly_data[1].cooling_tower_outlet_temp",
+      "original_value": null,
+      "suggested_value": 20,
+      "method": "industry_default",
+      "confidence": "low",
+      "reasoning": "该参数缺少足够数据支撑,使用冬季行业默认值(20)"
+    },
+    {
+      "field": "monthly_data[2].cooling_pump_freq",
+      "original_value": null,
+      "suggested_value": 45,
+      "method": "industry_default",
+      "confidence": "low",
+      "reasoning": "该参数缺少足够数据支撑,使用冬季行业默认值(45)"
+    },
+    {
+      "field": "monthly_data[2].freezing_pump_freq",
+      "original_value": null,
+      "suggested_value": 50,
+      "method": "industry_default",
+      "confidence": "low",
+      "reasoning": "该参数缺少足够数据支撑,使用冬季行业默认值(50)"
+    },
+    {
+      "field": "monthly_data[2].cooling_water_temp_diff",
+      "original_value": null,
+      "suggested_value": 4.0,
+      "method": "industry_default",
+      "confidence": "low",
+      "reasoning": "该参数缺少足够数据支撑,使用冬季行业默认值(4.0)"
+    },
+    {
+      "field": "monthly_data[2].freezing_water_temp_diff",
+      "original_value": null,
+      "suggested_value": 4.0,
+      "method": "industry_default",
+      "confidence": "low",
+      "reasoning": "该参数缺少足够数据支撑,使用冬季行业默认值(4.0)"
+    },
+    {
+      "field": "monthly_data[2].cooling_tower_outlet_temp",
+      "original_value": null,
+      "suggested_value": 20,
+      "method": "industry_default",
+      "confidence": "low",
+      "reasoning": "该参数缺少足够数据支撑,使用冬季行业默认值(20)"
+    },
+    {
+      "field": "monthly_data[3].cooling_pump_freq",
+      "original_value": null,
+      "suggested_value": 45,
+      "method": "industry_default",
+      "confidence": "low",
+      "reasoning": "该参数缺少足够数据支撑,使用春秋季行业默认值(45)"
+    },
+    {
+      "field": "monthly_data[3].freezing_pump_freq",
+      "original_value": null,
+      "suggested_value": 50,
+      "method": "industry_default",
+      "confidence": "low",
+      "reasoning": "该参数缺少足够数据支撑,使用春秋季行业默认值(50)"
+    },
+    {
+      "field": "monthly_data[3].cooling_water_temp_diff",
+      "original_value": null,
+      "suggested_value": 4.0,
+      "method": "industry_default",
+      "confidence": "low",
+      "reasoning": "该参数缺少足够数据支撑,使用春秋季行业默认值(4.0)"
+    },
+    {
+      "field": "monthly_data[3].freezing_water_temp_diff",
+      "original_value": null,
+      "suggested_value": 4.0,
+      "method": "industry_default",
+      "confidence": "low",
+      "reasoning": "该参数缺少足够数据支撑,使用春秋季行业默认值(4.0)"
+    },
+    {
+      "field": "monthly_data[3].cooling_tower_outlet_temp",
+      "original_value": null,
+      "suggested_value": 26,
+      "method": "industry_default",
+      "confidence": "low",
+      "reasoning": "该参数缺少足够数据支撑,使用春秋季行业默认值(26)"
+    },
+    {
+      "field": "monthly_data[4].cooling_pump_freq",
+      "original_value": null,
+      "suggested_value": 45,
+      "method": "industry_default",
+      "confidence": "low",
+      "reasoning": "该参数缺少足够数据支撑,使用春秋季行业默认值(45)"
+    },
+    {
+      "field": "monthly_data[4].freezing_pump_freq",
+      "original_value": null,
+      "suggested_value": 50,
+      "method": "industry_default",
+      "confidence": "low",
+      "reasoning": "该参数缺少足够数据支撑,使用春秋季行业默认值(50)"
+    },
+    {
+      "field": "monthly_data[4].cooling_water_temp_diff",
+      "original_value": null,
+      "suggested_value": 4.0,
+      "method": "industry_default",
+      "confidence": "low",
+      "reasoning": "该参数缺少足够数据支撑,使用春秋季行业默认值(4.0)"
+    },
+    {
+      "field": "monthly_data[4].freezing_water_temp_diff",
+      "original_value": null,
+      "suggested_value": 4.0,
+      "method": "industry_default",
+      "confidence": "low",
+      "reasoning": "该参数缺少足够数据支撑,使用春秋季行业默认值(4.0)"
+    },
+    {
+      "field": "monthly_data[4].cooling_tower_outlet_temp",
+      "original_value": null,
+      "suggested_value": 26,
+      "method": "industry_default",
+      "confidence": "low",
+      "reasoning": "该参数缺少足够数据支撑,使用春秋季行业默认值(26)"
+    },
+    {
+      "field": "monthly_data[5].cooling_pump_freq",
+      "original_value": null,
+      "suggested_value": 45,
+      "method": "industry_default",
+      "confidence": "low",
+      "reasoning": "该参数缺少足够数据支撑,使用夏季行业默认值(45)"
+    },
+    {
+      "field": "monthly_data[5].freezing_pump_freq",
+      "original_value": null,
+      "suggested_value": 50,
+      "method": "industry_default",
+      "confidence": "low",
+      "reasoning": "该参数缺少足够数据支撑,使用夏季行业默认值(50)"
+    },
+    {
+      "field": "monthly_data[5].cooling_water_temp_diff",
+      "original_value": null,
+      "suggested_value": 4.0,
+      "method": "industry_default",
+      "confidence": "low",
+      "reasoning": "该参数缺少足够数据支撑,使用夏季行业默认值(4.0)"
+    },
+    {
+      "field": "monthly_data[5].freezing_water_temp_diff",
+      "original_value": null,
+      "suggested_value": 4.0,
+      "method": "industry_default",
+      "confidence": "low",
+      "reasoning": "该参数缺少足够数据支撑,使用夏季行业默认值(4.0)"
+    },
+    {
+      "field": "monthly_data[5].cooling_tower_outlet_temp",
+      "original_value": null,
+      "suggested_value": 32,
+      "method": "industry_default",
+      "confidence": "low",
+      "reasoning": "该参数缺少足够数据支撑,使用夏季行业默认值(32)"
+    },
+    {
+      "field": "monthly_data[6].cooling_pump_freq",
+      "original_value": null,
+      "suggested_value": 45,
+      "method": "industry_default",
+      "confidence": "low",
+      "reasoning": "该参数缺少足够数据支撑,使用夏季行业默认值(45)"
+    },
+    {
+      "field": "monthly_data[6].freezing_pump_freq",
+      "original_value": null,
+      "suggested_value": 50,
+      "method": "industry_default",
+      "confidence": "low",
+      "reasoning": "该参数缺少足够数据支撑,使用夏季行业默认值(50)"
+    },
+    {
+      "field": "monthly_data[6].cooling_water_temp_diff",
+      "original_value": null,
+      "suggested_value": 4.0,
+      "method": "industry_default",
+      "confidence": "low",
+      "reasoning": "该参数缺少足够数据支撑,使用夏季行业默认值(4.0)"
+    },
+    {
+      "field": "monthly_data[6].freezing_water_temp_diff",
+      "original_value": null,
+      "suggested_value": 4.0,
+      "method": "industry_default",
+      "confidence": "low",
+      "reasoning": "该参数缺少足够数据支撑,使用夏季行业默认值(4.0)"
+    },
+    {
+      "field": "monthly_data[6].cooling_tower_outlet_temp",
+      "original_value": null,
+      "suggested_value": 32,
+      "method": "industry_default",
+      "confidence": "low",
+      "reasoning": "该参数缺少足够数据支撑,使用夏季行业默认值(32)"
+    },
+    {
+      "field": "monthly_data[7].cooling_pump_freq",
+      "original_value": null,
+      "suggested_value": 45,
+      "method": "industry_default",
+      "confidence": "low",
+      "reasoning": "该参数缺少足够数据支撑,使用夏季行业默认值(45)"
+    },
+    {
+      "field": "monthly_data[7].freezing_pump_freq",
+      "original_value": null,
+      "suggested_value": 50,
+      "method": "industry_default",
+      "confidence": "low",
+      "reasoning": "该参数缺少足够数据支撑,使用夏季行业默认值(50)"
+    },
+    {
+      "field": "monthly_data[7].cooling_water_temp_diff",
+      "original_value": null,
+      "suggested_value": 4.0,
+      "method": "industry_default",
+      "confidence": "low",
+      "reasoning": "该参数缺少足够数据支撑,使用夏季行业默认值(4.0)"
+    },
+    {
+      "field": "monthly_data[7].freezing_water_temp_diff",
+      "original_value": null,
+      "suggested_value": 4.0,
+      "method": "industry_default",
+      "confidence": "low",
+      "reasoning": "该参数缺少足够数据支撑,使用夏季行业默认值(4.0)"
+    },
+    {
+      "field": "monthly_data[7].cooling_tower_outlet_temp",
+      "original_value": null,
+      "suggested_value": 32,
+      "method": "industry_default",
+      "confidence": "low",
+      "reasoning": "该参数缺少足够数据支撑,使用夏季行业默认值(32)"
+    },
+    {
+      "field": "monthly_data[8].cooling_pump_freq",
+      "original_value": null,
+      "suggested_value": 45,
+      "method": "industry_default",
+      "confidence": "low",
+      "reasoning": "该参数缺少足够数据支撑,使用春秋季行业默认值(45)"
+    },
+    {
+      "field": "monthly_data[8].freezing_pump_freq",
+      "original_value": null,
+      "suggested_value": 50,
+      "method": "industry_default",
+      "confidence": "low",
+      "reasoning": "该参数缺少足够数据支撑,使用春秋季行业默认值(50)"
+    },
+    {
+      "field": "monthly_data[8].cooling_water_temp_diff",
+      "original_value": null,
+      "suggested_value": 4.0,
+      "method": "industry_default",
+      "confidence": "low",
+      "reasoning": "该参数缺少足够数据支撑,使用春秋季行业默认值(4.0)"
+    },
+    {
+      "field": "monthly_data[8].freezing_water_temp_diff",
+      "original_value": null,
+      "suggested_value": 4.0,
+      "method": "industry_default",
+      "confidence": "low",
+      "reasoning": "该参数缺少足够数据支撑,使用春秋季行业默认值(4.0)"
+    },
+    {
+      "field": "monthly_data[8].cooling_tower_outlet_temp",
+      "original_value": null,
+      "suggested_value": 26,
+      "method": "industry_default",
+      "confidence": "low",
+      "reasoning": "该参数缺少足够数据支撑,使用春秋季行业默认值(26)"
+    },
+    {
+      "field": "monthly_data[9].cooling_pump_freq",
+      "original_value": null,
+      "suggested_value": 45,
+      "method": "industry_default",
+      "confidence": "low",
+      "reasoning": "该参数缺少足够数据支撑,使用春秋季行业默认值(45)"
+    },
+    {
+      "field": "monthly_data[9].freezing_pump_freq",
+      "original_value": null,
+      "suggested_value": 50,
+      "method": "industry_default",
+      "confidence": "low",
+      "reasoning": "该参数缺少足够数据支撑,使用春秋季行业默认值(50)"
+    },
+    {
+      "field": "monthly_data[9].cooling_water_temp_diff",
+      "original_value": null,
+      "suggested_value": 4.0,
+      "method": "industry_default",
+      "confidence": "low",
+      "reasoning": "该参数缺少足够数据支撑,使用春秋季行业默认值(4.0)"
+    },
+    {
+      "field": "monthly_data[9].freezing_water_temp_diff",
+      "original_value": null,
+      "suggested_value": 4.0,
+      "method": "industry_default",
+      "confidence": "low",
+      "reasoning": "该参数缺少足够数据支撑,使用春秋季行业默认值(4.0)"
+    },
+    {
+      "field": "monthly_data[9].cooling_tower_outlet_temp",
+      "original_value": null,
+      "suggested_value": 26,
+      "method": "industry_default",
+      "confidence": "low",
+      "reasoning": "该参数缺少足够数据支撑,使用春秋季行业默认值(26)"
+    },
+    {
+      "field": "monthly_data[10].cooling_pump_freq",
+      "original_value": null,
+      "suggested_value": 45,
+      "method": "industry_default",
+      "confidence": "low",
+      "reasoning": "该参数缺少足够数据支撑,使用冬季行业默认值(45)"
+    },
+    {
+      "field": "monthly_data[10].freezing_pump_freq",
+      "original_value": null,
+      "suggested_value": 50,
+      "method": "industry_default",
+      "confidence": "low",
+      "reasoning": "该参数缺少足够数据支撑,使用冬季行业默认值(50)"
+    },
+    {
+      "field": "monthly_data[10].cooling_water_temp_diff",
+      "original_value": null,
+      "suggested_value": 4.0,
+      "method": "industry_default",
+      "confidence": "low",
+      "reasoning": "该参数缺少足够数据支撑,使用冬季行业默认值(4.0)"
+    },
+    {
+      "field": "monthly_data[10].freezing_water_temp_diff",
+      "original_value": null,
+      "suggested_value": 4.0,
+      "method": "industry_default",
+      "confidence": "low",
+      "reasoning": "该参数缺少足够数据支撑,使用冬季行业默认值(4.0)"
+    },
+    {
+      "field": "monthly_data[10].cooling_tower_outlet_temp",
+      "original_value": null,
+      "suggested_value": 20,
+      "method": "industry_default",
+      "confidence": "low",
+      "reasoning": "该参数缺少足够数据支撑,使用冬季行业默认值(20)"
+    },
+    {
+      "field": "monthly_data[11].cooling_pump_freq",
+      "original_value": null,
+      "suggested_value": 45,
+      "method": "industry_default",
+      "confidence": "low",
+      "reasoning": "该参数缺少足够数据支撑,使用冬季行业默认值(45)"
+    },
+    {
+      "field": "monthly_data[11].freezing_pump_freq",
+      "original_value": null,
+      "suggested_value": 50,
+      "method": "industry_default",
+      "confidence": "low",
+      "reasoning": "该参数缺少足够数据支撑,使用冬季行业默认值(50)"
+    },
+    {
+      "field": "monthly_data[11].cooling_water_temp_diff",
+      "original_value": null,
+      "suggested_value": 4.0,
+      "method": "industry_default",
+      "confidence": "low",
+      "reasoning": "该参数缺少足够数据支撑,使用冬季行业默认值(4.0)"
+    },
+    {
+      "field": "monthly_data[11].freezing_water_temp_diff",
+      "original_value": null,
+      "suggested_value": 4.0,
+      "method": "industry_default",
+      "confidence": "low",
+      "reasoning": "该参数缺少足够数据支撑,使用冬季行业默认值(4.0)"
+    },
+    {
+      "field": "monthly_data[11].cooling_tower_outlet_temp",
+      "original_value": null,
+      "suggested_value": 20,
+      "method": "industry_default",
+      "confidence": "low",
+      "reasoning": "该参数缺少足够数据支撑,使用冬季行业默认值(20)"
+    },
+    {
+      "field": "electricity_price",
+      "original_value": null,
+      "suggested_value": 0.7,
+      "method": "region_lookup",
+      "confidence": "medium",
+      "reasoning": "根据项目所在地区(华东)查表获取工业用电参考电价"
+    }
+  ]
+}

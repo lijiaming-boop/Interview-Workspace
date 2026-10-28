@@ -1,0 +1,187 @@
+{
+  "completeness": 0.75,
+  "confidence_level": "medium",
+  "issues": [
+    {
+      "field": "monthly_data[9].total_energy",
+      "severity": "high",
+      "type": "missing",
+      "message": "10月冷站总能耗缺失"
+    },
+    {
+      "field": "monthly_data[9].chiller_supply_temp",
+      "severity": "high",
+      "type": "missing",
+      "message": "10月冷机供水温度缺失"
+    },
+    {
+      "field": "monthly_data[10].total_energy",
+      "severity": "high",
+      "type": "missing",
+      "message": "11月冷站总能耗缺失"
+    },
+    {
+      "field": "monthly_data[10].chiller_supply_temp",
+      "severity": "high",
+      "type": "missing",
+      "message": "11月冷机供水温度缺失"
+    },
+    {
+      "field": "monthly_data[11].total_energy",
+      "severity": "high",
+      "type": "missing",
+      "message": "12月冷站总能耗缺失"
+    },
+    {
+      "field": "monthly_data[11].chiller_supply_temp",
+      "severity": "high",
+      "type": "missing",
+      "message": "12月冷机供水温度缺失"
+    },
+    {
+      "field": "monthly_data[0].chiller_supply_temp",
+      "severity": "medium",
+      "type": "out_of_range",
+      "message": "1月冷机供水温度(27.1°C)超出合理范围(5-15°C)"
+    },
+    {
+      "field": "monthly_data[1].chiller_supply_temp",
+      "severity": "medium",
+      "type": "out_of_range",
+      "message": "2月冷机供水温度(27.7°C)超出合理范围(5-15°C)"
+    },
+    {
+      "field": "monthly_data[2].chiller_supply_temp",
+      "severity": "medium",
+      "type": "out_of_range",
+      "message": "3月冷机供水温度(31.1°C)超出合理范围(5-15°C)"
+    },
+    {
+      "field": "monthly_data[3].chiller_supply_temp",
+      "severity": "medium",
+      "type": "out_of_range",
+      "message": "4月冷机供水温度(29.0°C)超出合理范围(5-15°C)"
+    },
+    {
+      "field": "monthly_data[4].chiller_supply_temp",
+      "severity": "medium",
+      "type": "out_of_range",
+      "message": "5月冷机供水温度(26.1°C)超出合理范围(5-15°C)"
+    },
+    {
+      "field": "monthly_data[5].chiller_supply_temp",
+      "severity": "medium",
+      "type": "out_of_range",
+      "message": "6月冷机供水温度(24.5°C)超出合理范围(5-15°C)"
+    },
+    {
+      "field": "monthly_data[6].chiller_supply_temp",
+      "severity": "medium",
+      "type": "out_of_range",
+      "message": "7月冷机供水温度(37.3°C)超出合理范围(5-15°C)"
+    },
+    {
+      "field": "monthly_data[7].chiller_supply_temp",
+      "severity": "medium",
+      "type": "out_of_range",
+      "message": "8月冷机供水温度(34.9°C)超出合理范围(5-15°C)"
+    },
+    {
+      "field": "monthly_data[8].chiller_supply_temp",
+      "severity": "medium",
+      "type": "out_of_range",
+      "message": "9月冷机供水温度(32.9°C)超出合理范围(5-15°C)"
+    },
+    {
+      "field": "monthly_data[9].cooling_pump_freq",
+      "severity": "medium",
+      "type": "missing",
+      "message": "10月冷却泵频率缺失"
+    },
+    {
+      "field": "monthly_data[9].freezing_pump_freq",
+      "severity": "medium",
+      "type": "missing",
+      "message": "10月冷冻泵频率缺失"
+    },
+    {
+      "field": "monthly_data[9].cooling_water_temp_diff",
+      "severity": "medium",
+      "type": "missing",
+      "message": "10月冷却水温差缺失"
+    },
+    {
+      "field": "monthly_data[9].freezing_water_temp_diff",
+      "severity": "medium",
+      "type": "missing",
+      "message": "10月冷冻水温差缺失"
+    },
+    {
+      "field": "monthly_data[9].cooling_tower_outlet_temp",
+      "severity": "medium",
+      "type": "missing",
+      "message": "10月冷却塔出水温度缺失"
+    },
+    {
+      "field": "monthly_data[10].cooling_pump_freq",
+      "severity": "medium",
+      "type": "missing",
+      "message": "11月冷却泵频率缺失"
+    },
+    {
+      "field": "monthly_data[10].freezing_pump_freq",
+      "severity": "medium",
+      "type": "missing",
+      "message": "11月冷冻泵频率缺失"
+    },
+    {
+      "field": "monthly_data[10].cooling_water_temp_diff",
+      "severity": "medium",
+      "type": "missing",
+      "message": "11月冷却水温差缺失"
+    },
+    {
+      "field": "monthly_data[10].freezing_water_temp_diff",
+      "severity": "medium",
+      "type": "missing",
+      "message": "11月冷冻水温差缺失"
+    },
+    {
+      "field": "monthly_data[10].cooling_tower_outlet_temp",
+      "severity": "medium",
+      "type": "missing",
+      "message": "11月冷却塔出水温度缺失"
+    },
+    {
+      "field": "monthly_data[11].cooling_pump_freq",
+      "severity": "medium",
+      "type": "missing",
+      "message": "12月冷却泵频率缺失"
+    },
+    {
+      "field": "monthly_data[11].freezing_pump_freq",
+      "severity": "medium",
+      "type": "missing",
+      "message": "12月冷冻泵频率缺失"
+    },
+    {
+      "field": "monthly_data[11].cooling_water_temp_diff",
+      "severity": "medium",
+      "type": "missing",
+      "message": "12月冷却水温差缺失"
+    },
+    {
+      "field": "monthly_data[11].freezing_water_temp_diff",
+      "severity": "medium",
+      "type": "missing",
+      "message": "12月冷冻水温差缺失"
+    },
+    {
+      "field": "monthly_data[11].cooling_tower_outlet_temp",
+      "severity": "medium",
+      "type": "missing",
+      "message": "12月冷却塔出水温度缺失"
+    }
+  ],
+  "summary": "数据完整率75%,建议补充缺失月份数据。发现6个高优先级问题、24个中等问题。"
+}

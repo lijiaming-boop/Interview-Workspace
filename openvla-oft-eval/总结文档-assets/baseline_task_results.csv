@@ -1,0 +1,11 @@
+task,successes,total,success_rate_pct,failures
+between plate and ramekin,50,50,100,0
+table center,50,50,100,0
+top drawer,48,50,96,2
+next to cookie box,49,50,98,1
+next to plate,50,50,100,0
+next to ramekin,50,50,100,0
+on cookie box,50,50,100,0
+on ramekin,49,50,98,1
+on stove,49,50,98,1
+on wooden cabinet,50,50,100,0

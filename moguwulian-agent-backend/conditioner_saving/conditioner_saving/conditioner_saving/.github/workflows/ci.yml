@@ -1,0 +1,52 @@
+name: CI
+
+on:
+  push:
+    branches: [master, main, refactor/nextjs-fastapi]
+  pull_request:
+
+jobs:
+  backend:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+      - name: Install dependencies
+        run: pip install -r requirements.txt ruff
+      # P0 安全改造：CI 密钥扫描（.env 与 generate_plan_doc.py 曾含真实 Key）。
+      # 当前树扫描防止新泄露；历史中的已知泄露按 docs/密钥轮换与历史清理.md 处理。
+      - name: Secret scan
+        run: python scripts/scan_secrets.py
+      - name: Lint (ruff)
+        run: ruff check core agent apps/api evaluation simulation config --exclude .venv
+      - name: Unit tests
+        run: pytest tests/unit -q
+      # P0 安全改造（改进方案第八节 P1）：集成/端到端/报价测试纳入 CI 门禁，
+      # 修复"CI 全绿但系统集成已损坏"的盲区。4 个需真实 LLM 会话的用例仍排除。
+      - name: Integration / E2E / Quote tests
+        run: >
+          pytest tests/integration tests/e2e tests/quote -q
+          --ignore=tests/integration/test_ai_all_vision_integration.py
+          --ignore=tests/integration/test_sample_surveys_e2e.py
+          --ignore=tests/integration/test_skill_integration.py
+          --ignore=tests/e2e/test_p1_e2e_real_flow.py
+      - name: Regression eval gate（零 LLM 成本，基线比对）
+        run: python -m evaluation.run_eval --compare-baseline
+
+  frontend:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: apps/web
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+      - name: Install
+        run: npm ci || npm install
+      - name: Build
+        run: npm run build

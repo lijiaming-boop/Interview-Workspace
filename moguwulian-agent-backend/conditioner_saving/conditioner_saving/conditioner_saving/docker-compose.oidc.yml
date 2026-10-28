@@ -1,0 +1,20 @@
+# 测试 OIDC（迷你 mock IdP）叠加编排：完整验证“浏览器→proxy(OIDC 登录)→web→api”认证闭环。
+# 用法（在 docker-compose.yml 之上叠加）:
+#   docker compose -f docker-compose.yml -f docker-compose.oidc.yml up -d --build
+# 说明:
+#   - issuer 自动取自请求 Host：OAUTH_SERVER_URL 填 http://<PUBLIC_BASE_URL>:8081 即可
+#     （浏览器与容器都必须能访问该地址）
+#   - 测试账号 test / test123456（角色 sr = API 特权角色），可用 MOCK_USERS 覆盖
+#   - 生产接入真实 IdP（Casdoor 等）时不叠加本文件：.env 填真实 OIDC 变量后
+#     用 `docker compose -f docker-compose.yml up -d --build` 重新拉起
+#   - 备选：如需带管理台的完整 IdP，可换 Keycloak（域模板 deploy/oidc/realm-hvac.json.template）
+services:
+  oidc:
+    build: ./deploy/oidc/mock-oidc
+    environment:
+      CLIENT_ID: ${CLIENT_ID:-hvac-proxy}
+      CLIENT_SECRET: ${CLIENT_SECRET:-hvac-proxy-secret}
+      REDIRECT_URI: ${REDIRECT_URI:-}
+    ports:
+      - "${OIDC_PORT:-8081}:8080"
+    restart: unless-stopped

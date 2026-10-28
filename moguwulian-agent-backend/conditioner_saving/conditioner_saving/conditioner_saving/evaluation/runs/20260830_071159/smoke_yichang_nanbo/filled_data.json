@@ -1,0 +1,173 @@
+{
+  "project_region": "华中",
+  "electricity_price": 0.6967,
+  "station_type": "secondary_pump",
+  "station_type_confidence": "high",
+  "station_type_reason": "检测到一次泵/二次泵分离特征且有实际数据",
+  "energy_source": "survey_sheet",
+  "available_fields": [
+    "total_energy",
+    "chiller_supply_temp",
+    "cooling_pump_freq",
+    "cooling_water_temp_diff",
+    "freezing_pump_freq",
+    "freezing_water_temp_diff",
+    "cooling_tower_outlet_temp"
+  ],
+  "monthly_data": [
+    {
+      "month": 1,
+      "total_energy": 497460.312471005,
+      "chiller_supply_temp": 9.0,
+      "cooling_pump_freq": 50.0,
+      "cooling_water_temp_diff": 5.0,
+      "freezing_pump_freq": 50.0,
+      "freezing_water_temp_diff": 5.0,
+      "cooling_tower_outlet_temp": 28.0,
+      "_filled_fields": []
+    },
+    {
+      "month": 2,
+      "total_energy": 409314.772761136,
+      "chiller_supply_temp": 9.0,
+      "cooling_pump_freq": 50.0,
+      "cooling_water_temp_diff": 5.0,
+      "freezing_pump_freq": 50.0,
+      "freezing_water_temp_diff": 5.0,
+      "cooling_tower_outlet_temp": 28.0,
+      "_filled_fields": []
+    },
+    {
+      "month": 3,
+      "total_energy": 694839.48685086,
+      "chiller_supply_temp": 9.0,
+      "cooling_pump_freq": 50.0,
+      "cooling_water_temp_diff": 5.0,
+      "freezing_pump_freq": 50.0,
+      "freezing_water_temp_diff": 5.0,
+      "cooling_tower_outlet_temp": 28.0,
+      "_filled_fields": []
+    },
+    {
+      "month": 4,
+      "total_energy": 770756.453596981,
+      "chiller_supply_temp": 9.0,
+      "cooling_pump_freq": 50.0,
+      "cooling_water_temp_diff": 5.0,
+      "freezing_pump_freq": 50.0,
+      "freezing_water_temp_diff": 5.0,
+      "cooling_tower_outlet_temp": 32.0,
+      "_filled_fields": []
+    },
+    {
+      "month": 5,
+      "total_energy": 868350.869241629,
+      "chiller_supply_temp": 9.0,
+      "cooling_pump_freq": 50.0,
+      "cooling_water_temp_diff": 5.0,
+      "freezing_pump_freq": 50.0,
+      "freezing_water_temp_diff": 5.0,
+      "cooling_tower_outlet_temp": 32.0,
+      "_filled_fields": []
+    },
+    {
+      "month": 6,
+      "total_energy": 1055347.91423315,
+      "chiller_supply_temp": 9.0,
+      "cooling_pump_freq": 50.0,
+      "cooling_water_temp_diff": 5.0,
+      "freezing_pump_freq": 50.0,
+      "freezing_water_temp_diff": 5.0,
+      "cooling_tower_outlet_temp": 32.0,
+      "_filled_fields": []
+    },
+    {
+      "month": 7,
+      "total_energy": 1446202.44502904,
+      "chiller_supply_temp": 9.0,
+      "cooling_pump_freq": 50.0,
+      "cooling_water_temp_diff": 5.0,
+      "freezing_pump_freq": 50.0,
+      "freezing_water_temp_diff": 5.0,
+      "cooling_tower_outlet_temp": 32.0,
+      "_filled_fields": []
+    },
+    {
+      "month": 8,
+      "total_energy": 1395368.84198338,
+      "chiller_supply_temp": 9.0,
+      "cooling_pump_freq": 50.0,
+      "cooling_water_temp_diff": 5.0,
+      "freezing_pump_freq": 50.0,
+      "freezing_water_temp_diff": 5.0,
+      "cooling_tower_outlet_temp": 32.0,
+      "_filled_fields": []
+    },
+    {
+      "month": 9,
+      "total_energy": 1105476.10775232,
+      "chiller_supply_temp": 9.0,
+      "cooling_pump_freq": 50.0,
+      "cooling_water_temp_diff": 5.0,
+      "freezing_pump_freq": 50.0,
+      "freezing_water_temp_diff": 5.0,
+      "cooling_tower_outlet_temp": 32.0,
+      "_filled_fields": []
+    },
+    {
+      "month": 10,
+      "total_energy": 808129.825711477,
+      "chiller_supply_temp": 9.0,
+      "cooling_pump_freq": 50.0,
+      "cooling_water_temp_diff": 5.0,
+      "freezing_pump_freq": 50.0,
+      "freezing_water_temp_diff": 5.0,
+      "cooling_tower_outlet_temp": 32.0,
+      "_filled_fields": []
+    },
+    {
+      "month": 11,
+      "total_energy": 757428.247519045,
+      "chiller_supply_temp": 9.0,
+      "cooling_pump_freq": 50.0,
+      "cooling_water_temp_diff": 5.0,
+      "freezing_pump_freq": 50.0,
+      "freezing_water_temp_diff": 5.0,
+      "cooling_tower_outlet_temp": 28.0,
+      "_filled_fields": []
+    },
+    {
+      "month": 12,
+      "total_energy": 668672.089862774,
+      "chiller_supply_temp": 9.0,
+      "cooling_pump_freq": 50.0,
+      "cooling_water_temp_diff": 5.0,
+      "freezing_pump_freq": 50.0,
+      "freezing_water_temp_diff": 5.0,
+      "cooling_tower_outlet_temp": 28.0,
+      "_filled_fields": []
+    }
+  ],
+  "_metadata": {
+    "fill_timestamp": "2026-08-30T07:12:15.980185",
+    "fill_count": 0,
+    "monthly_fill_count": 0,
+    "original_completeness": 1.0,
+    "final_completeness": 1.0,
+    "completeness_denominator": {
+      "available_fields": [
+        "total_energy",
+        "chiller_supply_temp",
+        "cooling_pump_freq",
+        "cooling_water_temp_diff",
+        "freezing_pump_freq",
+        "freezing_water_temp_diff",
+        "cooling_tower_outlet_temp"
+      ],
+      "months": 12,
+      "total_fields": 84
+    },
+    "defaults_version": "1.0.0",
+    "fill_detail": {}
+  }
+}

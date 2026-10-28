@@ -1,0 +1,102 @@
+{
+  "can_proceed": true,
+  "unfillable_fields": [],
+  "fillable_suggestions": [
+    {
+      "field": "monthly_data[0].freezing_pump_freq",
+      "original_value": null,
+      "suggested_value": 50,
+      "method": "industry_default",
+      "confidence": "low",
+      "reasoning": "该参数缺少足够数据支撑,使用冬季行业默认值(50)"
+    },
+    {
+      "field": "monthly_data[1].freezing_pump_freq",
+      "original_value": null,
+      "suggested_value": 50,
+      "method": "industry_default",
+      "confidence": "low",
+      "reasoning": "该参数缺少足够数据支撑,使用冬季行业默认值(50)"
+    },
+    {
+      "field": "monthly_data[2].freezing_pump_freq",
+      "original_value": null,
+      "suggested_value": 50,
+      "method": "industry_default",
+      "confidence": "low",
+      "reasoning": "该参数缺少足够数据支撑,使用冬季行业默认值(50)"
+    },
+    {
+      "field": "monthly_data[3].freezing_pump_freq",
+      "original_value": null,
+      "suggested_value": 50,
+      "method": "industry_default",
+      "confidence": "low",
+      "reasoning": "该参数缺少足够数据支撑,使用春秋季行业默认值(50)"
+    },
+    {
+      "field": "monthly_data[4].freezing_pump_freq",
+      "original_value": null,
+      "suggested_value": 50,
+      "method": "industry_default",
+      "confidence": "low",
+      "reasoning": "该参数缺少足够数据支撑,使用春秋季行业默认值(50)"
+    },
+    {
+      "field": "monthly_data[5].freezing_pump_freq",
+      "original_value": null,
+      "suggested_value": 50,
+      "method": "industry_default",
+      "confidence": "low",
+      "reasoning": "该参数缺少足够数据支撑,使用夏季行业默认值(50)"
+    },
+    {
+      "field": "monthly_data[6].freezing_pump_freq",
+      "original_value": null,
+      "suggested_value": 50,
+      "method": "industry_default",
+      "confidence": "low",
+      "reasoning": "该参数缺少足够数据支撑,使用夏季行业默认值(50)"
+    },
+    {
+      "field": "monthly_data[7].freezing_pump_freq",
+      "original_value": null,
+      "suggested_value": 50,
+      "method": "industry_default",
+      "confidence": "low",
+      "reasoning": "该参数缺少足够数据支撑,使用夏季行业默认值(50)"
+    },
+    {
+      "field": "monthly_data[8].freezing_pump_freq",
+      "original_value": null,
+      "suggested_value": 50,
+      "method": "industry_default",
+      "confidence": "low",
+      "reasoning": "该参数缺少足够数据支撑,使用春秋季行业默认值(50)"
+    },
+    {
+      "field": "monthly_data[9].freezing_pump_freq",
+      "original_value": null,
+      "suggested_value": 50,
+      "method": "industry_default",
+      "confidence": "low",
+      "reasoning": "该参数缺少足够数据支撑,使用春秋季行业默认值(50)"
+    },
+    {
+      "field": "monthly_data[10].freezing_pump_freq",
+      "original_value": null,
+      "suggested_value": 50,
+      "method": "industry_default",
+      "confidence": "low",
+      "reasoning": "该参数缺少足够数据支撑,使用冬季行业默认值(50)"
+    },
+    {
+      "field": "monthly_data[11].freezing_pump_freq",
+      "original_value": null,
+      "suggested_value": 50,
+      "method": "industry_default",
+      "confidence": "low",
+      "reasoning": "该参数缺少足够数据支撑,使用冬季行业默认值(50)"
+    }
+  ]
+}

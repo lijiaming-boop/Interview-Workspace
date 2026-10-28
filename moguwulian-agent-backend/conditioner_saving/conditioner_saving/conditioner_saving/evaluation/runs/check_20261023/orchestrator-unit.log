@@ -1,0 +1,27 @@
+============================= test session starts =============================
+platform win32 -- Python 3.12.4, pytest-9.0.3, pluggy-1.6.0 -- C:\Users\27013\Miniconda3\python.exe
+cachedir: .pytest_cache
+rootdir: C:\Users\27013\Desktop\workspace\agent_研发\contion simulation\conditioner_saving\conditioner_saving\conditioner_saving
+configfile: pytest.ini
+plugins: anyio-4.14.2
+collecting ... collected 16 items
+
+tests/unit/test_agent_orchestrator.py::test_happy_path_completes PASSED  [  6%]
+tests/unit/test_agent_orchestrator.py::test_rule_brain_drives_full_pipeline PASSED [ 12%]
+tests/unit/test_agent_orchestrator.py::test_out_of_whitelist_call_is_rejected PASSED [ 18%]
+tests/unit/test_agent_orchestrator.py::test_low_confidence_gate_forces_needs_input PASSED [ 25%]
+tests/unit/test_agent_orchestrator.py::test_unsupported_station_gate PASSED [ 31%]
+tests/unit/test_agent_orchestrator.py::test_unfillable_suggestions_gate PASSED [ 37%]
+tests/unit/test_agent_orchestrator.py::test_consecutive_failures_abort PASSED [ 43%]
+tests/unit/test_agent_orchestrator.py::test_step_budget_enforced PASSED  [ 50%]
+tests/unit/test_agent_orchestrator.py::test_allowed_tools_sequence PASSED [ 56%]
+tests/unit/test_agent_orchestrator.py::test_llm_brain_parses_plain_json PASSED [ 62%]
+tests/unit/test_agent_orchestrator.py::test_llm_brain_parses_fenced_json PASSED [ 68%]
+tests/unit/test_agent_orchestrator.py::test_llm_brain_rejects_unknown_tool_and_retries PASSED [ 75%]
+tests/unit/test_agent_orchestrator.py::test_llm_brain_gives_up_after_retries PASSED [ 81%]
+tests/unit/test_agent_orchestrator.py::test_llm_brain_tolerates_surrounding_text PASSED [ 87%]
+tests/unit/test_agent_orchestrator.py::test_rule_brain_asks_user_when_fill_ratio_high PASSED [ 93%]
+tests/unit/test_agent_orchestrator.py::test_rule_brain_proceeds_when_fill_ratio_acceptable PASSED [100%]
+
+- generated xml file: C:\Users\27013\Desktop\workspace\agent_研发\contion simulation\conditioner_saving\conditioner_saving\conditioner_saving\evaluation\runs\check_20261023\orchestrator-unit.xml -
+============================= 16 passed in 1.24s ==============================

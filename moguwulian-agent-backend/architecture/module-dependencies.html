@@ -1,0 +1,227 @@
+<!doctype html>
+<html lang="zh-CN" data-theme="light">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>四模块依赖总览 · 系统架构</title>
+<style>
+  /* ============================================================
+     统一设计规范（全部模块架构图共用同一套 token）
+     字体族  ：中文优先无衬线（--font-ui）+ 等宽（--font-mono，仅代码/路径）
+     字号层级：页面标题 18 > 区域标签/节点标题 14 > 卡片标题 13.5 >
+               正文 12 / 页面副标 12.5 / 连线标签·注释 11.5 / 代码行 10.5
+     字重    ：仅 400（正文）/ 600（强调）/ 700（标题）三档
+     行高    ：标题 1.35 / 图内正文 1.55 / 页面与列表 1.6
+     ============================================================ */
+  :root{
+    --bg:#f4f6fb; --panel:#ffffff; --ink:#17233b; --mut:#5b6b82; --code:#44546a;
+    --line:#cbd3e0;
+    --f-frontend:#eef1ff; --s-frontend:#4f46e5; --t-frontend:#3730a3;
+    --f-backend:#eaf2ff; --s-backend:#1d6fe0; --t-backend:#1c4f9c;
+    --f-database:#f4f0ff; --s-database:#7c3aed; --t-database:#5b21b6;
+    --f-external:#fff4e6; --s-external:#ea580c; --t-external:#9a3412;
+    --f-messagebus:#e6f8f9; --s-messagebus:#0891b2; --t-messagebus:#155e75;
+    --f-region:#ffffff; --s-region:#94a3b8; --l-region:#5b6b82;
+    --edge:#64748b; --edge-em:#4f46e5; --relw:1.5; --relw-em:2.1;
+    --font-ui:"PingFang SC","HarmonyOS Sans SC","Microsoft YaHei","Source Han Sans SC","Noto Sans SC",sans-serif;
+    --font-mono:"JetBrains Mono","Cascadia Code",Consolas,"SFMono-Regular",Menlo,monospace;
+    --fs-page:18px; --fs-sub:12.5px; --fs-region:14px; --fs-cap:11px;
+    --fs-node:14px; --fs-code:10.5px; --fs-body:12px; --fs-soft:11.5px;
+    --fs-card-t:13.5px; --fs-card-b:12.5px; --fs-foot:11.5px;
+    --ls-title:.015em; --lh-head:1.35; --lh-body:1.55; --lh-loose:1.6;
+  }
+  html[data-theme="dark"]{
+    --bg:#0b1120; --panel:#101a2e; --ink:#e4ecf7; --mut:#94a3b8; --code:#b6c2d4;
+    --line:#2a3a52;
+    --f-frontend:#182241; --s-frontend:#818cf8; --t-frontend:#c7d2fe;
+    --f-backend:#10243f; --s-backend:#60a5fa; --t-backend:#bfdbfe;
+    --f-database:#241b41; --s-database:#a78bfa; --t-database:#ddd6fe;
+    --f-external:#3a2410; --s-external:#fb923c; --t-external:#fed7aa;
+    --f-messagebus:#0e3340; --s-messagebus:#22d3ee; --t-messagebus:#a5f3fc;
+    --f-region:#0d1626; --s-region:#475569; --l-region:#94a3b8;
+    --edge:#64748b; --edge-em:#818cf8;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--ink);font:400 var(--fs-card-b)/var(--lh-loose) var(--font-ui)}
+  /* 页头 */
+  .top{position:sticky;top:0;z-index:5;display:flex;align-items:baseline;gap:14px;padding:10px 22px;background:color-mix(in srgb,var(--panel) 88%,transparent);backdrop-filter:blur(6px);border-bottom:1px solid var(--line)}
+  .top h1{margin:0;font:700 var(--fs-page)/var(--lh-head) var(--font-ui);letter-spacing:var(--ls-title)}
+  .top .sub{color:var(--mut);font:400 var(--fs-sub)/var(--lh-head) var(--font-ui)}
+  .top .sp{flex:1}
+  button{font:400 var(--fs-sub)/1 var(--font-ui);border:1px solid var(--line);background:var(--panel);color:var(--ink);border-radius:8px;padding:5px 12px;cursor:pointer}
+  button:hover{border-color:var(--s-backend)}
+  main{max-width:1800px;margin:0 auto;padding:14px 18px 8px}
+  /* 图例 */
+  .legend{display:flex;flex-wrap:wrap;gap:8px 16px;color:var(--mut);font:400 var(--fs-body)/var(--lh-body) var(--font-ui);padding:4px 2px 10px}
+  .legend b{font-weight:600;color:var(--ink)}
+  .lg{display:inline-flex;align-items:center;gap:6px}
+  .sw{width:13px;height:13px;border-radius:4px;display:inline-block}
+  .ln{width:22px;height:0;border-top:2px solid;display:inline-block}
+  .lns{width:22px;height:0;border-top:2px dashed;display:inline-block}
+  .frame{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:10px;overflow:auto}
+  svg{display:block;width:100%;height:auto;min-width:1180px}
+  /* 节点卡片：标题(700) → 代码行(等宽) → 正文(400) */
+  .card{font:400 var(--fs-body)/var(--lh-body) var(--font-ui);padding:9px 12px 10px;height:100%;overflow:hidden}
+  .t1{font:700 var(--fs-node)/var(--lh-head) var(--font-ui);letter-spacing:var(--ls-title);color:var(--t-type,var(--ink))}
+  .t2{margin-top:3px;font:400 var(--fs-code)/1.4 var(--font-mono);color:var(--code);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .t3{margin-top:7px;font:400 var(--fs-body)/var(--lh-body) var(--font-ui);color:var(--mut)}
+  .t3 .k,.t3 b{font-weight:600;color:var(--ink)}
+  .node rect{border-radius:10px;stroke-width:1.3}
+  /* 区域边界：标签(700) + 代码副标(等宽) */
+  .bdr rect{fill:var(--f-region);stroke:var(--s-region);stroke-dasharray:8 6;stroke-width:1.4;rx:18}
+  .bdr.ext rect{stroke:var(--s-external);stroke-dasharray:2.5 5}
+  .bdr .bl{font:700 var(--fs-region)/var(--lh-head) var(--font-ui);letter-spacing:var(--ls-title);fill:var(--l-region)}
+  .bdr .bs{font:400 var(--fs-cap)/var(--lh-head) var(--font-mono);fill:var(--mut)}
+  /* 关系连线：标签 400，强调 600 */
+  .rel path{fill:none;stroke:var(--edge);stroke-width:var(--relw);stroke-linecap:round}
+  .rel.dash path{stroke-dasharray:7 6}
+  .rel.em path{stroke:var(--edge-em);stroke-width:var(--relw-em)}
+  .rel text{font:400 var(--fs-soft)/var(--lh-body) var(--font-ui);fill:var(--mut);paint-order:stroke;stroke:color-mix(in srgb,var(--panel) 82%,transparent);stroke-width:4px}
+  .rel .hl{font-weight:600;fill:var(--ink)}
+  .note{font:400 var(--fs-soft)/var(--lh-body) var(--font-ui);fill:var(--mut)}
+  /* 悬停高亮 */
+  .node,.rel{transition:opacity .16s ease}
+  body.dim-on .node:not(.lit){opacity:.18}
+  body.dim-on .rel:not(.lit){opacity:.12}
+  .rel.lit path{stroke-width:2.6}
+  /* 底部结论卡 */
+  .cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:14px;padding:14px 2px 4px}
+  .cardx{border:1px solid var(--line);border-radius:12px;background:var(--panel);padding:12px 14px}
+  .cardx h3{margin:0 0 8px;font:600 var(--fs-card-t)/var(--lh-head) var(--font-ui);display:flex;align-items:center;gap:8px}
+  .dot{width:10px;height:10px;border-radius:50%;display:inline-block}
+  .cardx ul{margin:0;padding-left:17px;color:var(--mut);font:400 var(--fs-card-b)/var(--lh-loose) var(--font-ui)}
+  .cardx li{margin:4px 0}
+  .cardx li b{font-weight:600;color:var(--ink)}
+  .cardx code{font:400 var(--fs-cap)/1.4 var(--font-mono);background:color-mix(in srgb,var(--line) 30%,transparent);border-radius:4px;padding:1px 4px}
+  .foot{color:var(--mut);font:400 var(--fs-foot)/var(--lh-body) var(--font-ui);text-align:center;padding:8px 0 18px}
+  .sw-f{background:var(--f-frontend);border:1.5px solid var(--s-frontend)}
+  .sw-b{background:var(--f-backend);border:1.5px solid var(--s-backend)}
+  .sw-d{background:var(--f-database);border:1.5px solid var(--s-database)}
+  .sw-e{background:var(--f-external);border:1.5px solid var(--s-external)}
+  .sw-m{background:var(--f-messagebus);border:1.5px solid var(--s-messagebus)}
+</style>
+</head>
+<body>
+<div class="top">
+  <h1>空调 / 空压 / 报价 / 设备拓扑 · 四模块依赖总览</h1>
+  <span class="sub">同一代码仓库（前端 Next.js 16 + FastAPI）下的业务线定位与共享依赖</span>
+  <span class="sp"></span>
+  <button id="theme">切换深色/浅色</button>
+</div>
+<main>
+  <div class="legend">
+    <span class="lg"><i class="sw sw-f"></i><b>业务模块</b>（前端流程 + 后端管线）</span>
+    <span class="lg"><i class="sw sw-b"></i><b>共享平台层</b>（FastAPI / M1 底座 / 外部 LLM）</span>
+    <span class="lg"><i class="lns" style="border-color:var(--edge-em);border-top-width:2.5px"></i> 跨模块数据桥（空调 → 仿真）</span>
+    <span class="lg"><i class="ln" style="border-color:var(--edge)"></i> 调用共享平台</span>
+  </div>
+
+  <div class="frame">
+  <svg viewBox="0 0 1760 1240" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="四模块依赖总览">
+    <defs>
+      <marker id="mk" markerWidth="8" markerHeight="8" refX="6.5" refY="3.4" orient="auto"><path d="M0,0 L7,3.4 L0,6.8 Z" fill="var(--edge)"/></marker>
+      <marker id="mkEm" markerWidth="8" markerHeight="8" refX="6.5" refY="3.4" orient="auto"><path d="M0,0 L7,3.4 L0,6.8 Z" fill="var(--edge-em)"/></marker>
+    </defs>
+
+    <text class="note" x="90" y="185">首页 page.tsx 以 Module 状态机切换四大模块视图（单一门户，无子路由），跨模块仅有两份页级状态：simSavingRate、simSourceSessionId。</text>
+
+    <!-- A: 空调 -->
+    <g class="node" data-type="frontend" id="m-ac">
+      <rect x="90" y="360" width="360" height="250" fill="var(--f-frontend)" stroke="var(--s-frontend)"/>
+      <foreignObject x="92" y="361" width="356" height="248"><div class="card" style="--t-type:var(--t-frontend)">
+        <div class="t1">空调模块</div>
+        <div class="t2">module=ac · moduleType=air_conditioner · /api 空调线</div>
+        <div class="t3">规则提取+质检（零 LLM）→ 填充建议 → Excel 公式节能测算（冷机/水泵/冷却塔分项区间）；产物 ac_quotation.xlsx / ac_scheme.docx。<br/><span class="k">出口：进入冷站仿真（old_station）</span>；与空压共用 Workflow 骨架。</div>
+      </div></foreignObject></g>
+
+    <!-- B: 空压 -->
+    <g class="node" data-type="frontend" id="m-comp">
+      <rect x="510" y="360" width="360" height="250" fill="var(--f-frontend)" stroke="var(--s-frontend)"/>
+      <foreignObject x="512" y="361" width="356" height="248"><div class="card" style="--t-type:var(--t-frontend)">
+        <div class="t1">空压模块</div>
+        <div class="t2">module=compressor · moduleType=air_compressor · /api 空压线</div>
+        <div class="t3">LLM 非结构化提取（Word/PPT/Excel）→ schema 校验+复评 → AirCompressorCalculator 节能测算与设备分析；产物报价单/方案文档。<br/><span class="k">无仿真出口</span>，与空调完全平行。</div>
+      </div></foreignObject></g>
+
+    <!-- C: 仿真/拓扑 -->
+    <g class="node" data-type="frontend" id="m-sim">
+      <rect x="930" y="360" width="360" height="250" fill="var(--f-frontend)" stroke="var(--s-frontend)"/>
+      <foreignObject x="932" y="361" width="356" height="248"><div class="card" style="--t-type:var(--t-frontend)">
+        <div class="t1">设备拓扑 / 冷站仿真模块</div>
+        <div class="t2">module=simulation · /sim · plant-simulation Skill</div>
+        <div class="t3">拓扑采集/解析/编辑 → COP 曲线 → 运行工况 → 8760h 仿真与报告；old_station 支持 baseline + A/B 多方案对比。<br/><span class="k">上游：空调模块 source_session_id</span>（复制调研表自动提取拓扑）。</div>
+      </div></foreignObject></g>
+
+    <!-- D: 报价 -->
+    <g class="node" data-type="frontend" id="m-quote">
+      <rect x="1350" y="360" width="360" height="250" fill="var(--f-frontend)" stroke="var(--s-frontend)"/>
+      <foreignObject x="1352" y="361" width="356" height="248"><div class="card" style="--t-type:var(--t-frontend)">
+        <div class="t1">报价模块（标准能管）</div>
+        <div class="t2">module=quote · /api/quote · quote_module/</div>
+        <div class="t3">AI/本地解析 → 项目复核 → 底稿计算 → 逐项审核台（5 态）→ 报价表/方案生成。<br/><span class="k">独立会话、独立价目表</span>；与空调/空压/仿真无会话耦合（各自报价产物由各自管线生成）。</div>
+      </div></foreignObject></g>
+
+    <!-- 跨模块桥 A→C -->
+    <g class="rels">
+      <g class="rel dash" data-from="m-ac" data-to="m-sim"><path d="M 430 360 L 430 240 L 1080 240 L 1080 360" marker-end="url(#mkEm)"/>
+        <text class="hl" x="450" y="228">跨模块数据桥：节能率（小数）+ 空调 session_id → 仿真（initialSavingRate / source_session_id，后端复制调研表）</text></g>
+    </g>
+
+    <!-- 共享平台 -->
+    <g class="node" data-type="database" id="platform">
+      <rect x="90" y="820" width="1620" height="330" fill="var(--f-database)" stroke="var(--s-database)"/>
+      <foreignObject x="92" y="821" width="1616" height="328"><div class="card" style="--t-type:var(--t-database)">
+        <div class="t1">共享平台层 · 四模块共用（同一仓库 / 同一 FastAPI 进程）</div>
+        <div class="t2">apps/web/src/lib/api.ts · apps/api/ · core/ · config/ · .claude/skills/</div>
+        <div class="t3">1) 前端 API 契约层 lib/api.ts：AC/空压共用 /api 分阶段端点与 SSE 订阅；仿真走 /sim；报价走 /quote。<br/>
+        2) M1 底座 apps/api：PersistentSessionStore/LiveSession（SQLite↔PostgreSQL）、SSE EventBroker（进程内↔Redis）、TaskLock 心跳续租、审计与用量计量、acl_guard 归属校验；会话目录承载各模块 JSON/调研表/生成文件。<br/>
+        3) 引擎与外部模型：core（ExcelCalculator/DataFiller/AirCompressorCalculator/LLMGateway/SkillCaller）、Anthropic（空调 suggest 增强/空压提取/仿真 Skill Agent/报价走 OpenAI 兼容通道）。<br/>
+        4) 生产形态：Go 反向代理 + OIDC（REQUIRE_AUTH）注入 X-User-Info；agent 编排 + /inbox 人机协同与 evaluation 评测覆盖空调/空压主链（横切，不在四模块会话耦合内）。</div>
+      </div></foreignObject></g>
+
+    <g class="rels">
+      <g class="rel" data-from="m-ac" data-to="platform"><path d="M 250 610 L 250 820" marker-end="url(#mk)"/><text x="258" y="700">/api 空调线（upload/extract/suggest/calculate）</text></g>
+      <g class="rel" data-from="m-comp" data-to="platform"><path d="M 690 610 L 690 820" marker-end="url(#mk)"/><text x="698" y="700">/api 空压线（同基座）</text></g>
+      <g class="rel" data-from="m-sim" data-to="platform"><path d="M 1110 610 L 1110 820" marker-end="url(#mk)"/><text x="1118" y="700">/sim（拓扑→COP→工况→执行）</text></g>
+      <g class="rel" data-from="m-quote" data-to="platform"><path d="M 1530 610 L 1530 820" marker-end="url(#mk)"/><text x="1538" y="700">/api/quote（解析→底稿→审核→生成）</text></g>
+    </g>
+  </svg>
+  </div>
+
+  <div class="cards">
+    <div class="cardx"><h3><i class="dot" style="background:#22c55e"></i>模块耦合结论</h3>
+      <ul>
+        <li><b>强依赖（唯一数据桥）</b>：空调 → 仿真。走“前端 props（节能率 + sessionId）+ 后端 source_session_id 复制调研表”双通道，属上下游而非循环依赖。</li>
+        <li><b>结构共享</b>：空调与空压共用 <code>Workflow.tsx</code> 骨架与 /api 分阶段端点；差异收敛在 moduleType、提取引擎与结果面板。</li>
+        <li><b>无耦合</b>：报价模块与空调/空压/仿真不互传会话；空压无下游模块。</li>
+      </ul></div>
+    <div class="cardx"><h3><i class="dot" style="background:#0ea5e9"></i>共享契约清单</h3>
+      <ul>
+        <li><code>src/lib/api.ts</code>：全部端点与 TS 类型（session/extract/suggest/calculate/result/download/sim/quote）。</li>
+        <li><code>apps/api</code>：路由 + 后台线程管线 + 会话写透 + SSE + 锁 + 审计。</li>
+        <li><code>.claude/skills</code> + <code>core/</code>：空调/空压规则技能、plant-simulation、LLM 网关。</li>
+      </ul></div>
+    <div class="cardx"><h3><i class="dot" style="background:#8b5cf6"></i>横切治理（不在耦合内）</h3>
+      <ul>
+        <li><code>agent/</code> 编排（LLMBrain/RuleBrain）与 <code>/agent</code>、<code>/inbox</code> 页面、<code>evaluation/</code> 评测、Go proxy + OIDC 认证——覆盖空调/空压主链，报价/仿真各有独立 AI 通道。</li>
+      </ul></div>
+  </div>
+</main>
+<div class="foot">产出基于仓库实际代码审计；详细模块内部结构见：01–04 各模块架构图。</div>
+
+<script>
+  (function(){
+    var root=document.documentElement;
+    document.getElementById('theme').addEventListener('click',function(){root.setAttribute('data-theme',root.getAttribute('data-theme')==='light'?'dark':'light');});
+    var nodes=[].slice.call(document.querySelectorAll('.node')),rels=[].slice.call(document.querySelectorAll('.rels .rel')),graph={};
+    rels.forEach(function(r){var a=r.getAttribute('data-from'),b=r.getAttribute('data-to');if(a&&b){(graph[a]=graph[a]||[]).push(r);(graph[b]=graph[b]||[]).push(r);}});
+    nodes.forEach(function(n){n.addEventListener('mouseenter',function(){
+      document.body.classList.add('dim-on');var id=n.id,rs=graph[id]||[],near={};
+      rs.forEach(function(r){near[r.getAttribute('data-from')]=1;near[r.getAttribute('data-to')]=1;});
+      rels.forEach(function(r){if(rs.indexOf(r)>=0)r.classList.add('lit');else r.classList.remove('lit');});
+      nodes.forEach(function(m){if(m.id===id||near[m.id])m.classList.add('lit');else m.classList.remove('lit');});
+    });n.addEventListener('mouseleave',function(){document.body.classList.remove('dim-on');nodes.forEach(function(m){m.classList.remove('lit')});rels.forEach(function(r){r.classList.remove('lit')});});});
+  })();
+</script>
+</body>
+</html>

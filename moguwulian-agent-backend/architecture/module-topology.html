@@ -1,0 +1,311 @@
+<!doctype html>
+<html lang="zh-CN" data-theme="light">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>设备拓扑模块（冷站仿真）· 系统架构</title>
+<style>
+  /* ============================================================
+     统一设计规范（全部模块架构图共用同一套 token）
+     字体族  ：中文优先无衬线（--font-ui）+ 等宽（--font-mono，仅代码/路径）
+     字号层级：页面标题 18 > 区域标签/节点标题 14 > 卡片标题 13.5 >
+               正文 12 / 页面副标 12.5 / 连线标签·注释 11.5 / 代码行 10.5
+     字重    ：仅 400（正文）/ 600（强调）/ 700（标题）三档
+     行高    ：标题 1.35 / 图内正文 1.55 / 页面与列表 1.6
+     ============================================================ */
+  :root{
+    --bg:#f4f6fb; --panel:#ffffff; --ink:#17233b; --mut:#5b6b82; --code:#44546a;
+    --line:#cbd3e0;
+    --f-frontend:#eef1ff; --s-frontend:#4f46e5; --t-frontend:#3730a3;
+    --f-backend:#eaf2ff; --s-backend:#1d6fe0; --t-backend:#1c4f9c;
+    --f-database:#f4f0ff; --s-database:#7c3aed; --t-database:#5b21b6;
+    --f-external:#fff4e6; --s-external:#ea580c; --t-external:#9a3412;
+    --f-messagebus:#e6f8f9; --s-messagebus:#0891b2; --t-messagebus:#155e75;
+    --f-region:#ffffff; --s-region:#94a3b8; --l-region:#5b6b82;
+    --edge:#64748b; --edge-em:#4f46e5; --relw:1.5; --relw-em:2.1;
+    --font-ui:"PingFang SC","HarmonyOS Sans SC","Microsoft YaHei","Source Han Sans SC","Noto Sans SC",sans-serif;
+    --font-mono:"JetBrains Mono","Cascadia Code",Consolas,"SFMono-Regular",Menlo,monospace;
+    --fs-page:18px; --fs-sub:12.5px; --fs-region:14px; --fs-cap:11px;
+    --fs-node:14px; --fs-code:10.5px; --fs-body:12px; --fs-soft:11.5px;
+    --fs-card-t:13.5px; --fs-card-b:12.5px; --fs-foot:11.5px;
+    --ls-title:.015em; --lh-head:1.35; --lh-body:1.55; --lh-loose:1.6;
+  }
+  html[data-theme="dark"]{
+    --bg:#0b1120; --panel:#101a2e; --ink:#e4ecf7; --mut:#94a3b8; --code:#b6c2d4;
+    --line:#2a3a52;
+    --f-frontend:#182241; --s-frontend:#818cf8; --t-frontend:#c7d2fe;
+    --f-backend:#10243f; --s-backend:#60a5fa; --t-backend:#bfdbfe;
+    --f-database:#241b41; --s-database:#a78bfa; --t-database:#ddd6fe;
+    --f-external:#3a2410; --s-external:#fb923c; --t-external:#fed7aa;
+    --f-messagebus:#0e3340; --s-messagebus:#22d3ee; --t-messagebus:#a5f3fc;
+    --f-region:#0d1626; --s-region:#475569; --l-region:#94a3b8;
+    --edge:#64748b; --edge-em:#818cf8;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--ink);font:400 var(--fs-card-b)/var(--lh-loose) var(--font-ui)}
+  /* 页头 */
+  .top{position:sticky;top:0;z-index:5;display:flex;align-items:baseline;gap:14px;padding:10px 22px;background:color-mix(in srgb,var(--panel) 88%,transparent);backdrop-filter:blur(6px);border-bottom:1px solid var(--line)}
+  .top h1{margin:0;font:700 var(--fs-page)/var(--lh-head) var(--font-ui);letter-spacing:var(--ls-title)}
+  .top .sub{color:var(--mut);font:400 var(--fs-sub)/var(--lh-head) var(--font-ui)}
+  .top .sp{flex:1}
+  button{font:400 var(--fs-sub)/1 var(--font-ui);border:1px solid var(--line);background:var(--panel);color:var(--ink);border-radius:8px;padding:5px 12px;cursor:pointer}
+  button:hover{border-color:var(--s-backend)}
+  main{max-width:1800px;margin:0 auto;padding:14px 18px 8px}
+  /* 图例 */
+  .legend{display:flex;flex-wrap:wrap;gap:8px 16px;color:var(--mut);font:400 var(--fs-body)/var(--lh-body) var(--font-ui);padding:4px 2px 10px}
+  .legend b{font-weight:600;color:var(--ink)}
+  .lg{display:inline-flex;align-items:center;gap:6px}
+  .sw{width:13px;height:13px;border-radius:4px;display:inline-block}
+  .ln{width:22px;height:0;border-top:2px solid;display:inline-block}
+  .lns{width:22px;height:0;border-top:2px dashed;display:inline-block}
+  .frame{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:10px;overflow:auto}
+  svg{display:block;width:100%;height:auto;min-width:1180px}
+  /* 节点卡片：标题(700) → 代码行(等宽) → 正文(400) */
+  .card{font:400 var(--fs-body)/var(--lh-body) var(--font-ui);padding:9px 12px 10px;height:100%;overflow:hidden}
+  .t1{font:700 var(--fs-node)/var(--lh-head) var(--font-ui);letter-spacing:var(--ls-title);color:var(--t-type,var(--ink))}
+  .t2{margin-top:3px;font:400 var(--fs-code)/1.4 var(--font-mono);color:var(--code);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .t3{margin-top:7px;font:400 var(--fs-body)/var(--lh-body) var(--font-ui);color:var(--mut)}
+  .t3 .k,.t3 b{font-weight:600;color:var(--ink)}
+  .node rect{border-radius:10px;stroke-width:1.3}
+  /* 区域边界：标签(700) + 代码副标(等宽) */
+  .bdr rect{fill:var(--f-region);stroke:var(--s-region);stroke-dasharray:8 6;stroke-width:1.4;rx:18}
+  .bdr.ext rect{stroke:var(--s-external);stroke-dasharray:2.5 5}
+  .bdr .bl{font:700 var(--fs-region)/var(--lh-head) var(--font-ui);letter-spacing:var(--ls-title);fill:var(--l-region)}
+  .bdr .bs{font:400 var(--fs-cap)/var(--lh-head) var(--font-mono);fill:var(--mut)}
+  /* 关系连线：标签 400，强调 600 */
+  .rel path{fill:none;stroke:var(--edge);stroke-width:var(--relw);stroke-linecap:round}
+  .rel.dash path{stroke-dasharray:7 6}
+  .rel.em path{stroke:var(--edge-em);stroke-width:var(--relw-em)}
+  .rel text{font:400 var(--fs-soft)/var(--lh-body) var(--font-ui);fill:var(--mut);paint-order:stroke;stroke:color-mix(in srgb,var(--panel) 82%,transparent);stroke-width:4px}
+  .rel .hl{font-weight:600;fill:var(--ink)}
+  .note{font:400 var(--fs-soft)/var(--lh-body) var(--font-ui);fill:var(--mut)}
+  /* 悬停高亮 */
+  .node,.rel{transition:opacity .16s ease}
+  body.dim-on .node:not(.lit){opacity:.18}
+  body.dim-on .rel:not(.lit){opacity:.12}
+  .rel.lit path{stroke-width:2.6}
+  /* 底部结论卡 */
+  .cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:14px;padding:14px 2px 4px}
+  .cardx{border:1px solid var(--line);border-radius:12px;background:var(--panel);padding:12px 14px}
+  .cardx h3{margin:0 0 8px;font:600 var(--fs-card-t)/var(--lh-head) var(--font-ui);display:flex;align-items:center;gap:8px}
+  .dot{width:10px;height:10px;border-radius:50%;display:inline-block}
+  .cardx ul{margin:0;padding-left:17px;color:var(--mut);font:400 var(--fs-card-b)/var(--lh-loose) var(--font-ui)}
+  .cardx li{margin:4px 0}
+  .cardx li b{font-weight:600;color:var(--ink)}
+  .cardx code{font:400 var(--fs-cap)/1.4 var(--font-mono);background:color-mix(in srgb,var(--line) 30%,transparent);border-radius:4px;padding:1px 4px}
+  .foot{color:var(--mut);font:400 var(--fs-foot)/var(--lh-body) var(--font-ui);text-align:center;padding:8px 0 18px}
+  .sw-f{background:var(--f-frontend);border:1.5px solid var(--s-frontend)}
+  .sw-b{background:var(--f-backend);border:1.5px solid var(--s-backend)}
+  .sw-d{background:var(--f-database);border:1.5px solid var(--s-database)}
+  .sw-e{background:var(--f-external);border:1.5px solid var(--s-external)}
+  .sw-m{background:var(--f-messagebus);border:1.5px solid var(--s-messagebus)}
+</style>
+</head>
+<body>
+<div class="top">
+  <h1>设备拓扑模块 · 冷站性能仿真输入链（plant_simulation）</h1>
+  <span class="sub">“拓扑 → COP 曲线 → 运行工况 → 8760h 仿真” · 旧站房含基准电量与多方案对比</span>
+  <span class="sp"></span>
+  <button id="theme">切换深色/浅色</button>
+</div>
+<main>
+  <div class="legend">
+    <span class="lg"><i class="sw sw-f"></i><b>前端</b> SimulationWorkflow / sim 四阶段</span>
+    <span class="lg"><i class="sw sw-b"></i><b>后端</b> FastAPI / 参考引擎</span>
+    <span class="lg"><i class="sw sw-m"></i><b>技能契约</b> plant-simulation</span>
+    <span class="lg"><i class="sw sw-d"></i><b>会话状态/产物</b></span>
+    <span class="lg"><i class="sw sw-e"></i><b>外部模型 / 上游模块</b></span>
+    <span class="lg"><i class="ln" style="border-color:var(--edge)"></i> 请求/数据</span>
+    <span class="lg"><i class="lns" style="border-color:var(--edge)"></i> 异步 / 状态轮询</span>
+    <span class="lg"><i class="ln" style="border-color:var(--edge-em);border-top-width:2.5px"></i> 阶段推进（主链）</span>
+  </div>
+
+  <div class="frame">
+  <svg viewBox="0 0 1760 1560" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="设备拓扑与冷站仿真系统架构">
+    <defs>
+      <marker id="mk" markerWidth="8" markerHeight="8" refX="6.5" refY="3.4" orient="auto"><path d="M0,0 L7,3.4 L0,6.8 Z" fill="var(--edge)"/></marker>
+      <marker id="mkEm" markerWidth="8" markerHeight="8" refX="6.5" refY="3.4" orient="auto"><path d="M0,0 L7,3.4 L0,6.8 Z" fill="var(--edge-em)"/></marker>
+    </defs>
+
+    <g class="bdr"><rect x="50" y="150" width="560" height="1240"/>
+      <text class="bl" x="70" y="180">前端层 · 仿真四阶段编排</text>
+      <text class="bs" x="70" y="200">components/SimulationWorkflow.tsx · components/sim/</text></g>
+    <g class="bdr"><rect x="660" y="150" width="560" height="600"/>
+      <text class="bl" x="680" y="180">FastAPI /sim 接入与编排</text>
+      <text class="bs" x="680" y="200">apps/api · routers.py · services.py（含拓扑归一化）</text></g>
+    <g class="bdr"><rect x="1280" y="150" width="430" height="560"/>
+      <text class="bl" x="1300" y="180">仿真技能与参考引擎</text>
+      <text class="bs" x="1300" y="200">.claude/skills/plant-simulation · simulation/（参考）</text></g>
+    <g class="bdr"><rect x="660" y="780" width="560" height="380"/>
+      <text class="bl" x="680" y="810">sim 会话状态与产物</text>
+      <text class="bs" x="680" y="830">sessions.data.sim_* · sim_output/</text></g>
+    <g class="bdr ext"><rect x="1280" y="1190" width="430" height="150"/>
+      <text class="bl" x="1300" y="1220" style="fill:var(--t-external)">外部模型服务 · 上游模块</text>
+      <text class="bs" x="1300" y="1240">Anthropic（Skill Agent） · 空调 source_session</text></g>
+
+    <!-- FE -->
+    <g class="node" data-type="frontend" id="fe-entry">
+      <rect x="90" y="210" width="470" height="150" fill="var(--f-frontend)" stroke="var(--s-frontend)"/>
+      <foreignObject x="92" y="211" width="466" height="148"><div class="card" style="--t-type:var(--t-frontend)">
+        <div class="t1">SimulationWorkflow 编排外壳</div>
+        <div class="t2">components/SimulationWorkflow.tsx · new/old_station</div>
+        <div class="t3">承接空调 initialSavingRate + sourceSessionId（自动 old_station）；initSimSession + SSE + 轮询 fetchSimState；按后端 sim_stage 挂载阶段组件。</div>
+      </div></foreignObject></g>
+
+    <g class="node" data-type="frontend" id="fe-topo">
+      <rect x="90" y="400" width="470" height="190" fill="var(--f-frontend)" stroke="var(--s-frontend)"/>
+      <foreignObject x="92" y="401" width="466" height="188"><div class="card" style="--t-type:var(--t-frontend)">
+        <div class="t1">TopologyStage / TopologyEditor（设备拓扑）</div>
+        <div class="t2">components/sim/TopologyStage.tsx · 收集即职责核心</div>
+        <div class="t3">输入：上传调研表 extractTopology / 文本 parseTopology（含 TOPOLOGY_EXAMPLE）；编辑器冷机全字段可改、泵塔只读摘要、special 下拉；saveTopology 保存。拓扑就绪 → 进入 COP。</div>
+      </div></foreignObject></g>
+
+    <g class="node" data-type="frontend" id="fe-cop">
+      <rect x="90" y="630" width="470" height="150" fill="var(--f-frontend)" stroke="var(--s-frontend)"/>
+      <foreignObject x="92" y="631" width="466" height="148"><div class="card" style="--t-type:var(--t-frontend)">
+        <div class="t1">CopCurvesStage（性能曲线）</div>
+        <div class="t2">components/sim/CopCurvesStage.tsx</div>
+        <div class="t3">按“品牌+型号”逐台传图 parseCopCurve，或 useDefaultCop；全部就绪才允许推进到工况阶段。</div>
+      </div></foreignObject></g>
+
+    <g class="node" data-type="frontend" id="fe-ops">
+      <rect x="90" y="820" width="470" height="165" fill="var(--f-frontend)" stroke="var(--s-frontend)"/>
+      <foreignObject x="92" y="821" width="466" height="163"><div class="card" style="--t-type:var(--t-frontend)">
+        <div class="t1">OperatingStage（运行工况）</div>
+        <div class="t2">components/sim/OperatingStage.tsx · old_station 专属输入</div>
+        <div class="t3">文本 → generateOperating 生成 monthly_table；旧站房另需 saveBaseline（万 kWh→kWh）与 saveSchemes（默认方案 A/B，可改 target_saving_rate_pct / intervention_tags）。</div>
+      </div></foreignObject></g>
+
+    <g class="node" data-type="frontend" id="fe-sim">
+      <rect x="90" y="1025" width="470" height="185" fill="var(--f-frontend)" stroke="var(--s-frontend)"/>
+      <foreignObject x="92" y="1026" width="466" height="183"><div class="card" style="--t-type:var(--t-frontend)">
+        <div class="t1">SimulateStage + 结果展示</div>
+        <div class="t2">components/sim/SimulateStage.tsx · SimResultDisplay · MultiSchemeComparison</div>
+        <div class="t3">executeSimulation → 轮询 fetchSimResult；summary 指标 / PNG 图 / Markdown→HTML 报告 / 产物下载；多方案对比 baseline vs plan_A… + tuning_log。</div>
+      </div></foreignObject></g>
+
+    <g class="node" data-type="frontend" id="fe-api">
+      <rect x="90" y="1250" width="470" height="96" fill="var(--f-frontend)" stroke="var(--s-frontend)"/>
+      <foreignObject x="92" y="1251" width="466" height="94"><div class="card" style="--t-type:var(--t-frontend)">
+        <div class="t1">API 客户端（sim 组，共享）</div>
+        <div class="t2">src/lib/api.ts · initSimSession / extractTopology / parseTopology / saveTopology / parseCopCurve / useDefaultCop / generateOperating / saveBaseline / saveSchemes / executeSimulation / fetchSimResult</div>
+        <div class="t3">上传走 multipart；进度 SSE + 轮询 fetchSimState。</div>
+      </div></foreignObject></g>
+
+    <!-- API -->
+    <g class="node" data-type="backend" id="api-router">
+      <rect x="700" y="210" width="470" height="250" fill="var(--f-backend)" stroke="var(--s-backend)"/>
+      <foreignObject x="702" y="211" width="466" height="248"><div class="card" style="--t-type:var(--t-backend)">
+        <div class="t1">/api/sim 路由层</div>
+        <div class="t2">apps/api/routers.py</div>
+        <div class="t3">POST sim/init（source_session_id）· topology/extract|parse(POST) + PUT · cop/parse|default · operating/generate(POST) + PUT · baseline(PUT) · schemes(PUT) · stage(PUT) · execute · result · download —— acl_guard + source 归属校验。</div>
+      </div></foreignObject></g>
+
+    <g class="node" data-type="backend" id="api-svc">
+      <rect x="700" y="470" width="470" height="260" fill="var(--f-backend)" stroke="var(--s-backend)"/>
+      <foreignObject x="702" y="471" width="466" height="258"><div class="card" style="--t-type:var(--t-backend)">
+        <div class="t1">/sim 后台管线（任务锁 + SSE）</div>
+        <div class="t2">apps/api/services.py</div>
+        <div class="t3">init 复制源会话调研表并自动提取拓扑；<span class="k">_normalize_topology</span> 归一化中英文拓扑键并纠正“误分类水泵”（COP&gt;10 → 冷冻泵）；COP 默认表（18~33℃×PLR 0.2–1.0）；执行打包 sim_input_all.json 并收集 sim_output 产物。</div>
+      </div></foreignObject></g>
+
+    <!-- ENGINE -->
+    <g class="node" data-type="messagebus" id="en-skill">
+      <rect x="1320" y="210" width="350" height="190" fill="var(--f-messagebus)" stroke="var(--s-messagebus)"/>
+      <foreignObject x="1322" y="211" width="346" height="188"><div class="card" style="--t-type:var(--t-messagebus)">
+        <div class="t1">plant-simulation Skill（现役）</div>
+        <div class="t2">.claude/skills/plant-simulation · SKILL.md 契约</div>
+        <div class="t3">拓扑/COP/工况统一 JSON 契约；LLM 沙箱内动态生成 simulate_*.py，ast 自检 + 报错自愈（core/skill_caller.py _SANDBOXED_SKILLS）；new/old 两种模式。</div>
+      </div></foreignObject></g>
+
+    <g class="node" data-type="backend" id="en-legacy">
+      <rect x="1320" y="450" width="350" height="210" fill="var(--f-backend)" stroke="var(--s-backend)"/>
+      <foreignObject x="1322" y="451" width="346" height="208"><div class="card" style="--t-type:var(--t-backend)">
+        <div class="t1">参考引擎 simulation/（遗留）</div>
+        <div class="t2">simulator.py · survey_excel_parser.py · weather.py 等</div>
+        <div class="t3">PlantSimulator 8760h（变频泵三次方律/群控加减机）、调研表解析、气象、图表与报告；<b>FastAPI 现役未 import</b>，仅供 tests 与脚本参考。</div>
+      </div></foreignObject></g>
+
+    <!-- STORE -->
+    <g class="node" data-type="database" id="db-store">
+      <rect x="700" y="840" width="470" height="290" fill="var(--f-database)" stroke="var(--s-database)"/>
+      <foreignObject x="702" y="841" width="466" height="288"><div class="card" style="--t-type:var(--t-database)">
+        <div class="t1">sim 会话状态（写透落库）</div>
+        <div class="t2">sessions.data.sim_topology · sim_cop_data · sim_operating_conditions · sim_result</div>
+        <div class="t3">拓扑（chillers/cooling_pumps/chilled_pumps/towers/special）· COP 表 · monthly 工况 · baseline_power_kwh · schemes · sim_project_name；产物 sim_output/：报告 md、summary.json、comparison_summary.json、逐时 csv/xlsx；upload_survey.xlsx 为空调调研表副本。</div>
+      </div></foreignObject></g>
+
+    <!-- EXTERNAL -->
+    <g class="node" data-type="external" id="ext-llm">
+      <rect x="1320" y="1245" width="350" height="72" fill="var(--f-external)" stroke="var(--s-external)"/>
+      <foreignObject x="1322" y="1246" width="346" height="70"><div class="card" style="--t-type:var(--t-external)">
+        <div class="t1">Anthropic（Skill Agent）</div>
+        <div class="t2">topology/COP/operating · 动态仿真代码</div>
+        <div class="t3">上游：空调模块 source_session_id。</div>
+      </div></foreignObject></g>
+
+    <!-- RELS -->
+    <g class="rels">
+      <g class="rel em" data-from="fe-entry" data-to="fe-topo"><path d="M 300 360 L 300 400" marker-end="url(#mkEm)"/><text class="hl" x="308" y="386">进入拓扑收集</text></g>
+      <g class="rel em" data-from="fe-topo" data-to="fe-cop"><path d="M 360 590 L 360 630" marker-end="url(#mkEm)"/><text class="hl" x="368" y="616">拓扑就绪 → 曲线</text></g>
+      <g class="rel em" data-from="fe-cop" data-to="fe-ops"><path d="M 360 780 L 360 820" marker-end="url(#mkEm)"/><text class="hl" x="368" y="806">曲线齐备 → 工况</text></g>
+      <g class="rel em" data-from="fe-ops" data-to="fe-sim"><path d="M 360 985 L 360 1025" marker-end="url(#mkEm)"/><text class="hl" x="368" y="1011">工况就绪 → 仿真</text></g>
+      <g class="rel em" data-from="fe-entry" data-to="fe-api"><path d="M 560 290 L 600 290 L 600 1230 L 500 1230 L 500 1250" marker-end="url(#mkEm)"/>
+        <text class="hl" transform="rotate(-90 612 600)" x="612" y="600" text-anchor="start">各阶段 API 调用 · 订阅日志 / 状态</text></g>
+      <g class="rel em" data-from="fe-api" data-to="api-router"><path d="M 560 1300 L 625 1300 L 625 370 L 700 370" marker-end="url(#mkEm)"/>
+        <text class="hl" x="630" y="356">HTTP · /api/sim/*（init / topology / cop / operating / baseline / schemes / execute / result）</text></g>
+      <g class="rel em" data-from="api-router" data-to="api-svc"><path d="M 930 460 L 930 470" marker-end="url(#mkEm)"/><text class="hl" x="938" y="470">触发后台管线</text></g>
+      <g class="rel em" data-from="api-svc" data-to="en-skill"><path d="M 1170 560 L 1270 560 L 1270 300 L 1320 300" marker-end="url(#mkEm)"/>
+        <text class="hl" x="1178" y="548">call_skill（拓扑/COP/工况/execute）</text></g>
+      <g class="rel" data-from="api-svc" data-to="db-store"><path d="M 770 730 L 770 840" marker-end="url(#mk)"/><text x="778" y="790">sim_* 状态写透落库</text></g>
+      <g class="rel" data-from="en-skill" data-to="ext-llm"><path d="M 1670 300 L 1740 300 L 1740 1280 L 1670 1280" marker-end="url(#mk)"/>
+        <text x="1712" y="290" text-anchor="end">Skill Agent 会话</text></g>
+      <g class="rel" data-from="en-skill" data-to="db-store"><path d="M 1320 380 L 1250 380 L 1250 985 L 1170 985" marker-end="url(#mk)"/>
+        <text x="1260" y="372">sim_output 产物归集会话目录</text></g>
+      <g class="rel dash" data-from="api-svc" data-to="fe-entry"><path d="M 700 520 L 645 520 L 645 330 L 560 330" marker-end="url(#mk)"/>
+        <text x="652" y="322">SSE / 3s 轮询 sim_state</text></g>
+    </g>
+
+    <text class="note" x="60" y="1450">数据流要点：设备拓扑是仿真会话的私有输入契约（topology{chillers/pumps/towers/special}），非独立子模块，也不被空压/报价复用；解析路径含“调研表提取 / 文本解析 / 手动编辑”三种。</text>
+    <text class="note" x="60" y="1474">跨模块：空调模块经 onEnterSimulation(节能率, sessionId) 进入 → /sim/init 携带 source_session_id，后端复制空调调研表并自动提取拓扑；空调结果映射为 old_station 的 baseline（可选对齐）与 schemes 输入。</text>
+    <text class="note" x="60" y="1498">边界：FastAPI 现役仿真走 plant-simulation Skill 动态代码（沙箱），simulation/ 遗留引擎未被 /sim 路由引用（测试/脚本保留）。</text>
+  </svg>
+  </div>
+
+  <div class="cards">
+    <div class="cardx"><h3><i class="dot" style="background:#22c55e"></i>职责边界</h3>
+      <ul>
+        <li>负责：<b>设备拓扑的采集、解析、编辑与校验</b>，作为冷站仿真链第一阶段输入；随后 COP 曲线、运行工况、8760h 仿真与多方案对比。</li>
+        <li>不负责：拓扑数据仅服务于仿真会话；空调/空压/报价管线不复用该结构；FastAPI 不引用 <code>simulation/</code> 遗留引擎。</li>
+      </ul></div>
+    <div class="cardx"><h3><i class="dot" style="background:#0ea5e9"></i>核心数据流</h3>
+      <ul>
+        <li>调研表/文本 → <code>_normalize_topology</code> 归一化 → <code>sim_topology</code> 落库；COP 曲线/默认表 → <code>sim_cop_data</code>；工况与（old_station）baseline/schemes → <code>sim_operating_conditions</code>。</li>
+        <li>execute → Skill 动态代码 → <code>sim_output/</code>（summary/逐时/报告）；<code>fetchSimResult</code> 轮询并展示结果与多方案对比。</li>
+      </ul></div>
+    <div class="cardx"><h3><i class="dot" style="background:#8b5cf6"></i>模块间依赖</h3>
+      <ul>
+        <li>上游依赖：空调模块（节能率 + source_session_id，页级 state + 后端复制调研表）。</li>
+        <li>共享：<code>lib/api.ts</code> sim 组、FastAPI /sim、M1 底座、外部 Anthropic。</li>
+        <li>独立：与报价模块、空压模块无数据交换。</li>
+      </ul></div>
+  </div>
+</main>
+<div class="foot">源码证据：apps/web/src/components/SimulationWorkflow.tsx · components/sim/TopologyStage.tsx · src/lib/api.ts · apps/api/services.py · .claude/skills/plant-simulation/SKILL.md · simulation/</div>
+
+<script>
+  (function(){
+    var root=document.documentElement;
+    document.getElementById('theme').addEventListener('click',function(){root.setAttribute('data-theme',root.getAttribute('data-theme')==='light'?'dark':'light');});
+    var nodes=[].slice.call(document.querySelectorAll('.node')),rels=[].slice.call(document.querySelectorAll('.rels .rel')),graph={};
+    rels.forEach(function(r){var a=r.getAttribute('data-from'),b=r.getAttribute('data-to');if(a&&b){(graph[a]=graph[a]||[]).push(r);(graph[b]=graph[b]||[]).push(r);}});
+    nodes.forEach(function(n){n.addEventListener('mouseenter',function(){
+      document.body.classList.add('dim-on');var id=n.id,rs=graph[id]||[],near={};
+      rs.forEach(function(r){near[r.getAttribute('data-from')]=1;near[r.getAttribute('data-to')]=1;});
+      rels.forEach(function(r){if(rs.indexOf(r)>=0)r.classList.add('lit');else r.classList.remove('lit');});
+      nodes.forEach(function(m){if(m.id===id||near[m.id])m.classList.add('lit');else m.classList.remove('lit');});
+    });n.addEventListener('mouseleave',function(){document.body.classList.remove('dim-on');nodes.forEach(function(m){m.classList.remove('lit')});rels.forEach(function(r){r.classList.remove('lit')});});});
+  })();
+</script>
+</body>
+</html>

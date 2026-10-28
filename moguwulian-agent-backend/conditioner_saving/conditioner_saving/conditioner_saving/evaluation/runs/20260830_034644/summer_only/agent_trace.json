@@ -1,0 +1,60 @@
+{
+  "session_id": "summer_only",
+  "mode": "agent",
+  "started_at": "2026-08-30T03:47:02.761109",
+  "finished_at": "2026-08-30T03:47:03.997014",
+  "llm_usage": {
+    "brain_calls": 0,
+    "input_tokens": 0,
+    "output_tokens": 0
+  },
+  "steps": [
+    {
+      "step": 1,
+      "tool": "extract_survey",
+      "args": {
+        "survey_path": "E:\\contion simulation\\conditioner_saving\\conditioner_saving\\conditioner_saving\\00_sample\\示例调研表\\【仅有夏季】6.5%和光同程-机房智能化调研表2023年5月版.xlsx",
+        "original_filename": "【仅有夏季】6.5%和光同程-机房智能化调研表2023年5月版.xlsx"
+      },
+      "reason": "开始提取调研表数据并做质量检查",
+      "ok": true,
+      "observation": {
+        "project_region": "西南",
+        "station_type": "unsupported",
+        "station_type_confidence": "high",
+        "completeness": 0.33,
+        "confidence_level": "low",
+        "issue_count": 56,
+        "critical_issues": [
+          "1月冷站总能耗缺失",
+          "1月冷机供水温度缺失",
+          "2月冷站总能耗缺失",
+          "2月冷机供水温度缺失",
+          "3月冷站总能耗缺失"
+        ],
+        "output_file": "extracted_data.json"
+      },
+      "duration_ms": 1234
+    },
+    {
+      "step": 2,
+      "tool": "request_user_input",
+      "args": {
+        "reason": "当前数据不满足继续测算的条件",
+        "missing_items": []
+      },
+      "reason": "流程被质量门禁拦截，需要用户介入",
+      "ok": true,
+      "observation": {
+        "status": "needs_input"
+      },
+      "duration_ms": 0
+    }
+  ],
+  "final": {
+    "status": "needs_input",
+    "summary": "当前数据不满足继续测算的条件",
+    "action_type": "needs_input",
+    "missing_items": []
+  }
+}

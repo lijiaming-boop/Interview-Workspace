@@ -1,0 +1,14 @@
+{
+  "can_proceed": true,
+  "unfillable_fields": [],
+  "fillable_suggestions": [
+    {
+      "field": "electricity_price",
+      "original_value": null,
+      "suggested_value": 0.66,
+      "method": "region_lookup",
+      "confidence": "medium",
+      "reasoning": "根据项目所在地区(华南)查表获取工业用电参考电价"
+    }
+  ]
+}

@@ -1,0 +1,437 @@
+From d4a155eacb30f549005490116ec25fe69e828d74 Mon Sep 17 00:00:00 2001
+From: Codex <codex@local>
+Date: Sat, 29 Aug 2026 09:29:50 -0400
+Subject: [PATCH 1/2] Add targeted LIBERO failure experiments
+
+---
+ experiments/robot/libero/run_libero_eval.py   | 95 ++++++++++++++++++-
+ .../run_targeted_failure_experiments.sh       | 81 ++++++++++++++++
+ experiments/robot/openvla_utils.py            | 49 ++++++++++
+ prismatic/extern/hf/modeling_prismatic.py     | 11 ++-
+ 4 files changed, 230 insertions(+), 6 deletions(-)
+ create mode 100644 experiments/robot/libero/run_targeted_failure_experiments.sh
+
+diff --git a/experiments/robot/libero/run_libero_eval.py b/experiments/robot/libero/run_libero_eval.py
+index cdf27f5..4283ad9 100644
+--- a/experiments/robot/libero/run_libero_eval.py
++++ b/experiments/robot/libero/run_libero_eval.py
+@@ -98,6 +98,7 @@ class GenerateConfig:
+ 
+     center_crop: bool = True                         # Center crop? (if trained w/ random crop image aug)
+     num_open_loop_steps: int = 8                     # Number of actions to execute open-loop before requerying policy
++    wrist_image_weight: float = 1.0                  # Scale wrist-camera patch features (1.0 keeps baseline behavior)
+ 
+     lora_rank: int = 32                              # Rank of LoRA weight matrix (MAKE SURE THIS MATCHES TRAINING!)
+ 
+@@ -114,6 +115,9 @@ class GenerateConfig:
+     num_trials_per_task: int = 50                    # Number of rollouts per task
+     initial_states_path: str = "DEFAULT"             # "DEFAULT", or path to initial states JSON file
+     env_img_res: int = 256                           # Resolution for environment images (not policy input resolution)
++    target_episodes: str = ""                        # Optional zero-based task:state pairs, e.g. "4:32,6:20,7:27"
++    dump_camera_inputs: bool = False                 # Save raw/resized/final camera inputs at every policy replan
++    camera_dump_dir: str = "./experiments/camera_dumps"  # Root directory for camera diagnostics
+ 
+     #################################################################################################################
+     # Utils
+@@ -138,16 +142,49 @@ def validate_config(cfg: GenerateConfig) -> None:
+         assert cfg.center_crop, "Expecting `center_crop==True` because model was trained with image augmentations!"
+ 
+     assert not (cfg.load_in_8bit and cfg.load_in_4bit), "Cannot use both 8-bit and 4-bit quantization!"
++    assert 1 <= cfg.num_open_loop_steps <= NUM_ACTIONS_CHUNK, (
++        f"num_open_loop_steps must be in [1, {NUM_ACTIONS_CHUNK}], got {cfg.num_open_loop_steps}"
++    )
++    assert cfg.wrist_image_weight > 0, "wrist_image_weight must be positive!"
+ 
+     # Validate task suite
+     assert cfg.task_suite_name in [suite.value for suite in TaskSuite], f"Invalid task suite: {cfg.task_suite_name}"
+ 
+ 
++def parse_target_episodes(spec: str):
++    """Parse comma-separated zero-based task:state pairs while preserving requested order."""
++    if not spec.strip():
++        return None
++
++    targets = {}
++    for item in spec.split(","):
++        item = item.strip()
++        if not item:
++            continue
++        try:
++            task_id_text, episode_idx_text = item.split(":", maxsplit=1)
++            task_id, episode_idx = int(task_id_text), int(episode_idx_text)
++        except ValueError as exc:
++            raise ValueError(
++                f"Invalid target_episodes item {item!r}; expected zero-based task:state, e.g. '4:32,6:20'"
++            ) from exc
++        if task_id < 0 or episode_idx < 0:
++            raise ValueError(f"target_episodes values must be non-negative, got {item!r}")
++        targets.setdefault(task_id, []).append(episode_idx)
++    return targets
++
++
+ def initialize_model(cfg: GenerateConfig):
+     """Initialize model and associated components."""
+     # Load model
+     model = get_model(cfg)
+ 
++    # Apply an explicit feature-scale ablation to non-primary (wrist) camera patch embeddings.
++    if hasattr(model.vision_backbone, "set_wrist_image_weight"):
++        model.vision_backbone.set_wrist_image_weight(cfg.wrist_image_weight)
++    elif cfg.wrist_image_weight != 1.0:
++        raise AttributeError("This vision backbone does not support wrist_image_weight")
++
+     # Load proprio projector if needed
+     proprio_projector = None
+     if cfg.use_proprio:
+@@ -257,6 +294,10 @@ def prepare_observation(obs, resize_size):
+         "state": np.concatenate(
+             (obs["robot0_eef_pos"], quat2axisangle(obs["robot0_eef_quat"]), obs["robot0_gripper_qpos"])
+         ),
++        "_camera_debug": {
++            "raw_full_image": img,
++            "raw_wrist_image": wrist_img,
++        },
+     }
+ 
+     return observation, img  # Return both processed observation and original image for replay
+@@ -287,6 +328,8 @@ def run_episode(
+     noisy_action_projector=None,
+     initial_state=None,
+     log_file=None,
++    task_id: int = -1,
++    episode_idx: int = -1,
+ ):
+     """Run a single episode in the environment."""
+     # Reset environment
+@@ -303,12 +346,15 @@ def run_episode(
+         print(f"WARNING: cfg.num_open_loop_steps ({cfg.num_open_loop_steps}) does not match the NUM_ACTIONS_CHUNK "
+               f"({NUM_ACTIONS_CHUNK}) constant defined in prismatic.vla.constants! For best performance (in terms of "
+                "both speed and success rate), we recommend executing the full action chunk.")
+-    action_queue = deque(maxlen=cfg.num_open_loop_steps)
++    # Keep an unbounded queue and explicitly enqueue the FIRST N actions below. Using
++    # deque(maxlen=N).extend(all_8_actions) would silently retain the LAST N actions.
++    action_queue = deque()
+ 
+     # Setup
+     t = 0
+     replay_images = []
+     max_steps = TASK_MAX_STEPS[cfg.task_suite_name]
++    replan_idx = 0
+ 
+     # Run episode
+     success = False
+@@ -326,6 +372,17 @@ def run_episode(
+ 
+             # If action queue is empty, requery model
+             if len(action_queue) == 0:
++                if cfg.dump_camera_inputs:
++                    dump_dir = Path(cfg.camera_dump_dir) / f"task_{task_id:02d}" / f"state_{episode_idx:02d}"
++                    observation["_camera_debug"].update(
++                        {
++                            "dump_dir": str(dump_dir),
++                            "prefix": f"replan_{replan_idx:03d}_step_{t - cfg.num_steps_wait:03d}",
++                            "task_description": task_description,
++                            "task_id": task_id,
++                            "episode_idx": episode_idx,
++                        }
++                    )
+                 # Query model to get action
+                 actions = get_action(
+                     cfg,
+@@ -338,7 +395,13 @@ def run_episode(
+                     noisy_action_projector=noisy_action_projector,
+                     use_film=cfg.use_film,
+                 )
+-                action_queue.extend(actions)
++                action_queue.extend(actions[: cfg.num_open_loop_steps])
++                log_message(
++                    f"Replan {replan_idx}: predicted {len(actions)} actions; "
++                    f"queued first {min(len(actions), cfg.num_open_loop_steps)}",
++                    log_file,
++                )
++                replan_idx += 1
+ 
+             # Get action from queue
+             action = action_queue.popleft()
+@@ -372,6 +435,7 @@ def run_task(
+     total_episodes=0,
+     total_successes=0,
+     log_file=None,
++    episode_indices=None,
+ ):
+     """Run evaluation for a single task."""
+     # Get task
+@@ -385,7 +449,13 @@ def run_task(
+ 
+     # Start episodes
+     task_episodes, task_successes = 0, 0
+-    for episode_idx in tqdm.tqdm(range(cfg.num_trials_per_task)):
++    if episode_indices is None:
++        episode_indices = list(range(cfg.num_trials_per_task))
++    for episode_idx in tqdm.tqdm(episode_indices):
++        if episode_idx >= len(initial_states):
++            raise IndexError(
++                f"Task {task_id} requested initial-state index {episode_idx}, but only {len(initial_states)} exist"
++            )
+         log_message(f"\nTask: {task_description}", log_file)
+ 
+         # Handle initial state
+@@ -405,7 +475,11 @@ def run_task(
+             # Get initial state
+             initial_state = np.array(all_initial_states[initial_states_task_key][episode_key]["initial_state"])
+ 
+-        log_message(f"Starting episode {task_episodes + 1}...", log_file)
++        log_message(
++            f"Starting targeted task_id={task_id}, initial_state_index={episode_idx} "
++            f"(task trial {episode_idx + 1})...",
++            log_file,
++        )
+ 
+         # Run episode
+         success, replay_images = run_episode(
+@@ -420,6 +494,8 @@ def run_task(
+             noisy_action_projector,
+             initial_state,
+             log_file,
++            task_id,
++            episode_idx,
+         )
+ 
+         # Update counters
+@@ -480,12 +556,20 @@ def eval_libero(cfg: GenerateConfig) -> float:
+     benchmark_dict = benchmark.get_benchmark_dict()
+     task_suite = benchmark_dict[cfg.task_suite_name]()
+     num_tasks = task_suite.n_tasks
++    target_episodes = parse_target_episodes(cfg.target_episodes)
+ 
+     log_message(f"Task suite: {cfg.task_suite_name}", log_file)
++    log_message(f"Open-loop execution steps: {cfg.num_open_loop_steps}/{NUM_ACTIONS_CHUNK}", log_file)
++    log_message(f"Wrist image feature weight: {cfg.wrist_image_weight}", log_file)
++    log_message(f"Target episodes (zero-based task:state): {target_episodes or 'ALL'}", log_file)
++    log_message(f"Camera input dump: {cfg.dump_camera_inputs} -> {cfg.camera_dump_dir}", log_file)
+ 
+     # Start evaluation
+     total_episodes, total_successes = 0, 0
+-    for task_id in tqdm.tqdm(range(num_tasks)):
++    task_ids = list(target_episodes.keys()) if target_episodes is not None else list(range(num_tasks))
++    for task_id in tqdm.tqdm(task_ids):
++        if task_id >= num_tasks:
++            raise IndexError(f"Requested task_id {task_id}, but suite only has {num_tasks} tasks")
+         total_episodes, total_successes = run_task(
+             cfg,
+             task_suite,
+@@ -499,6 +583,7 @@ def eval_libero(cfg: GenerateConfig) -> float:
+             total_episodes,
+             total_successes,
+             log_file,
++            target_episodes[task_id] if target_episodes is not None else None,
+         )
+ 
+     # Calculate final success rate
+diff --git a/experiments/robot/libero/run_targeted_failure_experiments.sh b/experiments/robot/libero/run_targeted_failure_experiments.sh
+new file mode 100644
+index 0000000..7582743
+--- /dev/null
++++ b/experiments/robot/libero/run_targeted_failure_experiments.sh
+@@ -0,0 +1,81 @@
++#!/usr/bin/env bash
++set -euo pipefail
++
++# Targeted follow-up experiments for the five LIBERO-Spatial baseline failures.
++# Initial-state indices are zero-based and were recovered from the baseline log:
++#   233 -> task 4, state 32
++#   378 -> task 7, state 27
++#   321 -> task 6, state 20
++#   230 -> task 4, state 29
++#   286 -> task 5, state 35
++
++MODE="${1:-all}"
++OFT_ROOT="${OFT_ROOT:-/mnt/workspace/openvla-oft}"
++CKPT_DIR="${CKPT_DIR:-/mnt/workspace/openvla-oft-ckpts/openvla-7b-oft-finetuned-libero-spatial}"
++GPU_ID="${GPU:-0}"
++DIAG_ROOT="${DIAG_ROOT:-${OFT_ROOT}/experiments/targeted_diagnostics}"
++
++export CUDA_VISIBLE_DEVICES="${GPU_ID}"
++export MUJOCO_GL="${MUJOCO_GL:-egl}"
++export PYOPENGL_PLATFORM="${PYOPENGL_PLATFORM:-egl}"
++
++if [ ! -d "${OFT_ROOT}" ]; then
++  echo "Missing OpenVLA-OFT directory: ${OFT_ROOT}" >&2
++  exit 1
++fi
++if [ ! -d "${CKPT_DIR}" ]; then
++  echo "Missing checkpoint directory: ${CKPT_DIR}" >&2
++  exit 1
++fi
++
++run_eval() {
++  local label="$1"
++  local targets="$2"
++  local open_loop_steps="$3"
++  local wrist_weight="$4"
++  local dump_cameras="$5"
++
++  echo "Running ${label}: targets=${targets}, open_loop=${open_loop_steps}, wrist_weight=${wrist_weight}"
++  (
++    cd "${OFT_ROOT}"
++    python experiments/robot/libero/run_libero_eval.py \
++      --pretrained_checkpoint "${CKPT_DIR}" \
++      --task_suite_name libero_spatial \
++      --seed 7 \
++      --num_open_loop_steps "${open_loop_steps}" \
++      --target_episodes "${targets}" \
++      --wrist_image_weight "${wrist_weight}" \
++      --dump_camera_inputs "${dump_cameras}" \
++      --camera_dump_dir "${DIAG_ROOT}/${label}" \
++      --run_id_note "${label}"
++  ) 2>&1 | tee "${DIAG_ROOT}/${label}.console.log"
++}
++
++mkdir -p "${DIAG_ROOT}"
++
++case "${MODE}" in
++  openloop8_control)
++    run_eval "openloop8-control" "4:32,6:20,7:27" 8 1.0 False
++    ;;
++  openloop4)
++    run_eval "openloop4-first4-replan" "4:32,6:20,7:27" 4 1.0 False
++    ;;
++  camera_control)
++    run_eval "camera-control-w1" "4:29,5:35" 8 1.0 True
++    ;;
++  camera_w125)
++    run_eval "camera-weight-w1p25" "4:29,5:35" 8 1.25 True
++    ;;
++  all)
++    run_eval "openloop8-control" "4:32,6:20,7:27" 8 1.0 False
++    run_eval "openloop4-first4-replan" "4:32,6:20,7:27" 4 1.0 False
++    run_eval "camera-control-w1" "4:29,5:35" 8 1.0 True
++    run_eval "camera-weight-w1p25" "4:29,5:35" 8 1.25 True
++    ;;
++  *)
++    echo "Usage: $0 {openloop8_control|openloop4|camera_control|camera_w125|all}" >&2
++    exit 2
++    ;;
++esac
++
++echo "Completed. Logs and camera dumps: ${DIAG_ROOT}"
+diff --git a/experiments/robot/openvla_utils.py b/experiments/robot/openvla_utils.py
+index c14c9dc..7ff594b 100644
+--- a/experiments/robot/openvla_utils.py
++++ b/experiments/robot/openvla_utils.py
+@@ -712,6 +712,52 @@ def prepare_images_for_vla(images: List[np.ndarray], cfg: Any) -> List[Image.Ima
+     return processed_images
+ 
+ 
++def dump_vla_camera_inputs(
++    cfg: Any,
++    obs: Dict[str, Any],
++    processed_images: List[Image.Image],
++    pixel_values: torch.Tensor,
++    prompt: str,
++) -> None:
++    """Save the camera data visible at key boundaries of the VLA inference path."""
++    if not getattr(cfg, "dump_camera_inputs", False):
++        return
++    debug = obs.get("_camera_debug")
++    if not debug or "dump_dir" not in debug:
++        return
++
++    dump_dir = Path(debug["dump_dir"])
++    dump_dir.mkdir(parents=True, exist_ok=True)
++    prefix = debug["prefix"]
++
++    Image.fromarray(debug["raw_full_image"]).convert("RGB").save(dump_dir / f"{prefix}_00_agent_raw.png")
++    Image.fromarray(debug["raw_wrist_image"]).convert("RGB").save(dump_dir / f"{prefix}_01_wrist_raw.png")
++    Image.fromarray(obs["full_image"]).convert("RGB").save(dump_dir / f"{prefix}_02_agent_resized.png")
++    Image.fromarray(obs["wrist_image"]).convert("RGB").save(dump_dir / f"{prefix}_03_wrist_resized.png")
++    processed_images[0].save(dump_dir / f"{prefix}_04_agent_model_input.png")
++    if len(processed_images) > 1:
++        processed_images[1].save(dump_dir / f"{prefix}_05_wrist_model_input.png")
++
++    pixel_values_float = pixel_values.detach().float().cpu()
++    metadata = {
++        "task_id": debug.get("task_id"),
++        "initial_state_index": debug.get("episode_idx"),
++        "task_description": debug.get("task_description"),
++        "prompt": prompt,
++        "wrist_image_weight": float(getattr(cfg, "wrist_image_weight", 1.0)),
++        "pixel_values_shape": list(pixel_values_float.shape),
++        "pixel_values_min": float(pixel_values_float.min()),
++        "pixel_values_max": float(pixel_values_float.max()),
++        "pixel_values_mean": float(pixel_values_float.mean()),
++        "raw_agent_shape": list(debug["raw_full_image"].shape),
++        "raw_wrist_shape": list(debug["raw_wrist_image"].shape),
++        "policy_agent_shape": list(obs["full_image"].shape),
++        "policy_wrist_shape": list(obs["wrist_image"].shape),
++    }
++    with open(dump_dir / f"{prefix}_06_metadata.json", "w", encoding="utf-8") as f:
++        json.dump(metadata, f, ensure_ascii=False, indent=2)
++
++
+ def get_vla_action(
+     cfg: Any,
+     vla: torch.nn.Module,
+@@ -749,6 +795,7 @@ def get_vla_action(
+ 
+         # Process images
+         all_images = prepare_images_for_vla(all_images, cfg)
++        processed_images_for_dump = list(all_images)
+ 
+         # Extract primary image and additional images
+         primary_image = all_images.pop(0)
+@@ -769,6 +816,8 @@ def get_vla_action(
+             all_wrist_pixel_values = [wrist_inputs["pixel_values"] for wrist_inputs in all_wrist_inputs]
+             inputs["pixel_values"] = torch.cat([primary_pixel_values] + all_wrist_pixel_values, dim=1)
+ 
++        dump_vla_camera_inputs(cfg, obs, processed_images_for_dump, inputs["pixel_values"], prompt)
++
+         # Process proprioception data if used
+         proprio = None
+         if cfg.use_proprio:
+diff --git a/prismatic/extern/hf/modeling_prismatic.py b/prismatic/extern/hf/modeling_prismatic.py
+index 19ddca8..98850bb 100644
+--- a/prismatic/extern/hf/modeling_prismatic.py
++++ b/prismatic/extern/hf/modeling_prismatic.py
+@@ -91,6 +91,7 @@ class PrismaticVisionBackbone(nn.Module):
+         super().__init__()
+         self.use_fused_vision_backbone = use_fused_vision_backbone
+         self.num_images_in_input = 1  # Default value, can be overridden later
++        self.wrist_image_weight = 1.0  # Feature scale for non-primary images; 1.0 preserves checkpoint behavior
+ 
+         # Validate number of (fused) vision backbones
+         if len(timm_model_ids) > 2:
+@@ -183,6 +184,12 @@ class PrismaticVisionBackbone(nn.Module):
+         """
+         self.num_images_in_input = num_images_in_input
+ 
++    def set_wrist_image_weight(self, weight: float) -> None:
++        """Scale patch features from every non-primary (wrist) image."""
++        if weight <= 0:
++            raise ValueError(f"wrist image weight must be positive, got {weight}")
++        self.wrist_image_weight = float(weight)
++
+     def forward(self, pixel_values: torch.Tensor) -> torch.Tensor:
+         """
+         Implements the forward pass for the vision backbone.
+@@ -211,7 +218,7 @@ class PrismaticVisionBackbone(nn.Module):
+ 
+             # Process each image and collect patches
+             all_patches = []
+-            for img in images:
++            for image_idx, img in enumerate(images):
+                 # Split each image further into two stacks of channels (each with 3 channels)
+                 img_regular, img_fused = torch.split(img, [3, 3], dim=1)
+ 
+@@ -221,6 +228,8 @@ class PrismaticVisionBackbone(nn.Module):
+ 
+                 # Concatenate SigLIP and DINOv2 patches along the hidden dimension
+                 combined_patches = torch.cat([patches, patches_fused], dim=2)
++                if image_idx > 0:
++                    combined_patches = combined_patches * self.wrist_image_weight
+                 all_patches.append(combined_patches)
+ 
+             # Concatenate all patches along the patch dimension
+-- 
+2.52.0.windows.1
+

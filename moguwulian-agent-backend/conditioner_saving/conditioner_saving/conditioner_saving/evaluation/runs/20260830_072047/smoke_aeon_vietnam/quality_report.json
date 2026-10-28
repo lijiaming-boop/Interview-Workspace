@@ -1,0 +1,151 @@
+{
+  "completeness": 1.0,
+  "confidence_level": "high",
+  "issues": [
+    {
+      "field": "monthly_data[0].freezing_pump_freq",
+      "severity": "medium",
+      "type": "missing",
+      "message": "1月冷冻泵频率缺失"
+    },
+    {
+      "field": "monthly_data[1].freezing_pump_freq",
+      "severity": "medium",
+      "type": "missing",
+      "message": "2月冷冻泵频率缺失"
+    },
+    {
+      "field": "monthly_data[2].freezing_pump_freq",
+      "severity": "medium",
+      "type": "missing",
+      "message": "3月冷冻泵频率缺失"
+    },
+    {
+      "field": "monthly_data[3].freezing_pump_freq",
+      "severity": "medium",
+      "type": "missing",
+      "message": "4月冷冻泵频率缺失"
+    },
+    {
+      "field": "monthly_data[4].freezing_pump_freq",
+      "severity": "medium",
+      "type": "missing",
+      "message": "5月冷冻泵频率缺失"
+    },
+    {
+      "field": "monthly_data[5].freezing_pump_freq",
+      "severity": "medium",
+      "type": "missing",
+      "message": "6月冷冻泵频率缺失"
+    },
+    {
+      "field": "monthly_data[6].freezing_pump_freq",
+      "severity": "medium",
+      "type": "missing",
+      "message": "7月冷冻泵频率缺失"
+    },
+    {
+      "field": "monthly_data[7].freezing_pump_freq",
+      "severity": "medium",
+      "type": "missing",
+      "message": "8月冷冻泵频率缺失"
+    },
+    {
+      "field": "monthly_data[8].freezing_pump_freq",
+      "severity": "medium",
+      "type": "missing",
+      "message": "9月冷冻泵频率缺失"
+    },
+    {
+      "field": "monthly_data[9].freezing_pump_freq",
+      "severity": "medium",
+      "type": "missing",
+      "message": "10月冷冻泵频率缺失"
+    },
+    {
+      "field": "monthly_data[10].freezing_pump_freq",
+      "severity": "medium",
+      "type": "missing",
+      "message": "11月冷冻泵频率缺失"
+    },
+    {
+      "field": "monthly_data[11].freezing_pump_freq",
+      "severity": "medium",
+      "type": "missing",
+      "message": "12月冷冻泵频率缺失"
+    },
+    {
+      "field": "monthly_data[0].freezing_pump_freq",
+      "severity": "low",
+      "type": "not_in_template",
+      "message": "1月冷冻泵频率为调研表模板未包含字段，将由行业默认值填充并标注置信度"
+    },
+    {
+      "field": "monthly_data[1].freezing_pump_freq",
+      "severity": "low",
+      "type": "not_in_template",
+      "message": "2月冷冻泵频率为调研表模板未包含字段，将由行业默认值填充并标注置信度"
+    },
+    {
+      "field": "monthly_data[2].freezing_pump_freq",
+      "severity": "low",
+      "type": "not_in_template",
+      "message": "3月冷冻泵频率为调研表模板未包含字段，将由行业默认值填充并标注置信度"
+    },
+    {
+      "field": "monthly_data[3].freezing_pump_freq",
+      "severity": "low",
+      "type": "not_in_template",
+      "message": "4月冷冻泵频率为调研表模板未包含字段，将由行业默认值填充并标注置信度"
+    },
+    {
+      "field": "monthly_data[4].freezing_pump_freq",
+      "severity": "low",
+      "type": "not_in_template",
+      "message": "5月冷冻泵频率为调研表模板未包含字段，将由行业默认值填充并标注置信度"
+    },
+    {
+      "field": "monthly_data[5].freezing_pump_freq",
+      "severity": "low",
+      "type": "not_in_template",
+      "message": "6月冷冻泵频率为调研表模板未包含字段，将由行业默认值填充并标注置信度"
+    },
+    {
+      "field": "monthly_data[6].freezing_pump_freq",
+      "severity": "low",
+      "type": "not_in_template",
+      "message": "7月冷冻泵频率为调研表模板未包含字段，将由行业默认值填充并标注置信度"
+    },
+    {
+      "field": "monthly_data[7].freezing_pump_freq",
+      "severity": "low",
+      "type": "not_in_template",
+      "message": "8月冷冻泵频率为调研表模板未包含字段，将由行业默认值填充并标注置信度"
+    },
+    {
+      "field": "monthly_data[8].freezing_pump_freq",
+      "severity": "low",
+      "type": "not_in_template",
+      "message": "9月冷冻泵频率为调研表模板未包含字段，将由行业默认值填充并标注置信度"
+    },
+    {
+      "field": "monthly_data[9].freezing_pump_freq",
+      "severity": "low",
+      "type": "not_in_template",
+      "message": "10月冷冻泵频率为调研表模板未包含字段，将由行业默认值填充并标注置信度"
+    },
+    {
+      "field": "monthly_data[10].freezing_pump_freq",
+      "severity": "low",
+      "type": "not_in_template",
+      "message": "11月冷冻泵频率为调研表模板未包含字段，将由行业默认值填充并标注置信度"
+    },
+    {
+      "field": "monthly_data[11].freezing_pump_freq",
+      "severity": "low",
+      "type": "not_in_template",
+      "message": "12月冷冻泵频率为调研表模板未包含字段，将由行业默认值填充并标注置信度"
+    }
+  ],
+  "summary": "数据完整率100%。发现12个中等问题。"
+}

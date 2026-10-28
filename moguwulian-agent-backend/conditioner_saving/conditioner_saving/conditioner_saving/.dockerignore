@@ -1,0 +1,28 @@
+.venv/
+node_modules/
+**/node_modules/
+.next/
+.git/
+.tmp/
+tmp/
+data/
+output/
+outputs/
+evaluation/runs/
+.mypy_cache/
+.ruff_cache/
+.pytest_cache/
+.qoder/
+.trae/
+.workbuddy/
+*.log
+包装文档-实习产出.md
+docs/legacy/
+
+# P1 修复（审查报告）：密钥文件不得进入 Docker 构建上下文——
+# .dockerignore 生效于整个构建上下文（COPY . / 上下文上传），
+# 即使 Dockerfile 未显式 COPY .env，构建上下文打包时也会包含它
+.env
+.env.*
+*.pem
+*.key

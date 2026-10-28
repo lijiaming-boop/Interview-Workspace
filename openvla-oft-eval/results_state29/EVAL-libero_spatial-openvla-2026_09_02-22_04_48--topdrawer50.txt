@@ -1,0 +1,1178 @@
+Task suite: libero_spatial
+Open-loop execution steps: 8/8
+Wrist image feature weight: 1.0
+Target episodes (zero-based task:state): {4: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49]}
+Camera input dump: False -> ./experiments/camera_dumps
+Using default initial states
+
+Task: pick up the black bowl in the top drawer of the wooden cabinet and place it on the plate
+Starting targeted task_id=4, initial_state_index=0 (task trial 1)...
+Replan 0: predicted 8 actions; queued first 8
+Replan 1: predicted 8 actions; queued first 8
+Replan 2: predicted 8 actions; queued first 8
+Replan 3: predicted 8 actions; queued first 8
+Replan 4: predicted 8 actions; queued first 8
+Replan 5: predicted 8 actions; queued first 8
+Replan 6: predicted 8 actions; queued first 8
+Replan 7: predicted 8 actions; queued first 8
+Replan 8: predicted 8 actions; queued first 8
+Replan 9: predicted 8 actions; queued first 8
+Replan 10: predicted 8 actions; queued first 8
+Replan 11: predicted 8 actions; queued first 8
+Replan 12: predicted 8 actions; queued first 8
+Replan 13: predicted 8 actions; queued first 8
+Replan 14: predicted 8 actions; queued first 8
+Replan 15: predicted 8 actions; queued first 8
+Saved rollout MP4 at path ./rollouts/2026_09_02/2026_09_02-22_04_48--openvla_oft--episode=1--success=True--task=pick_up_the_black_bowl_in_the_top_drawer_of_the_wo.mp4
+Success: True
+# episodes completed so far: 1
+# successes: 1 (100.0%)
+
+Task: pick up the black bowl in the top drawer of the wooden cabinet and place it on the plate
+Starting targeted task_id=4, initial_state_index=1 (task trial 2)...
+Replan 0: predicted 8 actions; queued first 8
+Replan 1: predicted 8 actions; queued first 8
+Replan 2: predicted 8 actions; queued first 8
+Replan 3: predicted 8 actions; queued first 8
+Replan 4: predicted 8 actions; queued first 8
+Replan 5: predicted 8 actions; queued first 8
+Replan 6: predicted 8 actions; queued first 8
+Replan 7: predicted 8 actions; queued first 8
+Replan 8: predicted 8 actions; queued first 8
+Replan 9: predicted 8 actions; queued first 8
+Replan 10: predicted 8 actions; queued first 8
+Replan 11: predicted 8 actions; queued first 8
+Replan 12: predicted 8 actions; queued first 8
+Replan 13: predicted 8 actions; queued first 8
+Replan 14: predicted 8 actions; queued first 8
+Replan 15: predicted 8 actions; queued first 8
+Replan 16: predicted 8 actions; queued first 8
+Saved rollout MP4 at path ./rollouts/2026_09_02/2026_09_02-22_04_48--openvla_oft--episode=2--success=True--task=pick_up_the_black_bowl_in_the_top_drawer_of_the_wo.mp4
+Success: True
+# episodes completed so far: 2
+# successes: 2 (100.0%)
+
+Task: pick up the black bowl in the top drawer of the wooden cabinet and place it on the plate
+Starting targeted task_id=4, initial_state_index=2 (task trial 3)...
+Replan 0: predicted 8 actions; queued first 8
+Replan 1: predicted 8 actions; queued first 8
+Replan 2: predicted 8 actions; queued first 8
+Replan 3: predicted 8 actions; queued first 8
+Replan 4: predicted 8 actions; queued first 8
+Replan 5: predicted 8 actions; queued first 8
+Replan 6: predicted 8 actions; queued first 8
+Replan 7: predicted 8 actions; queued first 8
+Replan 8: predicted 8 actions; queued first 8
+Replan 9: predicted 8 actions; queued first 8
+Replan 10: predicted 8 actions; queued first 8
+Replan 11: predicted 8 actions; queued first 8
+Replan 12: predicted 8 actions; queued first 8
+Replan 13: predicted 8 actions; queued first 8
+Replan 14: predicted 8 actions; queued first 8
+Replan 15: predicted 8 actions; queued first 8
+Saved rollout MP4 at path ./rollouts/2026_09_02/2026_09_02-22_04_48--openvla_oft--episode=3--success=True--task=pick_up_the_black_bowl_in_the_top_drawer_of_the_wo.mp4
+Success: True
+# episodes completed so far: 3
+# successes: 3 (100.0%)
+
+Task: pick up the black bowl in the top drawer of the wooden cabinet and place it on the plate
+Starting targeted task_id=4, initial_state_index=3 (task trial 4)...
+Replan 0: predicted 8 actions; queued first 8
+Replan 1: predicted 8 actions; queued first 8
+Replan 2: predicted 8 actions; queued first 8
+Replan 3: predicted 8 actions; queued first 8
+Replan 4: predicted 8 actions; queued first 8
+Replan 5: predicted 8 actions; queued first 8
+Replan 6: predicted 8 actions; queued first 8
+Replan 7: predicted 8 actions; queued first 8
+Replan 8: predicted 8 actions; queued first 8
+Replan 9: predicted 8 actions; queued first 8
+Replan 10: predicted 8 actions; queued first 8
+Replan 11: predicted 8 actions; queued first 8
+Replan 12: predicted 8 actions; queued first 8
+Replan 13: predicted 8 actions; queued first 8
+Replan 14: predicted 8 actions; queued first 8
+Replan 15: predicted 8 actions; queued first 8
+Saved rollout MP4 at path ./rollouts/2026_09_02/2026_09_02-22_04_48--openvla_oft--episode=4--success=True--task=pick_up_the_black_bowl_in_the_top_drawer_of_the_wo.mp4
+Success: True
+# episodes completed so far: 4
+# successes: 4 (100.0%)
+
+Task: pick up the black bowl in the top drawer of the wooden cabinet and place it on the plate
+Starting targeted task_id=4, initial_state_index=4 (task trial 5)...
+Replan 0: predicted 8 actions; queued first 8
+Replan 1: predicted 8 actions; queued first 8
+Replan 2: predicted 8 actions; queued first 8
+Replan 3: predicted 8 actions; queued first 8
+Replan 4: predicted 8 actions; queued first 8
+Replan 5: predicted 8 actions; queued first 8
+Replan 6: predicted 8 actions; queued first 8
+Replan 7: predicted 8 actions; queued first 8
+Replan 8: predicted 8 actions; queued first 8
+Replan 9: predicted 8 actions; queued first 8
+Replan 10: predicted 8 actions; queued first 8
+Replan 11: predicted 8 actions; queued first 8
+Replan 12: predicted 8 actions; queued first 8
+Replan 13: predicted 8 actions; queued first 8
+Replan 14: predicted 8 actions; queued first 8
+Replan 15: predicted 8 actions; queued first 8
+Saved rollout MP4 at path ./rollouts/2026_09_02/2026_09_02-22_04_48--openvla_oft--episode=5--success=True--task=pick_up_the_black_bowl_in_the_top_drawer_of_the_wo.mp4
+Success: True
+# episodes completed so far: 5
+# successes: 5 (100.0%)
+
+Task: pick up the black bowl in the top drawer of the wooden cabinet and place it on the plate
+Starting targeted task_id=4, initial_state_index=5 (task trial 6)...
+Replan 0: predicted 8 actions; queued first 8
+Replan 1: predicted 8 actions; queued first 8
+Replan 2: predicted 8 actions; queued first 8
+Replan 3: predicted 8 actions; queued first 8
+Replan 4: predicted 8 actions; queued first 8
+Replan 5: predicted 8 actions; queued first 8
+Replan 6: predicted 8 actions; queued first 8
+Replan 7: predicted 8 actions; queued first 8
+Replan 8: predicted 8 actions; queued first 8
+Replan 9: predicted 8 actions; queued first 8
+Replan 10: predicted 8 actions; queued first 8
+Replan 11: predicted 8 actions; queued first 8
+Replan 12: predicted 8 actions; queued first 8
+Replan 13: predicted 8 actions; queued first 8
+Replan 14: predicted 8 actions; queued first 8
+Replan 15: predicted 8 actions; queued first 8
+Saved rollout MP4 at path ./rollouts/2026_09_02/2026_09_02-22_04_48--openvla_oft--episode=6--success=True--task=pick_up_the_black_bowl_in_the_top_drawer_of_the_wo.mp4
+Success: True
+# episodes completed so far: 6
+# successes: 6 (100.0%)
+
+Task: pick up the black bowl in the top drawer of the wooden cabinet and place it on the plate
+Starting targeted task_id=4, initial_state_index=6 (task trial 7)...
+Replan 0: predicted 8 actions; queued first 8
+Replan 1: predicted 8 actions; queued first 8
+Replan 2: predicted 8 actions; queued first 8
+Replan 3: predicted 8 actions; queued first 8
+Replan 4: predicted 8 actions; queued first 8
+Replan 5: predicted 8 actions; queued first 8
+Replan 6: predicted 8 actions; queued first 8
+Replan 7: predicted 8 actions; queued first 8
+Replan 8: predicted 8 actions; queued first 8
+Replan 9: predicted 8 actions; queued first 8
+Replan 10: predicted 8 actions; queued first 8
+Replan 11: predicted 8 actions; queued first 8
+Replan 12: predicted 8 actions; queued first 8
+Replan 13: predicted 8 actions; queued first 8
+Replan 14: predicted 8 actions; queued first 8
+Replan 15: predicted 8 actions; queued first 8
+Replan 16: predicted 8 actions; queued first 8
+Saved rollout MP4 at path ./rollouts/2026_09_02/2026_09_02-22_04_48--openvla_oft--episode=7--success=True--task=pick_up_the_black_bowl_in_the_top_drawer_of_the_wo.mp4
+Success: True
+# episodes completed so far: 7
+# successes: 7 (100.0%)
+
+Task: pick up the black bowl in the top drawer of the wooden cabinet and place it on the plate
+Starting targeted task_id=4, initial_state_index=7 (task trial 8)...
+Replan 0: predicted 8 actions; queued first 8
+Replan 1: predicted 8 actions; queued first 8
+Replan 2: predicted 8 actions; queued first 8
+Replan 3: predicted 8 actions; queued first 8
+Replan 4: predicted 8 actions; queued first 8
+Replan 5: predicted 8 actions; queued first 8
+Replan 6: predicted 8 actions; queued first 8
+Replan 7: predicted 8 actions; queued first 8
+Replan 8: predicted 8 actions; queued first 8
+Replan 9: predicted 8 actions; queued first 8
+Replan 10: predicted 8 actions; queued first 8
+Replan 11: predicted 8 actions; queued first 8
+Replan 12: predicted 8 actions; queued first 8
+Replan 13: predicted 8 actions; queued first 8
+Replan 14: predicted 8 actions; queued first 8
+Saved rollout MP4 at path ./rollouts/2026_09_02/2026_09_02-22_04_48--openvla_oft--episode=8--success=True--task=pick_up_the_black_bowl_in_the_top_drawer_of_the_wo.mp4
+Success: True
+# episodes completed so far: 8
+# successes: 8 (100.0%)
+
+Task: pick up the black bowl in the top drawer of the wooden cabinet and place it on the plate
+Starting targeted task_id=4, initial_state_index=8 (task trial 9)...
+Replan 0: predicted 8 actions; queued first 8
+Replan 1: predicted 8 actions; queued first 8
+Replan 2: predicted 8 actions; queued first 8
+Replan 3: predicted 8 actions; queued first 8
+Replan 4: predicted 8 actions; queued first 8
+Replan 5: predicted 8 actions; queued first 8
+Replan 6: predicted 8 actions; queued first 8
+Replan 7: predicted 8 actions; queued first 8
+Replan 8: predicted 8 actions; queued first 8
+Replan 9: predicted 8 actions; queued first 8
+Replan 10: predicted 8 actions; queued first 8
+Replan 11: predicted 8 actions; queued first 8
+Replan 12: predicted 8 actions; queued first 8
+Replan 13: predicted 8 actions; queued first 8
+Replan 14: predicted 8 actions; queued first 8
+Replan 15: predicted 8 actions; queued first 8
+Saved rollout MP4 at path ./rollouts/2026_09_02/2026_09_02-22_04_48--openvla_oft--episode=9--success=True--task=pick_up_the_black_bowl_in_the_top_drawer_of_the_wo.mp4
+Success: True
+# episodes completed so far: 9
+# successes: 9 (100.0%)
+
+Task: pick up the black bowl in the top drawer of the wooden cabinet and place it on the plate
+Starting targeted task_id=4, initial_state_index=9 (task trial 10)...
+Replan 0: predicted 8 actions; queued first 8
+Replan 1: predicted 8 actions; queued first 8
+Replan 2: predicted 8 actions; queued first 8
+Replan 3: predicted 8 actions; queued first 8
+Replan 4: predicted 8 actions; queued first 8
+Replan 5: predicted 8 actions; queued first 8
+Replan 6: predicted 8 actions; queued first 8
+Replan 7: predicted 8 actions; queued first 8
+Replan 8: predicted 8 actions; queued first 8
+Replan 9: predicted 8 actions; queued first 8
+Replan 10: predicted 8 actions; queued first 8
+Replan 11: predicted 8 actions; queued first 8
+Replan 12: predicted 8 actions; queued first 8
+Replan 13: predicted 8 actions; queued first 8
+Replan 14: predicted 8 actions; queued first 8
+Replan 15: predicted 8 actions; queued first 8
+Replan 16: predicted 8 actions; queued first 8
+Saved rollout MP4 at path ./rollouts/2026_09_02/2026_09_02-22_04_48--openvla_oft--episode=10--success=True--task=pick_up_the_black_bowl_in_the_top_drawer_of_the_wo.mp4
+Success: True
+# episodes completed so far: 10
+# successes: 10 (100.0%)
+
+Task: pick up the black bowl in the top drawer of the wooden cabinet and place it on the plate
+Starting targeted task_id=4, initial_state_index=10 (task trial 11)...
+Replan 0: predicted 8 actions; queued first 8
+Replan 1: predicted 8 actions; queued first 8
+Replan 2: predicted 8 actions; queued first 8
+Replan 3: predicted 8 actions; queued first 8
+Replan 4: predicted 8 actions; queued first 8
+Replan 5: predicted 8 actions; queued first 8
+Replan 6: predicted 8 actions; queued first 8
+Replan 7: predicted 8 actions; queued first 8
+Replan 8: predicted 8 actions; queued first 8
+Replan 9: predicted 8 actions; queued first 8
+Replan 10: predicted 8 actions; queued first 8
+Replan 11: predicted 8 actions; queued first 8
+Replan 12: predicted 8 actions; queued first 8
+Replan 13: predicted 8 actions; queued first 8
+Replan 14: predicted 8 actions; queued first 8
+Replan 15: predicted 8 actions; queued first 8
+Saved rollout MP4 at path ./rollouts/2026_09_02/2026_09_02-22_04_48--openvla_oft--episode=11--success=True--task=pick_up_the_black_bowl_in_the_top_drawer_of_the_wo.mp4
+Success: True
+# episodes completed so far: 11
+# successes: 11 (100.0%)
+
+Task: pick up the black bowl in the top drawer of the wooden cabinet and place it on the plate
+Starting targeted task_id=4, initial_state_index=11 (task trial 12)...
+Replan 0: predicted 8 actions; queued first 8
+Replan 1: predicted 8 actions; queued first 8
+Replan 2: predicted 8 actions; queued first 8
+Replan 3: predicted 8 actions; queued first 8
+Replan 4: predicted 8 actions; queued first 8
+Replan 5: predicted 8 actions; queued first 8
+Replan 6: predicted 8 actions; queued first 8
+Replan 7: predicted 8 actions; queued first 8
+Replan 8: predicted 8 actions; queued first 8
+Replan 9: predicted 8 actions; queued first 8
+Replan 10: predicted 8 actions; queued first 8
+Replan 11: predicted 8 actions; queued first 8
+Replan 12: predicted 8 actions; queued first 8
+Replan 13: predicted 8 actions; queued first 8
+Replan 14: predicted 8 actions; queued first 8
+Replan 15: predicted 8 actions; queued first 8
+Saved rollout MP4 at path ./rollouts/2026_09_02/2026_09_02-22_04_48--openvla_oft--episode=12--success=True--task=pick_up_the_black_bowl_in_the_top_drawer_of_the_wo.mp4
+Success: True
+# episodes completed so far: 12
+# successes: 12 (100.0%)
+
+Task: pick up the black bowl in the top drawer of the wooden cabinet and place it on the plate
+Starting targeted task_id=4, initial_state_index=12 (task trial 13)...
+Replan 0: predicted 8 actions; queued first 8
+Replan 1: predicted 8 actions; queued first 8
+Replan 2: predicted 8 actions; queued first 8
+Replan 3: predicted 8 actions; queued first 8
+Replan 4: predicted 8 actions; queued first 8
+Replan 5: predicted 8 actions; queued first 8
+Replan 6: predicted 8 actions; queued first 8
+Replan 7: predicted 8 actions; queued first 8
+Replan 8: predicted 8 actions; queued first 8
+Replan 9: predicted 8 actions; queued first 8
+Replan 10: predicted 8 actions; queued first 8
+Replan 11: predicted 8 actions; queued first 8
+Replan 12: predicted 8 actions; queued first 8
+Replan 13: predicted 8 actions; queued first 8
+Replan 14: predicted 8 actions; queued first 8
+Replan 15: predicted 8 actions; queued first 8
+Replan 16: predicted 8 actions; queued first 8
+Saved rollout MP4 at path ./rollouts/2026_09_02/2026_09_02-22_04_48--openvla_oft--episode=13--success=True--task=pick_up_the_black_bowl_in_the_top_drawer_of_the_wo.mp4
+Success: True
+# episodes completed so far: 13
+# successes: 13 (100.0%)
+
+Task: pick up the black bowl in the top drawer of the wooden cabinet and place it on the plate
+Starting targeted task_id=4, initial_state_index=13 (task trial 14)...
+Replan 0: predicted 8 actions; queued first 8
+Replan 1: predicted 8 actions; queued first 8
+Replan 2: predicted 8 actions; queued first 8
+Replan 3: predicted 8 actions; queued first 8
+Replan 4: predicted 8 actions; queued first 8
+Replan 5: predicted 8 actions; queued first 8
+Replan 6: predicted 8 actions; queued first 8
+Replan 7: predicted 8 actions; queued first 8
+Replan 8: predicted 8 actions; queued first 8
+Replan 9: predicted 8 actions; queued first 8
+Replan 10: predicted 8 actions; queued first 8
+Replan 11: predicted 8 actions; queued first 8
+Replan 12: predicted 8 actions; queued first 8
+Replan 13: predicted 8 actions; queued first 8
+Replan 14: predicted 8 actions; queued first 8
+Replan 15: predicted 8 actions; queued first 8
+Saved rollout MP4 at path ./rollouts/2026_09_02/2026_09_02-22_04_48--openvla_oft--episode=14--success=True--task=pick_up_the_black_bowl_in_the_top_drawer_of_the_wo.mp4
+Success: True
+# episodes completed so far: 14
+# successes: 14 (100.0%)
+
+Task: pick up the black bowl in the top drawer of the wooden cabinet and place it on the plate
+Starting targeted task_id=4, initial_state_index=14 (task trial 15)...
+Replan 0: predicted 8 actions; queued first 8
+Replan 1: predicted 8 actions; queued first 8
+Replan 2: predicted 8 actions; queued first 8
+Replan 3: predicted 8 actions; queued first 8
+Replan 4: predicted 8 actions; queued first 8
+Replan 5: predicted 8 actions; queued first 8
+Replan 6: predicted 8 actions; queued first 8
+Replan 7: predicted 8 actions; queued first 8
+Replan 8: predicted 8 actions; queued first 8
+Replan 9: predicted 8 actions; queued first 8
+Replan 10: predicted 8 actions; queued first 8
+Replan 11: predicted 8 actions; queued first 8
+Replan 12: predicted 8 actions; queued first 8
+Replan 13: predicted 8 actions; queued first 8
+Replan 14: predicted 8 actions; queued first 8
+Saved rollout MP4 at path ./rollouts/2026_09_02/2026_09_02-22_04_48--openvla_oft--episode=15--success=True--task=pick_up_the_black_bowl_in_the_top_drawer_of_the_wo.mp4
+Success: True
+# episodes completed so far: 15
+# successes: 15 (100.0%)
+
+Task: pick up the black bowl in the top drawer of the wooden cabinet and place it on the plate
+Starting targeted task_id=4, initial_state_index=15 (task trial 16)...
+Replan 0: predicted 8 actions; queued first 8
+Replan 1: predicted 8 actions; queued first 8
+Replan 2: predicted 8 actions; queued first 8
+Replan 3: predicted 8 actions; queued first 8
+Replan 4: predicted 8 actions; queued first 8
+Replan 5: predicted 8 actions; queued first 8
+Replan 6: predicted 8 actions; queued first 8
+Replan 7: predicted 8 actions; queued first 8
+Replan 8: predicted 8 actions; queued first 8
+Replan 9: predicted 8 actions; queued first 8
+Replan 10: predicted 8 actions; queued first 8
+Replan 11: predicted 8 actions; queued first 8
+Replan 12: predicted 8 actions; queued first 8
+Replan 13: predicted 8 actions; queued first 8
+Replan 14: predicted 8 actions; queued first 8
+Saved rollout MP4 at path ./rollouts/2026_09_02/2026_09_02-22_04_48--openvla_oft--episode=16--success=True--task=pick_up_the_black_bowl_in_the_top_drawer_of_the_wo.mp4
+Success: True
+# episodes completed so far: 16
+# successes: 16 (100.0%)
+
+Task: pick up the black bowl in the top drawer of the wooden cabinet and place it on the plate
+Starting targeted task_id=4, initial_state_index=16 (task trial 17)...
+Replan 0: predicted 8 actions; queued first 8
+Replan 1: predicted 8 actions; queued first 8
+Replan 2: predicted 8 actions; queued first 8
+Replan 3: predicted 8 actions; queued first 8
+Replan 4: predicted 8 actions; queued first 8
+Replan 5: predicted 8 actions; queued first 8
+Replan 6: predicted 8 actions; queued first 8
+Replan 7: predicted 8 actions; queued first 8
+Replan 8: predicted 8 actions; queued first 8
+Replan 9: predicted 8 actions; queued first 8
+Replan 10: predicted 8 actions; queued first 8
+Replan 11: predicted 8 actions; queued first 8
+Replan 12: predicted 8 actions; queued first 8
+Replan 13: predicted 8 actions; queued first 8
+Replan 14: predicted 8 actions; queued first 8
+Replan 15: predicted 8 actions; queued first 8
+Saved rollout MP4 at path ./rollouts/2026_09_02/2026_09_02-22_04_48--openvla_oft--episode=17--success=True--task=pick_up_the_black_bowl_in_the_top_drawer_of_the_wo.mp4
+Success: True
+# episodes completed so far: 17
+# successes: 17 (100.0%)
+
+Task: pick up the black bowl in the top drawer of the wooden cabinet and place it on the plate
+Starting targeted task_id=4, initial_state_index=17 (task trial 18)...
+Replan 0: predicted 8 actions; queued first 8
+Replan 1: predicted 8 actions; queued first 8
+Replan 2: predicted 8 actions; queued first 8
+Replan 3: predicted 8 actions; queued first 8
+Replan 4: predicted 8 actions; queued first 8
+Replan 5: predicted 8 actions; queued first 8
+Replan 6: predicted 8 actions; queued first 8
+Replan 7: predicted 8 actions; queued first 8
+Replan 8: predicted 8 actions; queued first 8
+Replan 9: predicted 8 actions; queued first 8
+Replan 10: predicted 8 actions; queued first 8
+Replan 11: predicted 8 actions; queued first 8
+Replan 12: predicted 8 actions; queued first 8
+Replan 13: predicted 8 actions; queued first 8
+Replan 14: predicted 8 actions; queued first 8
+Replan 15: predicted 8 actions; queued first 8
+Saved rollout MP4 at path ./rollouts/2026_09_02/2026_09_02-22_04_48--openvla_oft--episode=18--success=True--task=pick_up_the_black_bowl_in_the_top_drawer_of_the_wo.mp4
+Success: True
+# episodes completed so far: 18
+# successes: 18 (100.0%)
+
+Task: pick up the black bowl in the top drawer of the wooden cabinet and place it on the plate
+Starting targeted task_id=4, initial_state_index=18 (task trial 19)...
+Replan 0: predicted 8 actions; queued first 8
+Replan 1: predicted 8 actions; queued first 8
+Replan 2: predicted 8 actions; queued first 8
+Replan 3: predicted 8 actions; queued first 8
+Replan 4: predicted 8 actions; queued first 8
+Replan 5: predicted 8 actions; queued first 8
+Replan 6: predicted 8 actions; queued first 8
+Replan 7: predicted 8 actions; queued first 8
+Replan 8: predicted 8 actions; queued first 8
+Replan 9: predicted 8 actions; queued first 8
+Replan 10: predicted 8 actions; queued first 8
+Replan 11: predicted 8 actions; queued first 8
+Replan 12: predicted 8 actions; queued first 8
+Replan 13: predicted 8 actions; queued first 8
+Replan 14: predicted 8 actions; queued first 8
+Replan 15: predicted 8 actions; queued first 8
+Saved rollout MP4 at path ./rollouts/2026_09_02/2026_09_02-22_04_48--openvla_oft--episode=19--success=True--task=pick_up_the_black_bowl_in_the_top_drawer_of_the_wo.mp4
+Success: True
+# episodes completed so far: 19
+# successes: 19 (100.0%)
+
+Task: pick up the black bowl in the top drawer of the wooden cabinet and place it on the plate
+Starting targeted task_id=4, initial_state_index=19 (task trial 20)...
+Replan 0: predicted 8 actions; queued first 8
+Replan 1: predicted 8 actions; queued first 8
+Replan 2: predicted 8 actions; queued first 8
+Replan 3: predicted 8 actions; queued first 8
+Replan 4: predicted 8 actions; queued first 8
+Replan 5: predicted 8 actions; queued first 8
+Replan 6: predicted 8 actions; queued first 8
+Replan 7: predicted 8 actions; queued first 8
+Replan 8: predicted 8 actions; queued first 8
+Replan 9: predicted 8 actions; queued first 8
+Replan 10: predicted 8 actions; queued first 8
+Replan 11: predicted 8 actions; queued first 8
+Replan 12: predicted 8 actions; queued first 8
+Replan 13: predicted 8 actions; queued first 8
+Replan 14: predicted 8 actions; queued first 8
+Replan 15: predicted 8 actions; queued first 8
+Saved rollout MP4 at path ./rollouts/2026_09_02/2026_09_02-22_04_48--openvla_oft--episode=20--success=True--task=pick_up_the_black_bowl_in_the_top_drawer_of_the_wo.mp4
+Success: True
+# episodes completed so far: 20
+# successes: 20 (100.0%)
+
+Task: pick up the black bowl in the top drawer of the wooden cabinet and place it on the plate
+Starting targeted task_id=4, initial_state_index=20 (task trial 21)...
+Replan 0: predicted 8 actions; queued first 8
+Replan 1: predicted 8 actions; queued first 8
+Replan 2: predicted 8 actions; queued first 8
+Replan 3: predicted 8 actions; queued first 8
+Replan 4: predicted 8 actions; queued first 8
+Replan 5: predicted 8 actions; queued first 8
+Replan 6: predicted 8 actions; queued first 8
+Replan 7: predicted 8 actions; queued first 8
+Replan 8: predicted 8 actions; queued first 8
+Replan 9: predicted 8 actions; queued first 8
+Replan 10: predicted 8 actions; queued first 8
+Replan 11: predicted 8 actions; queued first 8
+Replan 12: predicted 8 actions; queued first 8
+Replan 13: predicted 8 actions; queued first 8
+Replan 14: predicted 8 actions; queued first 8
+Replan 15: predicted 8 actions; queued first 8
+Replan 16: predicted 8 actions; queued first 8
+Saved rollout MP4 at path ./rollouts/2026_09_02/2026_09_02-22_04_48--openvla_oft--episode=21--success=True--task=pick_up_the_black_bowl_in_the_top_drawer_of_the_wo.mp4
+Success: True
+# episodes completed so far: 21
+# successes: 21 (100.0%)
+
+Task: pick up the black bowl in the top drawer of the wooden cabinet and place it on the plate
+Starting targeted task_id=4, initial_state_index=21 (task trial 22)...
+Replan 0: predicted 8 actions; queued first 8
+Replan 1: predicted 8 actions; queued first 8
+Replan 2: predicted 8 actions; queued first 8
+Replan 3: predicted 8 actions; queued first 8
+Replan 4: predicted 8 actions; queued first 8
+Replan 5: predicted 8 actions; queued first 8
+Replan 6: predicted 8 actions; queued first 8
+Replan 7: predicted 8 actions; queued first 8
+Replan 8: predicted 8 actions; queued first 8
+Replan 9: predicted 8 actions; queued first 8
+Replan 10: predicted 8 actions; queued first 8
+Replan 11: predicted 8 actions; queued first 8
+Replan 12: predicted 8 actions; queued first 8
+Replan 13: predicted 8 actions; queued first 8
+Replan 14: predicted 8 actions; queued first 8
+Replan 15: predicted 8 actions; queued first 8
+Saved rollout MP4 at path ./rollouts/2026_09_02/2026_09_02-22_04_48--openvla_oft--episode=22--success=True--task=pick_up_the_black_bowl_in_the_top_drawer_of_the_wo.mp4
+Success: True
+# episodes completed so far: 22
+# successes: 22 (100.0%)
+
+Task: pick up the black bowl in the top drawer of the wooden cabinet and place it on the plate
+Starting targeted task_id=4, initial_state_index=22 (task trial 23)...
+Replan 0: predicted 8 actions; queued first 8
+Replan 1: predicted 8 actions; queued first 8
+Replan 2: predicted 8 actions; queued first 8
+Replan 3: predicted 8 actions; queued first 8
+Replan 4: predicted 8 actions; queued first 8
+Replan 5: predicted 8 actions; queued first 8
+Replan 6: predicted 8 actions; queued first 8
+Replan 7: predicted 8 actions; queued first 8
+Replan 8: predicted 8 actions; queued first 8
+Replan 9: predicted 8 actions; queued first 8
+Replan 10: predicted 8 actions; queued first 8
+Replan 11: predicted 8 actions; queued first 8
+Replan 12: predicted 8 actions; queued first 8
+Replan 13: predicted 8 actions; queued first 8
+Replan 14: predicted 8 actions; queued first 8
+Saved rollout MP4 at path ./rollouts/2026_09_02/2026_09_02-22_04_48--openvla_oft--episode=23--success=True--task=pick_up_the_black_bowl_in_the_top_drawer_of_the_wo.mp4
+Success: True
+# episodes completed so far: 23
+# successes: 23 (100.0%)
+
+Task: pick up the black bowl in the top drawer of the wooden cabinet and place it on the plate
+Starting targeted task_id=4, initial_state_index=23 (task trial 24)...
+Replan 0: predicted 8 actions; queued first 8
+Replan 1: predicted 8 actions; queued first 8
+Replan 2: predicted 8 actions; queued first 8
+Replan 3: predicted 8 actions; queued first 8
+Replan 4: predicted 8 actions; queued first 8
+Replan 5: predicted 8 actions; queued first 8
+Replan 6: predicted 8 actions; queued first 8
+Replan 7: predicted 8 actions; queued first 8
+Replan 8: predicted 8 actions; queued first 8
+Replan 9: predicted 8 actions; queued first 8
+Replan 10: predicted 8 actions; queued first 8
+Replan 11: predicted 8 actions; queued first 8
+Replan 12: predicted 8 actions; queued first 8
+Replan 13: predicted 8 actions; queued first 8
+Replan 14: predicted 8 actions; queued first 8
+Replan 15: predicted 8 actions; queued first 8
+Replan 16: predicted 8 actions; queued first 8
+Saved rollout MP4 at path ./rollouts/2026_09_02/2026_09_02-22_04_48--openvla_oft--episode=24--success=True--task=pick_up_the_black_bowl_in_the_top_drawer_of_the_wo.mp4
+Success: True
+# episodes completed so far: 24
+# successes: 24 (100.0%)
+
+Task: pick up the black bowl in the top drawer of the wooden cabinet and place it on the plate
+Starting targeted task_id=4, initial_state_index=24 (task trial 25)...
+Replan 0: predicted 8 actions; queued first 8
+Replan 1: predicted 8 actions; queued first 8
+Replan 2: predicted 8 actions; queued first 8
+Replan 3: predicted 8 actions; queued first 8
+Replan 4: predicted 8 actions; queued first 8
+Replan 5: predicted 8 actions; queued first 8
+Replan 6: predicted 8 actions; queued first 8
+Replan 7: predicted 8 actions; queued first 8
+Replan 8: predicted 8 actions; queued first 8
+Replan 9: predicted 8 actions; queued first 8
+Replan 10: predicted 8 actions; queued first 8
+Replan 11: predicted 8 actions; queued first 8
+Replan 12: predicted 8 actions; queued first 8
+Replan 13: predicted 8 actions; queued first 8
+Replan 14: predicted 8 actions; queued first 8
+Replan 15: predicted 8 actions; queued first 8
+Saved rollout MP4 at path ./rollouts/2026_09_02/2026_09_02-22_04_48--openvla_oft--episode=25--success=True--task=pick_up_the_black_bowl_in_the_top_drawer_of_the_wo.mp4
+Success: True
+# episodes completed so far: 25
+# successes: 25 (100.0%)
+
+Task: pick up the black bowl in the top drawer of the wooden cabinet and place it on the plate
+Starting targeted task_id=4, initial_state_index=25 (task trial 26)...
+Replan 0: predicted 8 actions; queued first 8
+Replan 1: predicted 8 actions; queued first 8
+Replan 2: predicted 8 actions; queued first 8
+Replan 3: predicted 8 actions; queued first 8
+Replan 4: predicted 8 actions; queued first 8
+Replan 5: predicted 8 actions; queued first 8
+Replan 6: predicted 8 actions; queued first 8
+Replan 7: predicted 8 actions; queued first 8
+Replan 8: predicted 8 actions; queued first 8
+Replan 9: predicted 8 actions; queued first 8
+Replan 10: predicted 8 actions; queued first 8
+Replan 11: predicted 8 actions; queued first 8
+Replan 12: predicted 8 actions; queued first 8
+Replan 13: predicted 8 actions; queued first 8
+Replan 14: predicted 8 actions; queued first 8
+Replan 15: predicted 8 actions; queued first 8
+Saved rollout MP4 at path ./rollouts/2026_09_02/2026_09_02-22_04_48--openvla_oft--episode=26--success=True--task=pick_up_the_black_bowl_in_the_top_drawer_of_the_wo.mp4
+Success: True
+# episodes completed so far: 26
+# successes: 26 (100.0%)
+
+Task: pick up the black bowl in the top drawer of the wooden cabinet and place it on the plate
+Starting targeted task_id=4, initial_state_index=26 (task trial 27)...
+Replan 0: predicted 8 actions; queued first 8
+Replan 1: predicted 8 actions; queued first 8
+Replan 2: predicted 8 actions; queued first 8
+Replan 3: predicted 8 actions; queued first 8
+Replan 4: predicted 8 actions; queued first 8
+Replan 5: predicted 8 actions; queued first 8
+Replan 6: predicted 8 actions; queued first 8
+Replan 7: predicted 8 actions; queued first 8
+Replan 8: predicted 8 actions; queued first 8
+Replan 9: predicted 8 actions; queued first 8
+Replan 10: predicted 8 actions; queued first 8
+Replan 11: predicted 8 actions; queued first 8
+Replan 12: predicted 8 actions; queued first 8
+Replan 13: predicted 8 actions; queued first 8
+Replan 14: predicted 8 actions; queued first 8
+Replan 15: predicted 8 actions; queued first 8
+Saved rollout MP4 at path ./rollouts/2026_09_02/2026_09_02-22_04_48--openvla_oft--episode=27--success=True--task=pick_up_the_black_bowl_in_the_top_drawer_of_the_wo.mp4
+Success: True
+# episodes completed so far: 27
+# successes: 27 (100.0%)
+
+Task: pick up the black bowl in the top drawer of the wooden cabinet and place it on the plate
+Starting targeted task_id=4, initial_state_index=27 (task trial 28)...
+Replan 0: predicted 8 actions; queued first 8
+Replan 1: predicted 8 actions; queued first 8
+Replan 2: predicted 8 actions; queued first 8
+Replan 3: predicted 8 actions; queued first 8
+Replan 4: predicted 8 actions; queued first 8
+Replan 5: predicted 8 actions; queued first 8
+Replan 6: predicted 8 actions; queued first 8
+Replan 7: predicted 8 actions; queued first 8
+Replan 8: predicted 8 actions; queued first 8
+Replan 9: predicted 8 actions; queued first 8
+Replan 10: predicted 8 actions; queued first 8
+Replan 11: predicted 8 actions; queued first 8
+Replan 12: predicted 8 actions; queued first 8
+Replan 13: predicted 8 actions; queued first 8
+Replan 14: predicted 8 actions; queued first 8
+Replan 15: predicted 8 actions; queued first 8
+Saved rollout MP4 at path ./rollouts/2026_09_02/2026_09_02-22_04_48--openvla_oft--episode=28--success=True--task=pick_up_the_black_bowl_in_the_top_drawer_of_the_wo.mp4
+Success: True
+# episodes completed so far: 28
+# successes: 28 (100.0%)
+
+Task: pick up the black bowl in the top drawer of the wooden cabinet and place it on the plate
+Starting targeted task_id=4, initial_state_index=28 (task trial 29)...
+Replan 0: predicted 8 actions; queued first 8
+Replan 1: predicted 8 actions; queued first 8
+Replan 2: predicted 8 actions; queued first 8
+Replan 3: predicted 8 actions; queued first 8
+Replan 4: predicted 8 actions; queued first 8
+Replan 5: predicted 8 actions; queued first 8
+Replan 6: predicted 8 actions; queued first 8
+Replan 7: predicted 8 actions; queued first 8
+Replan 8: predicted 8 actions; queued first 8
+Replan 9: predicted 8 actions; queued first 8
+Replan 10: predicted 8 actions; queued first 8
+Replan 11: predicted 8 actions; queued first 8
+Replan 12: predicted 8 actions; queued first 8
+Replan 13: predicted 8 actions; queued first 8
+Replan 14: predicted 8 actions; queued first 8
+Saved rollout MP4 at path ./rollouts/2026_09_02/2026_09_02-22_04_48--openvla_oft--episode=29--success=True--task=pick_up_the_black_bowl_in_the_top_drawer_of_the_wo.mp4
+Success: True
+# episodes completed so far: 29
+# successes: 29 (100.0%)
+
+Task: pick up the black bowl in the top drawer of the wooden cabinet and place it on the plate
+Starting targeted task_id=4, initial_state_index=29 (task trial 30)...
+Replan 0: predicted 8 actions; queued first 8
+Replan 1: predicted 8 actions; queued first 8
+Replan 2: predicted 8 actions; queued first 8
+Replan 3: predicted 8 actions; queued first 8
+Replan 4: predicted 8 actions; queued first 8
+Replan 5: predicted 8 actions; queued first 8
+Replan 6: predicted 8 actions; queued first 8
+Replan 7: predicted 8 actions; queued first 8
+Replan 8: predicted 8 actions; queued first 8
+Replan 9: predicted 8 actions; queued first 8
+Replan 10: predicted 8 actions; queued first 8
+Replan 11: predicted 8 actions; queued first 8
+Replan 12: predicted 8 actions; queued first 8
+Replan 13: predicted 8 actions; queued first 8
+Replan 14: predicted 8 actions; queued first 8
+Replan 15: predicted 8 actions; queued first 8
+Replan 16: predicted 8 actions; queued first 8
+Replan 17: predicted 8 actions; queued first 8
+Replan 18: predicted 8 actions; queued first 8
+Replan 19: predicted 8 actions; queued first 8
+Replan 20: predicted 8 actions; queued first 8
+Replan 21: predicted 8 actions; queued first 8
+Replan 22: predicted 8 actions; queued first 8
+Replan 23: predicted 8 actions; queued first 8
+Replan 24: predicted 8 actions; queued first 8
+Replan 25: predicted 8 actions; queued first 8
+Replan 26: predicted 8 actions; queued first 8
+Replan 27: predicted 8 actions; queued first 8
+Saved rollout MP4 at path ./rollouts/2026_09_02/2026_09_02-22_04_48--openvla_oft--episode=30--success=False--task=pick_up_the_black_bowl_in_the_top_drawer_of_the_wo.mp4
+Success: False
+# episodes completed so far: 30
+# successes: 29 (96.7%)
+
+Task: pick up the black bowl in the top drawer of the wooden cabinet and place it on the plate
+Starting targeted task_id=4, initial_state_index=30 (task trial 31)...
+Replan 0: predicted 8 actions; queued first 8
+Replan 1: predicted 8 actions; queued first 8
+Replan 2: predicted 8 actions; queued first 8
+Replan 3: predicted 8 actions; queued first 8
+Replan 4: predicted 8 actions; queued first 8
+Replan 5: predicted 8 actions; queued first 8
+Replan 6: predicted 8 actions; queued first 8
+Replan 7: predicted 8 actions; queued first 8
+Replan 8: predicted 8 actions; queued first 8
+Replan 9: predicted 8 actions; queued first 8
+Replan 10: predicted 8 actions; queued first 8
+Replan 11: predicted 8 actions; queued first 8
+Replan 12: predicted 8 actions; queued first 8
+Replan 13: predicted 8 actions; queued first 8
+Replan 14: predicted 8 actions; queued first 8
+Replan 15: predicted 8 actions; queued first 8
+Replan 16: predicted 8 actions; queued first 8
+Saved rollout MP4 at path ./rollouts/2026_09_02/2026_09_02-22_04_48--openvla_oft--episode=31--success=True--task=pick_up_the_black_bowl_in_the_top_drawer_of_the_wo.mp4
+Success: True
+# episodes completed so far: 31
+# successes: 30 (96.8%)
+
+Task: pick up the black bowl in the top drawer of the wooden cabinet and place it on the plate
+Starting targeted task_id=4, initial_state_index=31 (task trial 32)...
+Replan 0: predicted 8 actions; queued first 8
+Replan 1: predicted 8 actions; queued first 8
+Replan 2: predicted 8 actions; queued first 8
+Replan 3: predicted 8 actions; queued first 8
+Replan 4: predicted 8 actions; queued first 8
+Replan 5: predicted 8 actions; queued first 8
+Replan 6: predicted 8 actions; queued first 8
+Replan 7: predicted 8 actions; queued first 8
+Replan 8: predicted 8 actions; queued first 8
+Replan 9: predicted 8 actions; queued first 8
+Replan 10: predicted 8 actions; queued first 8
+Replan 11: predicted 8 actions; queued first 8
+Replan 12: predicted 8 actions; queued first 8
+Replan 13: predicted 8 actions; queued first 8
+Replan 14: predicted 8 actions; queued first 8
+Replan 15: predicted 8 actions; queued first 8
+Saved rollout MP4 at path ./rollouts/2026_09_02/2026_09_02-22_04_48--openvla_oft--episode=32--success=True--task=pick_up_the_black_bowl_in_the_top_drawer_of_the_wo.mp4
+Success: True
+# episodes completed so far: 32
+# successes: 31 (96.9%)
+
+Task: pick up the black bowl in the top drawer of the wooden cabinet and place it on the plate
+Starting targeted task_id=4, initial_state_index=32 (task trial 33)...
+Replan 0: predicted 8 actions; queued first 8
+Replan 1: predicted 8 actions; queued first 8
+Replan 2: predicted 8 actions; queued first 8
+Replan 3: predicted 8 actions; queued first 8
+Replan 4: predicted 8 actions; queued first 8
+Replan 5: predicted 8 actions; queued first 8
+Replan 6: predicted 8 actions; queued first 8
+Replan 7: predicted 8 actions; queued first 8
+Replan 8: predicted 8 actions; queued first 8
+Replan 9: predicted 8 actions; queued first 8
+Replan 10: predicted 8 actions; queued first 8
+Replan 11: predicted 8 actions; queued first 8
+Replan 12: predicted 8 actions; queued first 8
+Replan 13: predicted 8 actions; queued first 8
+Replan 14: predicted 8 actions; queued first 8
+Replan 15: predicted 8 actions; queued first 8
+Saved rollout MP4 at path ./rollouts/2026_09_02/2026_09_02-22_04_48--openvla_oft--episode=33--success=True--task=pick_up_the_black_bowl_in_the_top_drawer_of_the_wo.mp4
+Success: True
+# episodes completed so far: 33
+# successes: 32 (97.0%)
+
+Task: pick up the black bowl in the top drawer of the wooden cabinet and place it on the plate
+Starting targeted task_id=4, initial_state_index=33 (task trial 34)...
+Replan 0: predicted 8 actions; queued first 8
+Replan 1: predicted 8 actions; queued first 8
+Replan 2: predicted 8 actions; queued first 8
+Replan 3: predicted 8 actions; queued first 8
+Replan 4: predicted 8 actions; queued first 8
+Replan 5: predicted 8 actions; queued first 8
+Replan 6: predicted 8 actions; queued first 8
+Replan 7: predicted 8 actions; queued first 8
+Replan 8: predicted 8 actions; queued first 8
+Replan 9: predicted 8 actions; queued first 8
+Replan 10: predicted 8 actions; queued first 8
+Replan 11: predicted 8 actions; queued first 8
+Replan 12: predicted 8 actions; queued first 8
+Replan 13: predicted 8 actions; queued first 8
+Replan 14: predicted 8 actions; queued first 8
+Replan 15: predicted 8 actions; queued first 8
+Saved rollout MP4 at path ./rollouts/2026_09_02/2026_09_02-22_04_48--openvla_oft--episode=34--success=True--task=pick_up_the_black_bowl_in_the_top_drawer_of_the_wo.mp4
+Success: True
+# episodes completed so far: 34
+# successes: 33 (97.1%)
+
+Task: pick up the black bowl in the top drawer of the wooden cabinet and place it on the plate
+Starting targeted task_id=4, initial_state_index=34 (task trial 35)...
+Replan 0: predicted 8 actions; queued first 8
+Replan 1: predicted 8 actions; queued first 8
+Replan 2: predicted 8 actions; queued first 8
+Replan 3: predicted 8 actions; queued first 8
+Replan 4: predicted 8 actions; queued first 8
+Replan 5: predicted 8 actions; queued first 8
+Replan 6: predicted 8 actions; queued first 8
+Replan 7: predicted 8 actions; queued first 8
+Replan 8: predicted 8 actions; queued first 8
+Replan 9: predicted 8 actions; queued first 8
+Replan 10: predicted 8 actions; queued first 8
+Replan 11: predicted 8 actions; queued first 8
+Replan 12: predicted 8 actions; queued first 8
+Replan 13: predicted 8 actions; queued first 8
+Replan 14: predicted 8 actions; queued first 8
+Replan 15: predicted 8 actions; queued first 8
+Saved rollout MP4 at path ./rollouts/2026_09_02/2026_09_02-22_04_48--openvla_oft--episode=35--success=True--task=pick_up_the_black_bowl_in_the_top_drawer_of_the_wo.mp4
+Success: True
+# episodes completed so far: 35
+# successes: 34 (97.1%)
+
+Task: pick up the black bowl in the top drawer of the wooden cabinet and place it on the plate
+Starting targeted task_id=4, initial_state_index=35 (task trial 36)...
+Replan 0: predicted 8 actions; queued first 8
+Replan 1: predicted 8 actions; queued first 8
+Replan 2: predicted 8 actions; queued first 8
+Replan 3: predicted 8 actions; queued first 8
+Replan 4: predicted 8 actions; queued first 8
+Replan 5: predicted 8 actions; queued first 8
+Replan 6: predicted 8 actions; queued first 8
+Replan 7: predicted 8 actions; queued first 8
+Replan 8: predicted 8 actions; queued first 8
+Replan 9: predicted 8 actions; queued first 8
+Replan 10: predicted 8 actions; queued first 8
+Replan 11: predicted 8 actions; queued first 8
+Replan 12: predicted 8 actions; queued first 8
+Replan 13: predicted 8 actions; queued first 8
+Replan 14: predicted 8 actions; queued first 8
+Replan 15: predicted 8 actions; queued first 8
+Saved rollout MP4 at path ./rollouts/2026_09_02/2026_09_02-22_04_48--openvla_oft--episode=36--success=True--task=pick_up_the_black_bowl_in_the_top_drawer_of_the_wo.mp4
+Success: True
+# episodes completed so far: 36
+# successes: 35 (97.2%)
+
+Task: pick up the black bowl in the top drawer of the wooden cabinet and place it on the plate
+Starting targeted task_id=4, initial_state_index=36 (task trial 37)...
+Replan 0: predicted 8 actions; queued first 8
+Replan 1: predicted 8 actions; queued first 8
+Replan 2: predicted 8 actions; queued first 8
+Replan 3: predicted 8 actions; queued first 8
+Replan 4: predicted 8 actions; queued first 8
+Replan 5: predicted 8 actions; queued first 8
+Replan 6: predicted 8 actions; queued first 8
+Replan 7: predicted 8 actions; queued first 8
+Replan 8: predicted 8 actions; queued first 8
+Replan 9: predicted 8 actions; queued first 8
+Replan 10: predicted 8 actions; queued first 8
+Replan 11: predicted 8 actions; queued first 8
+Replan 12: predicted 8 actions; queued first 8
+Replan 13: predicted 8 actions; queued first 8
+Replan 14: predicted 8 actions; queued first 8
+Replan 15: predicted 8 actions; queued first 8
+Replan 16: predicted 8 actions; queued first 8
+Saved rollout MP4 at path ./rollouts/2026_09_02/2026_09_02-22_04_48--openvla_oft--episode=37--success=True--task=pick_up_the_black_bowl_in_the_top_drawer_of_the_wo.mp4
+Success: True
+# episodes completed so far: 37
+# successes: 36 (97.3%)
+
+Task: pick up the black bowl in the top drawer of the wooden cabinet and place it on the plate
+Starting targeted task_id=4, initial_state_index=37 (task trial 38)...
+Replan 0: predicted 8 actions; queued first 8
+Replan 1: predicted 8 actions; queued first 8
+Replan 2: predicted 8 actions; queued first 8
+Replan 3: predicted 8 actions; queued first 8
+Replan 4: predicted 8 actions; queued first 8
+Replan 5: predicted 8 actions; queued first 8
+Replan 6: predicted 8 actions; queued first 8
+Replan 7: predicted 8 actions; queued first 8
+Replan 8: predicted 8 actions; queued first 8
+Replan 9: predicted 8 actions; queued first 8
+Replan 10: predicted 8 actions; queued first 8
+Replan 11: predicted 8 actions; queued first 8
+Replan 12: predicted 8 actions; queued first 8
+Replan 13: predicted 8 actions; queued first 8
+Replan 14: predicted 8 actions; queued first 8
+Replan 15: predicted 8 actions; queued first 8
+Saved rollout MP4 at path ./rollouts/2026_09_02/2026_09_02-22_04_48--openvla_oft--episode=38--success=True--task=pick_up_the_black_bowl_in_the_top_drawer_of_the_wo.mp4
+Success: True
+# episodes completed so far: 38
+# successes: 37 (97.4%)
+
+Task: pick up the black bowl in the top drawer of the wooden cabinet and place it on the plate
+Starting targeted task_id=4, initial_state_index=38 (task trial 39)...
+Replan 0: predicted 8 actions; queued first 8
+Replan 1: predicted 8 actions; queued first 8
+Replan 2: predicted 8 actions; queued first 8
+Replan 3: predicted 8 actions; queued first 8
+Replan 4: predicted 8 actions; queued first 8
+Replan 5: predicted 8 actions; queued first 8
+Replan 6: predicted 8 actions; queued first 8
+Replan 7: predicted 8 actions; queued first 8
+Replan 8: predicted 8 actions; queued first 8
+Replan 9: predicted 8 actions; queued first 8
+Replan 10: predicted 8 actions; queued first 8
+Replan 11: predicted 8 actions; queued first 8
+Replan 12: predicted 8 actions; queued first 8
+Replan 13: predicted 8 actions; queued first 8
+Replan 14: predicted 8 actions; queued first 8
+Replan 15: predicted 8 actions; queued first 8
+Replan 16: predicted 8 actions; queued first 8
+Saved rollout MP4 at path ./rollouts/2026_09_02/2026_09_02-22_04_48--openvla_oft--episode=39--success=True--task=pick_up_the_black_bowl_in_the_top_drawer_of_the_wo.mp4
+Success: True
+# episodes completed so far: 39
+# successes: 38 (97.4%)
+
+Task: pick up the black bowl in the top drawer of the wooden cabinet and place it on the plate
+Starting targeted task_id=4, initial_state_index=39 (task trial 40)...
+Replan 0: predicted 8 actions; queued first 8
+Replan 1: predicted 8 actions; queued first 8
+Replan 2: predicted 8 actions; queued first 8
+Replan 3: predicted 8 actions; queued first 8
+Replan 4: predicted 8 actions; queued first 8
+Replan 5: predicted 8 actions; queued first 8
+Replan 6: predicted 8 actions; queued first 8
+Replan 7: predicted 8 actions; queued first 8
+Replan 8: predicted 8 actions; queued first 8
+Replan 9: predicted 8 actions; queued first 8
+Replan 10: predicted 8 actions; queued first 8
+Replan 11: predicted 8 actions; queued first 8
+Replan 12: predicted 8 actions; queued first 8
+Replan 13: predicted 8 actions; queued first 8
+Replan 14: predicted 8 actions; queued first 8
+Replan 15: predicted 8 actions; queued first 8
+Saved rollout MP4 at path ./rollouts/2026_09_02/2026_09_02-22_04_48--openvla_oft--episode=40--success=True--task=pick_up_the_black_bowl_in_the_top_drawer_of_the_wo.mp4
+Success: True
+# episodes completed so far: 40
+# successes: 39 (97.5%)
+
+Task: pick up the black bowl in the top drawer of the wooden cabinet and place it on the plate
+Starting targeted task_id=4, initial_state_index=40 (task trial 41)...
+Replan 0: predicted 8 actions; queued first 8
+Replan 1: predicted 8 actions; queued first 8
+Replan 2: predicted 8 actions; queued first 8
+Replan 3: predicted 8 actions; queued first 8
+Replan 4: predicted 8 actions; queued first 8
+Replan 5: predicted 8 actions; queued first 8
+Replan 6: predicted 8 actions; queued first 8
+Replan 7: predicted 8 actions; queued first 8
+Replan 8: predicted 8 actions; queued first 8
+Replan 9: predicted 8 actions; queued first 8
+Replan 10: predicted 8 actions; queued first 8
+Replan 11: predicted 8 actions; queued first 8
+Replan 12: predicted 8 actions; queued first 8
+Replan 13: predicted 8 actions; queued first 8
+Replan 14: predicted 8 actions; queued first 8
+Replan 15: predicted 8 actions; queued first 8
+Saved rollout MP4 at path ./rollouts/2026_09_02/2026_09_02-22_04_48--openvla_oft--episode=41--success=True--task=pick_up_the_black_bowl_in_the_top_drawer_of_the_wo.mp4
+Success: True
+# episodes completed so far: 41
+# successes: 40 (97.6%)
+
+Task: pick up the black bowl in the top drawer of the wooden cabinet and place it on the plate
+Starting targeted task_id=4, initial_state_index=41 (task trial 42)...
+Replan 0: predicted 8 actions; queued first 8
+Replan 1: predicted 8 actions; queued first 8
+Replan 2: predicted 8 actions; queued first 8
+Replan 3: predicted 8 actions; queued first 8
+Replan 4: predicted 8 actions; queued first 8
+Replan 5: predicted 8 actions; queued first 8
+Replan 6: predicted 8 actions; queued first 8
+Replan 7: predicted 8 actions; queued first 8
+Replan 8: predicted 8 actions; queued first 8
+Replan 9: predicted 8 actions; queued first 8
+Replan 10: predicted 8 actions; queued first 8
+Replan 11: predicted 8 actions; queued first 8
+Replan 12: predicted 8 actions; queued first 8
+Replan 13: predicted 8 actions; queued first 8
+Replan 14: predicted 8 actions; queued first 8
+Replan 15: predicted 8 actions; queued first 8
+Replan 16: predicted 8 actions; queued first 8
+Saved rollout MP4 at path ./rollouts/2026_09_02/2026_09_02-22_04_48--openvla_oft--episode=42--success=True--task=pick_up_the_black_bowl_in_the_top_drawer_of_the_wo.mp4
+Success: True
+# episodes completed so far: 42
+# successes: 41 (97.6%)
+
+Task: pick up the black bowl in the top drawer of the wooden cabinet and place it on the plate
+Starting targeted task_id=4, initial_state_index=42 (task trial 43)...
+Replan 0: predicted 8 actions; queued first 8
+Replan 1: predicted 8 actions; queued first 8
+Replan 2: predicted 8 actions; queued first 8
+Replan 3: predicted 8 actions; queued first 8
+Replan 4: predicted 8 actions; queued first 8
+Replan 5: predicted 8 actions; queued first 8
+Replan 6: predicted 8 actions; queued first 8
+Replan 7: predicted 8 actions; queued first 8
+Replan 8: predicted 8 actions; queued first 8
+Replan 9: predicted 8 actions; queued first 8
+Replan 10: predicted 8 actions; queued first 8
+Replan 11: predicted 8 actions; queued first 8
+Replan 12: predicted 8 actions; queued first 8
+Replan 13: predicted 8 actions; queued first 8
+Replan 14: predicted 8 actions; queued first 8
+Replan 15: predicted 8 actions; queued first 8
+Saved rollout MP4 at path ./rollouts/2026_09_02/2026_09_02-22_04_48--openvla_oft--episode=43--success=True--task=pick_up_the_black_bowl_in_the_top_drawer_of_the_wo.mp4
+Success: True
+# episodes completed so far: 43
+# successes: 42 (97.7%)
+
+Task: pick up the black bowl in the top drawer of the wooden cabinet and place it on the plate
+Starting targeted task_id=4, initial_state_index=43 (task trial 44)...
+Replan 0: predicted 8 actions; queued first 8
+Replan 1: predicted 8 actions; queued first 8
+Replan 2: predicted 8 actions; queued first 8
+Replan 3: predicted 8 actions; queued first 8
+Replan 4: predicted 8 actions; queued first 8
+Replan 5: predicted 8 actions; queued first 8
+Replan 6: predicted 8 actions; queued first 8
+Replan 7: predicted 8 actions; queued first 8
+Replan 8: predicted 8 actions; queued first 8
+Replan 9: predicted 8 actions; queued first 8
+Replan 10: predicted 8 actions; queued first 8
+Replan 11: predicted 8 actions; queued first 8
+Replan 12: predicted 8 actions; queued first 8
+Replan 13: predicted 8 actions; queued first 8
+Replan 14: predicted 8 actions; queued first 8
+Saved rollout MP4 at path ./rollouts/2026_09_02/2026_09_02-22_04_48--openvla_oft--episode=44--success=True--task=pick_up_the_black_bowl_in_the_top_drawer_of_the_wo.mp4
+Success: True
+# episodes completed so far: 44
+# successes: 43 (97.7%)
+
+Task: pick up the black bowl in the top drawer of the wooden cabinet and place it on the plate
+Starting targeted task_id=4, initial_state_index=44 (task trial 45)...
+Replan 0: predicted 8 actions; queued first 8
+Replan 1: predicted 8 actions; queued first 8
+Replan 2: predicted 8 actions; queued first 8
+Replan 3: predicted 8 actions; queued first 8
+Replan 4: predicted 8 actions; queued first 8
+Replan 5: predicted 8 actions; queued first 8
+Replan 6: predicted 8 actions; queued first 8
+Replan 7: predicted 8 actions; queued first 8
+Replan 8: predicted 8 actions; queued first 8
+Replan 9: predicted 8 actions; queued first 8
+Replan 10: predicted 8 actions; queued first 8
+Replan 11: predicted 8 actions; queued first 8
+Replan 12: predicted 8 actions; queued first 8
+Replan 13: predicted 8 actions; queued first 8
+Replan 14: predicted 8 actions; queued first 8
+Replan 15: predicted 8 actions; queued first 8
+Saved rollout MP4 at path ./rollouts/2026_09_02/2026_09_02-22_04_48--openvla_oft--episode=45--success=True--task=pick_up_the_black_bowl_in_the_top_drawer_of_the_wo.mp4
+Success: True
+# episodes completed so far: 45
+# successes: 44 (97.8%)
+
+Task: pick up the black bowl in the top drawer of the wooden cabinet and place it on the plate
+Starting targeted task_id=4, initial_state_index=45 (task trial 46)...
+Replan 0: predicted 8 actions; queued first 8
+Replan 1: predicted 8 actions; queued first 8
+Replan 2: predicted 8 actions; queued first 8
+Replan 3: predicted 8 actions; queued first 8
+Replan 4: predicted 8 actions; queued first 8
+Replan 5: predicted 8 actions; queued first 8
+Replan 6: predicted 8 actions; queued first 8
+Replan 7: predicted 8 actions; queued first 8
+Replan 8: predicted 8 actions; queued first 8
+Replan 9: predicted 8 actions; queued first 8
+Replan 10: predicted 8 actions; queued first 8
+Replan 11: predicted 8 actions; queued first 8
+Replan 12: predicted 8 actions; queued first 8
+Replan 13: predicted 8 actions; queued first 8
+Replan 14: predicted 8 actions; queued first 8
+Replan 15: predicted 8 actions; queued first 8
+Saved rollout MP4 at path ./rollouts/2026_09_02/2026_09_02-22_04_48--openvla_oft--episode=46--success=True--task=pick_up_the_black_bowl_in_the_top_drawer_of_the_wo.mp4
+Success: True
+# episodes completed so far: 46
+# successes: 45 (97.8%)
+
+Task: pick up the black bowl in the top drawer of the wooden cabinet and place it on the plate
+Starting targeted task_id=4, initial_state_index=46 (task trial 47)...
+Replan 0: predicted 8 actions; queued first 8
+Replan 1: predicted 8 actions; queued first 8
+Replan 2: predicted 8 actions; queued first 8
+Replan 3: predicted 8 actions; queued first 8
+Replan 4: predicted 8 actions; queued first 8
+Replan 5: predicted 8 actions; queued first 8
+Replan 6: predicted 8 actions; queued first 8
+Replan 7: predicted 8 actions; queued first 8
+Replan 8: predicted 8 actions; queued first 8
+Replan 9: predicted 8 actions; queued first 8
+Replan 10: predicted 8 actions; queued first 8
+Replan 11: predicted 8 actions; queued first 8
+Replan 12: predicted 8 actions; queued first 8
+Replan 13: predicted 8 actions; queued first 8
+Replan 14: predicted 8 actions; queued first 8
+Saved rollout MP4 at path ./rollouts/2026_09_02/2026_09_02-22_04_48--openvla_oft--episode=47--success=True--task=pick_up_the_black_bowl_in_the_top_drawer_of_the_wo.mp4
+Success: True
+# episodes completed so far: 47
+# successes: 46 (97.9%)
+
+Task: pick up the black bowl in the top drawer of the wooden cabinet and place it on the plate
+Starting targeted task_id=4, initial_state_index=47 (task trial 48)...
+Replan 0: predicted 8 actions; queued first 8
+Replan 1: predicted 8 actions; queued first 8
+Replan 2: predicted 8 actions; queued first 8
+Replan 3: predicted 8 actions; queued first 8
+Replan 4: predicted 8 actions; queued first 8
+Replan 5: predicted 8 actions; queued first 8
+Replan 6: predicted 8 actions; queued first 8
+Replan 7: predicted 8 actions; queued first 8
+Replan 8: predicted 8 actions; queued first 8
+Replan 9: predicted 8 actions; queued first 8
+Replan 10: predicted 8 actions; queued first 8
+Replan 11: predicted 8 actions; queued first 8
+Replan 12: predicted 8 actions; queued first 8
+Replan 13: predicted 8 actions; queued first 8
+Replan 14: predicted 8 actions; queued first 8
+Replan 15: predicted 8 actions; queued first 8
+Replan 16: predicted 8 actions; queued first 8
+Saved rollout MP4 at path ./rollouts/2026_09_02/2026_09_02-22_04_48--openvla_oft--episode=48--success=True--task=pick_up_the_black_bowl_in_the_top_drawer_of_the_wo.mp4
+Success: True
+# episodes completed so far: 48
+# successes: 47 (97.9%)
+
+Task: pick up the black bowl in the top drawer of the wooden cabinet and place it on the plate
+Starting targeted task_id=4, initial_state_index=48 (task trial 49)...
+Replan 0: predicted 8 actions; queued first 8
+Replan 1: predicted 8 actions; queued first 8
+Replan 2: predicted 8 actions; queued first 8
+Replan 3: predicted 8 actions; queued first 8
+Replan 4: predicted 8 actions; queued first 8
+Replan 5: predicted 8 actions; queued first 8
+Replan 6: predicted 8 actions; queued first 8
+Replan 7: predicted 8 actions; queued first 8
+Replan 8: predicted 8 actions; queued first 8
+Replan 9: predicted 8 actions; queued first 8
+Replan 10: predicted 8 actions; queued first 8
+Replan 11: predicted 8 actions; queued first 8
+Replan 12: predicted 8 actions; queued first 8
+Replan 13: predicted 8 actions; queued first 8
+Replan 14: predicted 8 actions; queued first 8
+Replan 15: predicted 8 actions; queued first 8
+Saved rollout MP4 at path ./rollouts/2026_09_02/2026_09_02-22_04_48--openvla_oft--episode=49--success=True--task=pick_up_the_black_bowl_in_the_top_drawer_of_the_wo.mp4
+Success: True
+# episodes completed so far: 49
+# successes: 48 (98.0%)
+
+Task: pick up the black bowl in the top drawer of the wooden cabinet and place it on the plate
+Starting targeted task_id=4, initial_state_index=49 (task trial 50)...
+Replan 0: predicted 8 actions; queued first 8
+Replan 1: predicted 8 actions; queued first 8
+Replan 2: predicted 8 actions; queued first 8
+Replan 3: predicted 8 actions; queued first 8
+Replan 4: predicted 8 actions; queued first 8
+Replan 5: predicted 8 actions; queued first 8
+Replan 6: predicted 8 actions; queued first 8
+Replan 7: predicted 8 actions; queued first 8
+Replan 8: predicted 8 actions; queued first 8
+Replan 9: predicted 8 actions; queued first 8
+Replan 10: predicted 8 actions; queued first 8
+Replan 11: predicted 8 actions; queued first 8
+Replan 12: predicted 8 actions; queued first 8
+Replan 13: predicted 8 actions; queued first 8
+Replan 14: predicted 8 actions; queued first 8
+Replan 15: predicted 8 actions; queued first 8
+Saved rollout MP4 at path ./rollouts/2026_09_02/2026_09_02-22_04_48--openvla_oft--episode=50--success=True--task=pick_up_the_black_bowl_in_the_top_drawer_of_the_wo.mp4
+Success: True
+# episodes completed so far: 50
+# successes: 49 (98.0%)
+Current task success rate: 0.98
+Current total success rate: 0.98
+Final results:
+Total episodes: 50
+Total successes: 49
+Overall success rate: 0.9800 (98.0%)

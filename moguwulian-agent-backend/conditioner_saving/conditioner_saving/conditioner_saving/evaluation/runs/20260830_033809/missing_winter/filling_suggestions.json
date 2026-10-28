@@ -1,0 +1,159 @@
+{
+  "defaults_version": "1.0.0",
+  "can_proceed": true,
+  "unfillable_fields": [],
+  "fillable_suggestions": [
+    {
+      "field": "monthly_data[9].chiller_supply_temp",
+      "original_value": null,
+      "suggested_value": 8,
+      "method": "industry_default",
+      "confidence": "low",
+      "reasoning": "该参数缺少足够数据支撑,使用春秋季行业默认值(8)"
+    },
+    {
+      "field": "monthly_data[10].chiller_supply_temp",
+      "original_value": null,
+      "suggested_value": 27.1,
+      "method": "season_default",
+      "confidence": "medium",
+      "reasoning": "使用同季节代表月1月的数据(27.1)"
+    },
+    {
+      "field": "monthly_data[11].chiller_supply_temp",
+      "original_value": null,
+      "suggested_value": 27.1,
+      "method": "season_default",
+      "confidence": "medium",
+      "reasoning": "使用同季节代表月1月的数据(27.1)"
+    },
+    {
+      "field": "monthly_data[9].cooling_pump_freq",
+      "original_value": null,
+      "suggested_value": 45,
+      "method": "industry_default",
+      "confidence": "low",
+      "reasoning": "该参数缺少足够数据支撑,使用春秋季行业默认值(45)"
+    },
+    {
+      "field": "monthly_data[9].freezing_pump_freq",
+      "original_value": null,
+      "suggested_value": 50,
+      "method": "industry_default",
+      "confidence": "low",
+      "reasoning": "该参数缺少足够数据支撑,使用春秋季行业默认值(50)"
+    },
+    {
+      "field": "monthly_data[9].cooling_water_temp_diff",
+      "original_value": null,
+      "suggested_value": 4.0,
+      "method": "industry_default",
+      "confidence": "low",
+      "reasoning": "该参数缺少足够数据支撑,使用春秋季行业默认值(4.0)"
+    },
+    {
+      "field": "monthly_data[9].freezing_water_temp_diff",
+      "original_value": null,
+      "suggested_value": 4.0,
+      "method": "industry_default",
+      "confidence": "low",
+      "reasoning": "该参数缺少足够数据支撑,使用春秋季行业默认值(4.0)"
+    },
+    {
+      "field": "monthly_data[9].cooling_tower_outlet_temp",
+      "original_value": null,
+      "suggested_value": 26,
+      "method": "industry_default",
+      "confidence": "low",
+      "reasoning": "该参数缺少足够数据支撑,使用春秋季行业默认值(26)"
+    },
+    {
+      "field": "monthly_data[10].cooling_pump_freq",
+      "original_value": null,
+      "suggested_value": 36.0,
+      "method": "season_default",
+      "confidence": "medium",
+      "reasoning": "使用同季节代表月1月的数据(36.0)"
+    },
+    {
+      "field": "monthly_data[10].freezing_pump_freq",
+      "original_value": null,
+      "suggested_value": 38.0,
+      "method": "season_default",
+      "confidence": "medium",
+      "reasoning": "使用同季节代表月1月的数据(38.0)"
+    },
+    {
+      "field": "monthly_data[10].cooling_water_temp_diff",
+      "original_value": null,
+      "suggested_value": 3.0,
+      "method": "season_default",
+      "confidence": "medium",
+      "reasoning": "使用同季节代表月1月的数据(3.0)"
+    },
+    {
+      "field": "monthly_data[10].freezing_water_temp_diff",
+      "original_value": null,
+      "suggested_value": 4.1,
+      "method": "season_default",
+      "confidence": "medium",
+      "reasoning": "使用同季节代表月1月的数据(4.1)"
+    },
+    {
+      "field": "monthly_data[10].cooling_tower_outlet_temp",
+      "original_value": null,
+      "suggested_value": 24.6,
+      "method": "season_default",
+      "confidence": "medium",
+      "reasoning": "使用同季节代表月1月的数据(24.6)"
+    },
+    {
+      "field": "monthly_data[11].cooling_pump_freq",
+      "original_value": null,
+      "suggested_value": 36.0,
+      "method": "season_default",
+      "confidence": "medium",
+      "reasoning": "使用同季节代表月1月的数据(36.0)"
+    },
+    {
+      "field": "monthly_data[11].freezing_pump_freq",
+      "original_value": null,
+      "suggested_value": 38.0,
+      "method": "season_default",
+      "confidence": "medium",
+      "reasoning": "使用同季节代表月1月的数据(38.0)"
+    },
+    {
+      "field": "monthly_data[11].cooling_water_temp_diff",
+      "original_value": null,
+      "suggested_value": 3.0,
+      "method": "season_default",
+      "confidence": "medium",
+      "reasoning": "使用同季节代表月1月的数据(3.0)"
+    },
+    {
+      "field": "monthly_data[11].freezing_water_temp_diff",
+      "original_value": null,
+      "suggested_value": 4.1,
+      "method": "season_default",
+      "confidence": "medium",
+      "reasoning": "使用同季节代表月1月的数据(4.1)"
+    },
+    {
+      "field": "monthly_data[11].cooling_tower_outlet_temp",
+      "original_value": null,
+      "suggested_value": 24.6,
+      "method": "season_default",
+      "confidence": "medium",
+      "reasoning": "使用同季节代表月1月的数据(24.6)"
+    },
+    {
+      "field": "electricity_price",
+      "original_value": null,
+      "suggested_value": 0.62,
+      "method": "region_lookup",
+      "confidence": "medium",
+      "reasoning": "根据项目所在地区(华北)查表获取工业用电参考电价"
+    }
+  ]
+}

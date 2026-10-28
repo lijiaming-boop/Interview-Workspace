@@ -1,0 +1,319 @@
+<!doctype html>
+<html lang="zh-CN" data-theme="light">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>空压模块 · 系统架构</title>
+<style>
+  /* ============================================================
+     统一设计规范（全部模块架构图共用同一套 token）
+     字体族  ：中文优先无衬线（--font-ui）+ 等宽（--font-mono，仅代码/路径）
+     字号层级：页面标题 18 > 区域标签/节点标题 14 > 卡片标题 13.5 >
+               正文 12 / 页面副标 12.5 / 连线标签·注释 11.5 / 代码行 10.5
+     字重    ：仅 400（正文）/ 600（强调）/ 700（标题）三档
+     行高    ：标题 1.35 / 图内正文 1.55 / 页面与列表 1.6
+     ============================================================ */
+  :root{
+    --bg:#f4f6fb; --panel:#ffffff; --ink:#17233b; --mut:#5b6b82; --code:#44546a;
+    --line:#cbd3e0;
+    --f-frontend:#eef1ff; --s-frontend:#4f46e5; --t-frontend:#3730a3;
+    --f-backend:#eaf2ff; --s-backend:#1d6fe0; --t-backend:#1c4f9c;
+    --f-database:#f4f0ff; --s-database:#7c3aed; --t-database:#5b21b6;
+    --f-external:#fff4e6; --s-external:#ea580c; --t-external:#9a3412;
+    --f-messagebus:#e6f8f9; --s-messagebus:#0891b2; --t-messagebus:#155e75;
+    --f-region:#ffffff; --s-region:#94a3b8; --l-region:#5b6b82;
+    --edge:#64748b; --edge-em:#4f46e5; --relw:1.5; --relw-em:2.1;
+    --font-ui:"PingFang SC","HarmonyOS Sans SC","Microsoft YaHei","Source Han Sans SC","Noto Sans SC",sans-serif;
+    --font-mono:"JetBrains Mono","Cascadia Code",Consolas,"SFMono-Regular",Menlo,monospace;
+    --fs-page:18px; --fs-sub:12.5px; --fs-region:14px; --fs-cap:11px;
+    --fs-node:14px; --fs-code:10.5px; --fs-body:12px; --fs-soft:11.5px;
+    --fs-card-t:13.5px; --fs-card-b:12.5px; --fs-foot:11.5px;
+    --ls-title:.015em; --lh-head:1.35; --lh-body:1.55; --lh-loose:1.6;
+  }
+  html[data-theme="dark"]{
+    --bg:#0b1120; --panel:#101a2e; --ink:#e4ecf7; --mut:#94a3b8; --code:#b6c2d4;
+    --line:#2a3a52;
+    --f-frontend:#182241; --s-frontend:#818cf8; --t-frontend:#c7d2fe;
+    --f-backend:#10243f; --s-backend:#60a5fa; --t-backend:#bfdbfe;
+    --f-database:#241b41; --s-database:#a78bfa; --t-database:#ddd6fe;
+    --f-external:#3a2410; --s-external:#fb923c; --t-external:#fed7aa;
+    --f-messagebus:#0e3340; --s-messagebus:#22d3ee; --t-messagebus:#a5f3fc;
+    --f-region:#0d1626; --s-region:#475569; --l-region:#94a3b8;
+    --edge:#64748b; --edge-em:#818cf8;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--ink);font:400 var(--fs-card-b)/var(--lh-loose) var(--font-ui)}
+  /* 页头 */
+  .top{position:sticky;top:0;z-index:5;display:flex;align-items:baseline;gap:14px;padding:10px 22px;background:color-mix(in srgb,var(--panel) 88%,transparent);backdrop-filter:blur(6px);border-bottom:1px solid var(--line)}
+  .top h1{margin:0;font:700 var(--fs-page)/var(--lh-head) var(--font-ui);letter-spacing:var(--ls-title)}
+  .top .sub{color:var(--mut);font:400 var(--fs-sub)/var(--lh-head) var(--font-ui)}
+  .top .sp{flex:1}
+  button{font:400 var(--fs-sub)/1 var(--font-ui);border:1px solid var(--line);background:var(--panel);color:var(--ink);border-radius:8px;padding:5px 12px;cursor:pointer}
+  button:hover{border-color:var(--s-backend)}
+  main{max-width:1800px;margin:0 auto;padding:14px 18px 8px}
+  /* 图例 */
+  .legend{display:flex;flex-wrap:wrap;gap:8px 16px;color:var(--mut);font:400 var(--fs-body)/var(--lh-body) var(--font-ui);padding:4px 2px 10px}
+  .legend b{font-weight:600;color:var(--ink)}
+  .lg{display:inline-flex;align-items:center;gap:6px}
+  .sw{width:13px;height:13px;border-radius:4px;display:inline-block}
+  .ln{width:22px;height:0;border-top:2px solid;display:inline-block}
+  .lns{width:22px;height:0;border-top:2px dashed;display:inline-block}
+  .frame{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:10px;overflow:auto}
+  svg{display:block;width:100%;height:auto;min-width:1180px}
+  /* 节点卡片：标题(700) → 代码行(等宽) → 正文(400) */
+  .card{font:400 var(--fs-body)/var(--lh-body) var(--font-ui);padding:9px 12px 10px;height:100%;overflow:hidden}
+  .t1{font:700 var(--fs-node)/var(--lh-head) var(--font-ui);letter-spacing:var(--ls-title);color:var(--t-type,var(--ink))}
+  .t2{margin-top:3px;font:400 var(--fs-code)/1.4 var(--font-mono);color:var(--code);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .t3{margin-top:7px;font:400 var(--fs-body)/var(--lh-body) var(--font-ui);color:var(--mut)}
+  .t3 .k,.t3 b{font-weight:600;color:var(--ink)}
+  .node rect{border-radius:10px;stroke-width:1.3}
+  /* 区域边界：标签(700) + 代码副标(等宽) */
+  .bdr rect{fill:var(--f-region);stroke:var(--s-region);stroke-dasharray:8 6;stroke-width:1.4;rx:18}
+  .bdr.ext rect{stroke:var(--s-external);stroke-dasharray:2.5 5}
+  .bdr .bl{font:700 var(--fs-region)/var(--lh-head) var(--font-ui);letter-spacing:var(--ls-title);fill:var(--l-region)}
+  .bdr .bs{font:400 var(--fs-cap)/var(--lh-head) var(--font-mono);fill:var(--mut)}
+  /* 关系连线：标签 400，强调 600 */
+  .rel path{fill:none;stroke:var(--edge);stroke-width:var(--relw);stroke-linecap:round}
+  .rel.dash path{stroke-dasharray:7 6}
+  .rel.em path{stroke:var(--edge-em);stroke-width:var(--relw-em)}
+  .rel text{font:400 var(--fs-soft)/var(--lh-body) var(--font-ui);fill:var(--mut);paint-order:stroke;stroke:color-mix(in srgb,var(--panel) 82%,transparent);stroke-width:4px}
+  .rel .hl{font-weight:600;fill:var(--ink)}
+  .note{font:400 var(--fs-soft)/var(--lh-body) var(--font-ui);fill:var(--mut)}
+  /* 悬停高亮 */
+  .node,.rel{transition:opacity .16s ease}
+  body.dim-on .node:not(.lit){opacity:.18}
+  body.dim-on .rel:not(.lit){opacity:.12}
+  .rel.lit path{stroke-width:2.6}
+  /* 底部结论卡 */
+  .cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:14px;padding:14px 2px 4px}
+  .cardx{border:1px solid var(--line);border-radius:12px;background:var(--panel);padding:12px 14px}
+  .cardx h3{margin:0 0 8px;font:600 var(--fs-card-t)/var(--lh-head) var(--font-ui);display:flex;align-items:center;gap:8px}
+  .dot{width:10px;height:10px;border-radius:50%;display:inline-block}
+  .cardx ul{margin:0;padding-left:17px;color:var(--mut);font:400 var(--fs-card-b)/var(--lh-loose) var(--font-ui)}
+  .cardx li{margin:4px 0}
+  .cardx li b{font-weight:600;color:var(--ink)}
+  .cardx code{font:400 var(--fs-cap)/1.4 var(--font-mono);background:color-mix(in srgb,var(--line) 30%,transparent);border-radius:4px;padding:1px 4px}
+  .foot{color:var(--mut);font:400 var(--fs-foot)/var(--lh-body) var(--font-ui);text-align:center;padding:8px 0 18px}
+  .sw-f{background:var(--f-frontend);border:1.5px solid var(--s-frontend)}
+  .sw-b{background:var(--f-backend);border:1.5px solid var(--s-backend)}
+  .sw-d{background:var(--f-database);border:1.5px solid var(--s-database)}
+  .sw-e{background:var(--f-external);border:1.5px solid var(--s-external)}
+  .sw-m{background:var(--f-messagebus);border:1.5px solid var(--s-messagebus)}
+</style>
+</head>
+<body>
+<div class="top">
+  <h1>空压模块 · 空压机节能率智能测算</h1>
+  <span class="sub">moduleType = air_compressor · “上传 → 提取 → 建议 → 计算 → 完成”</span>
+  <span class="sp"></span>
+  <button id="theme">切换深色/浅色</button>
+</div>
+<main>
+  <div class="legend">
+    <span class="lg"><i class="sw sw-f"></i><b>前端</b> Next.js 16</span>
+    <span class="lg"><i class="sw sw-b"></i><b>后端</b> FastAPI</span>
+    <span class="lg"><i class="sw sw-d"></i><b>存储/会话底座</b></span>
+    <span class="lg"><i class="sw sw-e"></i><b>外部模型服务</b></span>
+    <span class="lg"><i class="sw sw-m"></i><b>技能/消息通道</b></span>
+    <span style="opacity:0;width:2px"></span>
+    <span class="lg"><i class="ln" style="border-color:var(--edge)"></i> 请求/数据</span>
+    <span class="lg"><i class="lns" style="border-color:var(--edge)"></i> 异步 SSE / 轮询 / 回传</span>
+    <span class="lg"><i class="ln" style="border-color:var(--edge-em);border-top-width:2.5px"></i> 主流程调用</span>
+  </div>
+
+  <div class="frame">
+  <svg viewBox="0 0 1760 1260" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="空压模块系统架构">
+    <defs>
+      <marker id="mk" markerWidth="8" markerHeight="8" refX="6.5" refY="3.4" orient="auto"><path d="M0,0 L7,3.4 L0,6.8 Z" fill="var(--edge)"/></marker>
+      <marker id="mkEm" markerWidth="8" markerHeight="8" refX="6.5" refY="3.4" orient="auto"><path d="M0,0 L7,3.4 L0,6.8 Z" fill="var(--edge-em)"/></marker>
+    </defs>
+
+    <!-- ================= regions ================= -->
+    <g class="bdr"><rect x="50" y="150" width="560" height="900"/>
+      <text class="bl" x="70" y="180">前端层 · 交互与流程</text>
+      <text class="bs" x="70" y="200">apps/web/src/app · components · lib</text></g>
+    <g class="bdr"><rect x="660" y="150" width="560" height="440"/>
+      <text class="bl" x="680" y="180">FastAPI 接入与异步编排</text>
+      <text class="bs" x="680" y="200">apps/api · routers.py · services.py</text></g>
+    <g class="bdr"><rect x="1280" y="150" width="430" height="600"/>
+      <text class="bl" x="1300" y="180">引擎 / 技能集</text>
+      <text class="bs" x="1300" y="200">core/ · .claude/skills/</text></g>
+    <g class="bdr"><rect x="660" y="640" width="560" height="300"/>
+      <text class="bl" x="680" y="670">M1 会话与产物存储</text>
+      <text class="bs" x="680" y="690">SQLite / PostgreSQL · 会话目录</text></g>
+    <g class="bdr ext"><rect x="1280" y="790" width="430" height="160"/>
+      <text class="bl" x="1300" y="820" style="fill:var(--t-external)">外部模型服务</text>
+      <text class="bs" x="1300" y="840">Anthropic Messages API</text></g>
+
+    <!-- ================= frontend nodes ================= -->
+    <g class="node" data-type="frontend" id="fe-page">
+      <rect x="90" y="200" width="470" height="116" fill="var(--f-frontend)" stroke="var(--s-frontend)"/>
+      <foreignObject x="92" y="201" width="466" height="114"><div class="card" style="--t-type:var(--t-frontend)">
+        <div class="t1">首页 · 空压计算入口</div>
+        <div class="t2">src/app/page.tsx  ·  Module = “compressor”</div>
+        <div class="t3">进入后以 <span class="k">moduleType=air_compressor</span> 实例化 Workflow；无“进入仿真”出口（与空调模块的差异点）。</div>
+      </div></foreignObject></g>
+
+    <g class="node" data-type="frontend" id="fe-workflow">
+      <rect x="90" y="360" width="470" height="150" fill="var(--f-frontend)" stroke="var(--s-frontend)"/>
+      <foreignObject x="92" y="361" width="466" height="148"><div class="card" style="--t-type:var(--t-frontend)">
+        <div class="t1">流程外壳 Workflow（空压实例）</div>
+        <div class="t2">src/components/Workflow.tsx（空调/空压共用骨架）</div>
+        <div class="t3">Stepper 五步：上传 → 提取 → 建议 → 计算 → 完成；<br/>SuggestPanel（填充建议）· SSE 日志流 · useLlm 增强开关 · 门禁拦截。</div>
+      </div></foreignObject></g>
+
+    <g class="node" data-type="frontend" id="fe-result">
+      <rect x="90" y="560" width="470" height="150" fill="var(--f-frontend)" stroke="var(--s-frontend)"/>
+      <foreignObject x="92" y="561" width="466" height="148"><div class="card" style="--t-type:var(--t-frontend)">
+        <div class="t1">结果面板 CompressorResultPanel</div>
+        <div class="t2">Workflow.tsx 内联 · 由 ResultPanel 按 moduleType 分流</div>
+        <div class="t3">节能率 / 当前 vs 优化能耗 / 设备分析表（台数·装机功率·效率）；下载报价单与方案文档。</div>
+      </div></foreignObject></g>
+
+    <g class="node" data-type="frontend" id="fe-api">
+      <rect x="90" y="800" width="470" height="96" fill="var(--f-frontend)" stroke="var(--s-frontend)"/>
+      <foreignObject x="92" y="801" width="466" height="94"><div class="card" style="--t-type:var(--t-frontend)">
+        <div class="t1">API 客户端（共享）</div>
+        <div class="t2">src/lib/api.ts · API_BASE → http://127.0.0.1:8000/api</div>
+        <div class="t3">uploadSurvey · startExtract · SSE 订阅 · startSuggest · startCalculate · fetchResult · 下载 URL 构造。</div>
+      </div></foreignObject></g>
+
+    <!-- ================= api nodes ================= -->
+    <g class="node" data-type="backend" id="api-router">
+      <rect x="700" y="200" width="470" height="140" fill="var(--f-backend)" stroke="var(--s-backend)"/>
+      <foreignObject x="702" y="201" width="466" height="138"><div class="card" style="--t-type:var(--t-backend)">
+        <div class="t1">API 路由层</div>
+        <div class="t2">apps/api/routers.py</div>
+        <div class="t3">POST /upload /extract /suggest /calculate · GET /result /session /download · <span class="k">acl_guard</span> 会话归属校验。</div>
+      </div></foreignObject></g>
+
+    <g class="node" data-type="backend" id="api-svc">
+      <rect x="700" y="390" width="470" height="170" fill="var(--f-backend)" stroke="var(--s-backend)"/>
+      <foreignObject x="702" y="391" width="466" height="168"><div class="card" style="--t-type:var(--t-backend)">
+        <div class="t1">异步管线 · 后台线程 + 任务锁</div>
+        <div class="t2">apps/api/services.py · lock_lease.py</div>
+        <div class="t3">提取（LLM 技能）→ 建议（规则+可选 LLM）→ 计算；事件经 EventBroker 推 SSE；心跳续租、LockLost 协作中止。</div>
+      </div></foreignObject></g>
+
+    <!-- ================= engine nodes ================= -->
+    <g class="node" data-type="messagebus" id="en-caller">
+      <rect x="1320" y="200" width="350" height="130" fill="var(--f-messagebus)" stroke="var(--s-messagebus)"/>
+      <foreignObject x="1322" y="201" width="346" height="128"><div class="card" style="--t-type:var(--t-messagebus)">
+        <div class="t1">SkillCaller 技能分发</div>
+        <div class="t2">core/skill_caller.py</div>
+        <div class="t3">确定性技能走 subprocess；LLM 型技能走文本补全；输出 schema 校验 + 复评打回规则。</div>
+      </div></foreignObject></g>
+
+    <g class="node" data-type="messagebus" id="en-skills">
+      <rect x="1320" y="370" width="350" height="130" fill="var(--f-messagebus)" stroke="var(--s-messagebus)"/>
+      <foreignObject x="1322" y="371" width="346" height="128"><div class="card" style="--t-type:var(--t-messagebus)">
+        <div class="t1">空压技能集</div>
+        <div class="t2">.claude/skills/ · extract-air-compressor-data-llm 等</div>
+        <div class="t3">LLM 提取 Word/PPT/Excel 非结构化字段；规则填充脚本；字段映射与拒收规则（服务端强校验）。</div>
+      </div></foreignObject></g>
+
+    <g class="node" data-type="backend" id="en-calc">
+      <rect x="1320" y="540" width="350" height="140" fill="var(--f-backend)" stroke="var(--s-backend)"/>
+      <foreignObject x="1322" y="541" width="346" height="138"><div class="card" style="--t-type:var(--t-backend)">
+        <div class="t1">空压计算内核</div>
+        <div class="t2">core/air_compressor_calculator.py</div>
+        <div class="t3">现状(工频) − 优化(变频) 能耗 → 节能率；设备分类分析；生成报价单/方案文档与结果 JSON。</div>
+      </div></foreignObject></g>
+
+    <g class="node" data-type="external" id="ext-llm">
+      <rect x="1330" y="850" width="330" height="76" fill="var(--f-external)" stroke="var(--s-external)"/>
+      <foreignObject x="1332" y="851" width="326" height="74"><div class="card" style="--t-type:var(--t-external)">
+        <div class="t1">Anthropic Messages API</div>
+        <div class="t2">core/llm_client.py / llm_gateway.py</div>
+        <div class="t3">直连调用；计量落库、日预算、熔断退避。</div>
+      </div></foreignObject></g>
+
+    <!-- ================= store ================= -->
+    <g class="node" data-type="database" id="db-store">
+      <rect x="700" y="700" width="470" height="210" fill="var(--f-database)" stroke="var(--s-database)"/>
+      <foreignObject x="702" y="701" width="466" height="208"><div class="card" style="--t-type:var(--t-database)">
+        <div class="t1">SessionStore / 会话产物</div>
+        <div class="t2">apps/api/storage.py · db.py · models.py</div>
+        <div class="t3">写透落库：sessions / audit_logs / task_locks / llm_calls；<br/>会话目录产物：<code>extracted_air_compressor_data.json</code> · <code>compressor_result.json</code> · 报价单/方案/计算表 xlsx/docx。</div>
+      </div></foreignObject></g>
+
+    <!-- ================= relationships ================= -->
+    <g class="rels">
+      <g class="rel em" data-from="fe-page" data-to="fe-workflow"><path d="M 330 316 L 330 360" marker-end="url(#mkEm)"/><text class="hl" x="338" y="344">进入 · moduleType=air_compressor</text></g>
+      <g class="rel em" data-from="fe-workflow" data-to="fe-result"><path d="M 440 510 L 440 560" marker-end="url(#mkEm)"/><text class="hl" x="448" y="540">结果分发 ResultPanel</text></g>
+      <g class="rel em" data-from="fe-workflow" data-to="fe-api"><path d="M 560 435 L 600 435 L 600 780 L 530 780 L 530 800" marker-end="url(#mkEm)"/>
+        <text class="hl" transform="rotate(-90 612 620)" x="612" y="620" text-anchor="start">发起提取/建议/计算 · 订阅日志</text></g>
+      <g class="rel em" data-from="fe-api" data-to="api-router"><path d="M 560 850 L 625 850 L 625 270 L 700 270" marker-end="url(#mkEm)"/>
+        <text class="hl" x="630" y="256">HTTP · /api/upload | extract | suggest | calculate | result | download</text></g>
+      <g class="rel em" data-from="api-router" data-to="api-svc"><path d="M 930 340 L 930 390" marker-end="url(#mkEm)"/><text class="hl" x="938" y="370">触发后台管线（任务锁）</text></g>
+      <g class="rel" data-from="api-svc" data-to="en-caller"><path d="M 1170 430 L 1250 430 L 1250 240 L 1320 240" marker-end="url(#mk)"/><text x="1258" y="336">call_skill</text></g>
+      <g class="rel em" data-from="api-svc" data-to="en-calc"><path d="M 1170 530 L 1250 530 L 1250 610 L 1320 610" marker-end="url(#mkEm)"/>
+        <text class="hl" x="1178" y="522">计算调用（映射后计算）</text></g>
+      <g class="rel" data-from="api-svc" data-to="db-store"><path d="M 760 560 L 760 700" marker-end="url(#mk)"/><text x="768" y="640">会话写透 · 事件 / 锁</text></g>
+      <g class="rel em" data-from="en-caller" data-to="en-skills"><path d="M 1500 330 L 1500 370" marker-end="url(#mkEm)"/><text class="hl" x="1508" y="356">subprocess / LLM 型技能</text></g>
+      <g class="rel" data-from="en-skills" data-to="ext-llm"><path d="M 1670 300 L 1740 300 L 1740 888 L 1660 888" marker-end="url(#mk)"/>
+        <text x="1712" y="292" text-anchor="end">LLM 调用</text></g>
+      <g class="rel" data-from="en-calc" data-to="db-store"><path d="M 1320 650 L 1250 650 L 1250 800 L 1170 800" marker-end="url(#mk)"/>
+        <text x="1260" y="640">结果 / 报价 / 方案落盘</text></g>
+      <g class="rel dash" data-from="api-svc" data-to="fe-workflow"><path d="M 700 470 L 560 470" marker-end="url(#mk)"/>
+        <text x="640" y="458">SSE 事件流（log / done / error）</text></g>
+    </g>
+
+    <text class="note" x="60" y="1220">数据流要点：前端发起 → 路由注册会话/下载鉴权 → 后台线程串行执行（带锁 + SSE 回传）→ 计算内核确定性产出（零 token）→ 结果落会话目录后轮询取回。</text>
+    <text class="note" x="60" y="1244">跨模块：与空调模块共用 Workflow 骨架与 /api 分阶段端点；空压的“报价单/方案文档”由本模块计算管线生成，报价模块不消费本会话。</text>
+  </svg>
+  </div>
+
+  <div class="cards">
+    <div class="cardx"><h3><i class="dot" style="background:#22c55e"></i>职责边界</h3>
+      <ul>
+        <li>负责：空压调研表上传 → <b>LLM 非结构化提取</b> → 质检/填充建议 → 节能率与设备分析计算 → 报价单/方案文档下载。</li>
+        <li>不负责：计算全部走确定性引擎，LLM 只做“看得懂”的文本提取与建议叙事；无“进入冷站仿真”出口（仅空调有）。</li>
+      </ul></div>
+    <div class="cardx"><h3><i class="dot" style="background:#0ea5e9"></i>核心数据流</h3>
+      <ul>
+        <li>调研表 → <code>/api/upload</code>（建 session）→ <code>extract-air-compressor-data-llm</code> 技能 → <code>rawData(projectLevel/equipmentLevel)</code> → 服务端 schema 校验/拒收复评。</li>
+        <li>建议脚本 + 可选 LLM 增强 → 回填 → <code>AirCompressorCalculator</code>（current − optimized）→ 节能率区间 + 设备分析 JSON。</li>
+        <li>全程 SSE 推送步骤日志；结果经 <code>GET /api/result/{session_id}</code> 轮询取回展示。</li>
+      </ul></div>
+    <div class="cardx"><h3><i class="dot" style="background:#8b5cf6"></i>模块间依赖</h3>
+      <ul>
+        <li>依赖共享：<code>lib/api.ts</code> 契约、FastAPI 分阶段端点、M1 会话/锁/事件底座、外部 Anthropic API。</li>
+        <li>平行：与空调模块共用 <code>Workflow.tsx</code> 骨架；与报价模块无会话级耦合；与仿真/设备拓扑模块无数据交换。</li>
+      </ul></div>
+  </div>
+</main>
+<div class="foot">源码证据：apps/web/src/components/Workflow.tsx · src/lib/api.ts · core/air_compressor_calculator.py · apps/api/services.py · .claude/skills</div>
+
+<script>
+  (function(){
+    var root=document.documentElement;
+    document.getElementById('theme').addEventListener('click',function(){
+      root.setAttribute('data-theme',root.getAttribute('data-theme')==='light'?'dark':'light');
+    });
+    var nodes=[].slice.call(document.querySelectorAll('.node'));
+    var rels=[].slice.call(document.querySelectorAll('.rels .rel'));
+    var graph={};
+    rels.forEach(function(r){
+      var a=r.getAttribute('data-from'),b=r.getAttribute('data-to');
+      if(a&&b){(graph[a]=graph[a]||[]).push(r);(graph[b]=graph[b]||[]).push(r);}
+    });
+    nodes.forEach(function(n){
+      n.addEventListener('mouseenter',function(){
+        document.body.classList.add('dim-on');
+        var id=n.id, relsNear=graph[id]||[];
+        var near={};
+        relsNear.forEach(function(r){near[r.getAttribute('data-from')]=1;near[r.getAttribute('data-to')]=1;});
+        rels.forEach(function(r){if(relsNear.indexOf(r)>=0)r.classList.add('lit');else r.classList.remove('lit');});
+        nodes.forEach(function(m){if(m.id===id||near[m.id])m.classList.add('lit');else m.classList.remove('lit');});
+      });
+      n.addEventListener('mouseleave',function(){
+        document.body.classList.remove('dim-on');
+        nodes.forEach(function(m){m.classList.remove('lit');});
+        rels.forEach(function(r){r.classList.remove('lit');});
+      });
+    });
+  })();
+</script>
+</body>
+</html>

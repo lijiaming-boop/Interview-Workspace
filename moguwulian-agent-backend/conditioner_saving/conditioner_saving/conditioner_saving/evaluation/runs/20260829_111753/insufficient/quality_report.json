@@ -1,0 +1,481 @@
+{
+  "completeness": 0.07,
+  "confidence_level": "low",
+  "issues": [
+    {
+      "field": "project_region",
+      "severity": "critical",
+      "type": "missing",
+      "message": "项目地区缺失,无法匹配气象数据"
+    },
+    {
+      "field": "monthly_data[0].total_energy",
+      "severity": "high",
+      "type": "missing",
+      "message": "1月冷站总能耗缺失"
+    },
+    {
+      "field": "monthly_data[1].total_energy",
+      "severity": "high",
+      "type": "missing",
+      "message": "2月冷站总能耗缺失"
+    },
+    {
+      "field": "monthly_data[1].chiller_supply_temp",
+      "severity": "high",
+      "type": "missing",
+      "message": "2月冷机供水温度缺失"
+    },
+    {
+      "field": "monthly_data[2].total_energy",
+      "severity": "high",
+      "type": "missing",
+      "message": "3月冷站总能耗缺失"
+    },
+    {
+      "field": "monthly_data[2].chiller_supply_temp",
+      "severity": "high",
+      "type": "missing",
+      "message": "3月冷机供水温度缺失"
+    },
+    {
+      "field": "monthly_data[3].total_energy",
+      "severity": "high",
+      "type": "missing",
+      "message": "4月冷站总能耗缺失"
+    },
+    {
+      "field": "monthly_data[3].chiller_supply_temp",
+      "severity": "high",
+      "type": "missing",
+      "message": "4月冷机供水温度缺失"
+    },
+    {
+      "field": "monthly_data[4].total_energy",
+      "severity": "high",
+      "type": "missing",
+      "message": "5月冷站总能耗缺失"
+    },
+    {
+      "field": "monthly_data[4].chiller_supply_temp",
+      "severity": "high",
+      "type": "missing",
+      "message": "5月冷机供水温度缺失"
+    },
+    {
+      "field": "monthly_data[5].total_energy",
+      "severity": "high",
+      "type": "missing",
+      "message": "6月冷站总能耗缺失"
+    },
+    {
+      "field": "monthly_data[5].chiller_supply_temp",
+      "severity": "high",
+      "type": "missing",
+      "message": "6月冷机供水温度缺失"
+    },
+    {
+      "field": "monthly_data[6].total_energy",
+      "severity": "high",
+      "type": "missing",
+      "message": "7月冷站总能耗缺失"
+    },
+    {
+      "field": "monthly_data[6].chiller_supply_temp",
+      "severity": "high",
+      "type": "missing",
+      "message": "7月冷机供水温度缺失"
+    },
+    {
+      "field": "monthly_data[7].total_energy",
+      "severity": "high",
+      "type": "missing",
+      "message": "8月冷站总能耗缺失"
+    },
+    {
+      "field": "monthly_data[7].chiller_supply_temp",
+      "severity": "high",
+      "type": "missing",
+      "message": "8月冷机供水温度缺失"
+    },
+    {
+      "field": "monthly_data[8].total_energy",
+      "severity": "high",
+      "type": "missing",
+      "message": "9月冷站总能耗缺失"
+    },
+    {
+      "field": "monthly_data[8].chiller_supply_temp",
+      "severity": "high",
+      "type": "missing",
+      "message": "9月冷机供水温度缺失"
+    },
+    {
+      "field": "monthly_data[9].total_energy",
+      "severity": "high",
+      "type": "missing",
+      "message": "10月冷站总能耗缺失"
+    },
+    {
+      "field": "monthly_data[9].chiller_supply_temp",
+      "severity": "high",
+      "type": "missing",
+      "message": "10月冷机供水温度缺失"
+    },
+    {
+      "field": "monthly_data[10].total_energy",
+      "severity": "high",
+      "type": "missing",
+      "message": "11月冷站总能耗缺失"
+    },
+    {
+      "field": "monthly_data[10].chiller_supply_temp",
+      "severity": "high",
+      "type": "missing",
+      "message": "11月冷机供水温度缺失"
+    },
+    {
+      "field": "monthly_data[11].total_energy",
+      "severity": "high",
+      "type": "missing",
+      "message": "12月冷站总能耗缺失"
+    },
+    {
+      "field": "monthly_data[11].chiller_supply_temp",
+      "severity": "high",
+      "type": "missing",
+      "message": "12月冷机供水温度缺失"
+    },
+    {
+      "field": "monthly_data[1].cooling_pump_freq",
+      "severity": "medium",
+      "type": "missing",
+      "message": "2月冷却泵频率缺失"
+    },
+    {
+      "field": "monthly_data[1].freezing_pump_freq",
+      "severity": "medium",
+      "type": "missing",
+      "message": "2月冷冻泵频率缺失"
+    },
+    {
+      "field": "monthly_data[1].cooling_water_temp_diff",
+      "severity": "medium",
+      "type": "missing",
+      "message": "2月冷却水温差缺失"
+    },
+    {
+      "field": "monthly_data[1].freezing_water_temp_diff",
+      "severity": "medium",
+      "type": "missing",
+      "message": "2月冷冻水温差缺失"
+    },
+    {
+      "field": "monthly_data[1].cooling_tower_outlet_temp",
+      "severity": "medium",
+      "type": "missing",
+      "message": "2月冷却塔出水温度缺失"
+    },
+    {
+      "field": "monthly_data[2].cooling_pump_freq",
+      "severity": "medium",
+      "type": "missing",
+      "message": "3月冷却泵频率缺失"
+    },
+    {
+      "field": "monthly_data[2].freezing_pump_freq",
+      "severity": "medium",
+      "type": "missing",
+      "message": "3月冷冻泵频率缺失"
+    },
+    {
+      "field": "monthly_data[2].cooling_water_temp_diff",
+      "severity": "medium",
+      "type": "missing",
+      "message": "3月冷却水温差缺失"
+    },
+    {
+      "field": "monthly_data[2].freezing_water_temp_diff",
+      "severity": "medium",
+      "type": "missing",
+      "message": "3月冷冻水温差缺失"
+    },
+    {
+      "field": "monthly_data[2].cooling_tower_outlet_temp",
+      "severity": "medium",
+      "type": "missing",
+      "message": "3月冷却塔出水温度缺失"
+    },
+    {
+      "field": "monthly_data[3].cooling_pump_freq",
+      "severity": "medium",
+      "type": "missing",
+      "message": "4月冷却泵频率缺失"
+    },
+    {
+      "field": "monthly_data[3].freezing_pump_freq",
+      "severity": "medium",
+      "type": "missing",
+      "message": "4月冷冻泵频率缺失"
+    },
+    {
+      "field": "monthly_data[3].cooling_water_temp_diff",
+      "severity": "medium",
+      "type": "missing",
+      "message": "4月冷却水温差缺失"
+    },
+    {
+      "field": "monthly_data[3].freezing_water_temp_diff",
+      "severity": "medium",
+      "type": "missing",
+      "message": "4月冷冻水温差缺失"
+    },
+    {
+      "field": "monthly_data[3].cooling_tower_outlet_temp",
+      "severity": "medium",
+      "type": "missing",
+      "message": "4月冷却塔出水温度缺失"
+    },
+    {
+      "field": "monthly_data[4].cooling_pump_freq",
+      "severity": "medium",
+      "type": "missing",
+      "message": "5月冷却泵频率缺失"
+    },
+    {
+      "field": "monthly_data[4].freezing_pump_freq",
+      "severity": "medium",
+      "type": "missing",
+      "message": "5月冷冻泵频率缺失"
+    },
+    {
+      "field": "monthly_data[4].cooling_water_temp_diff",
+      "severity": "medium",
+      "type": "missing",
+      "message": "5月冷却水温差缺失"
+    },
+    {
+      "field": "monthly_data[4].freezing_water_temp_diff",
+      "severity": "medium",
+      "type": "missing",
+      "message": "5月冷冻水温差缺失"
+    },
+    {
+      "field": "monthly_data[4].cooling_tower_outlet_temp",
+      "severity": "medium",
+      "type": "missing",
+      "message": "5月冷却塔出水温度缺失"
+    },
+    {
+      "field": "monthly_data[5].cooling_pump_freq",
+      "severity": "medium",
+      "type": "missing",
+      "message": "6月冷却泵频率缺失"
+    },
+    {
+      "field": "monthly_data[5].freezing_pump_freq",
+      "severity": "medium",
+      "type": "missing",
+      "message": "6月冷冻泵频率缺失"
+    },
+    {
+      "field": "monthly_data[5].cooling_water_temp_diff",
+      "severity": "medium",
+      "type": "missing",
+      "message": "6月冷却水温差缺失"
+    },
+    {
+      "field": "monthly_data[5].freezing_water_temp_diff",
+      "severity": "medium",
+      "type": "missing",
+      "message": "6月冷冻水温差缺失"
+    },
+    {
+      "field": "monthly_data[5].cooling_tower_outlet_temp",
+      "severity": "medium",
+      "type": "missing",
+      "message": "6月冷却塔出水温度缺失"
+    },
+    {
+      "field": "monthly_data[6].cooling_pump_freq",
+      "severity": "medium",
+      "type": "missing",
+      "message": "7月冷却泵频率缺失"
+    },
+    {
+      "field": "monthly_data[6].freezing_pump_freq",
+      "severity": "medium",
+      "type": "missing",
+      "message": "7月冷冻泵频率缺失"
+    },
+    {
+      "field": "monthly_data[6].cooling_water_temp_diff",
+      "severity": "medium",
+      "type": "missing",
+      "message": "7月冷却水温差缺失"
+    },
+    {
+      "field": "monthly_data[6].freezing_water_temp_diff",
+      "severity": "medium",
+      "type": "missing",
+      "message": "7月冷冻水温差缺失"
+    },
+    {
+      "field": "monthly_data[6].cooling_tower_outlet_temp",
+      "severity": "medium",
+      "type": "missing",
+      "message": "7月冷却塔出水温度缺失"
+    },
+    {
+      "field": "monthly_data[7].cooling_pump_freq",
+      "severity": "medium",
+      "type": "missing",
+      "message": "8月冷却泵频率缺失"
+    },
+    {
+      "field": "monthly_data[7].freezing_pump_freq",
+      "severity": "medium",
+      "type": "missing",
+      "message": "8月冷冻泵频率缺失"
+    },
+    {
+      "field": "monthly_data[7].cooling_water_temp_diff",
+      "severity": "medium",
+      "type": "missing",
+      "message": "8月冷却水温差缺失"
+    },
+    {
+      "field": "monthly_data[7].freezing_water_temp_diff",
+      "severity": "medium",
+      "type": "missing",
+      "message": "8月冷冻水温差缺失"
+    },
+    {
+      "field": "monthly_data[7].cooling_tower_outlet_temp",
+      "severity": "medium",
+      "type": "missing",
+      "message": "8月冷却塔出水温度缺失"
+    },
+    {
+      "field": "monthly_data[8].cooling_pump_freq",
+      "severity": "medium",
+      "type": "missing",
+      "message": "9月冷却泵频率缺失"
+    },
+    {
+      "field": "monthly_data[8].freezing_pump_freq",
+      "severity": "medium",
+      "type": "missing",
+      "message": "9月冷冻泵频率缺失"
+    },
+    {
+      "field": "monthly_data[8].cooling_water_temp_diff",
+      "severity": "medium",
+      "type": "missing",
+      "message": "9月冷却水温差缺失"
+    },
+    {
+      "field": "monthly_data[8].freezing_water_temp_diff",
+      "severity": "medium",
+      "type": "missing",
+      "message": "9月冷冻水温差缺失"
+    },
+    {
+      "field": "monthly_data[8].cooling_tower_outlet_temp",
+      "severity": "medium",
+      "type": "missing",
+      "message": "9月冷却塔出水温度缺失"
+    },
+    {
+      "field": "monthly_data[9].cooling_pump_freq",
+      "severity": "medium",
+      "type": "missing",
+      "message": "10月冷却泵频率缺失"
+    },
+    {
+      "field": "monthly_data[9].freezing_pump_freq",
+      "severity": "medium",
+      "type": "missing",
+      "message": "10月冷冻泵频率缺失"
+    },
+    {
+      "field": "monthly_data[9].cooling_water_temp_diff",
+      "severity": "medium",
+      "type": "missing",
+      "message": "10月冷却水温差缺失"
+    },
+    {
+      "field": "monthly_data[9].freezing_water_temp_diff",
+      "severity": "medium",
+      "type": "missing",
+      "message": "10月冷冻水温差缺失"
+    },
+    {
+      "field": "monthly_data[9].cooling_tower_outlet_temp",
+      "severity": "medium",
+      "type": "missing",
+      "message": "10月冷却塔出水温度缺失"
+    },
+    {
+      "field": "monthly_data[10].cooling_pump_freq",
+      "severity": "medium",
+      "type": "missing",
+      "message": "11月冷却泵频率缺失"
+    },
+    {
+      "field": "monthly_data[10].freezing_pump_freq",
+      "severity": "medium",
+      "type": "missing",
+      "message": "11月冷冻泵频率缺失"
+    },
+    {
+      "field": "monthly_data[10].cooling_water_temp_diff",
+      "severity": "medium",
+      "type": "missing",
+      "message": "11月冷却水温差缺失"
+    },
+    {
+      "field": "monthly_data[10].freezing_water_temp_diff",
+      "severity": "medium",
+      "type": "missing",
+      "message": "11月冷冻水温差缺失"
+    },
+    {
+      "field": "monthly_data[10].cooling_tower_outlet_temp",
+      "severity": "medium",
+      "type": "missing",
+      "message": "11月冷却塔出水温度缺失"
+    },
+    {
+      "field": "monthly_data[11].cooling_pump_freq",
+      "severity": "medium",
+      "type": "missing",
+      "message": "12月冷却泵频率缺失"
+    },
+    {
+      "field": "monthly_data[11].freezing_pump_freq",
+      "severity": "medium",
+      "type": "missing",
+      "message": "12月冷冻泵频率缺失"
+    },
+    {
+      "field": "monthly_data[11].cooling_water_temp_diff",
+      "severity": "medium",
+      "type": "missing",
+      "message": "12月冷却水温差缺失"
+    },
+    {
+      "field": "monthly_data[11].freezing_water_temp_diff",
+      "severity": "medium",
+      "type": "missing",
+      "message": "12月冷冻水温差缺失"
+    },
+    {
+      "field": "monthly_data[11].cooling_tower_outlet_temp",
+      "severity": "medium",
+      "type": "missing",
+      "message": "12月冷却塔出水温度缺失"
+    }
+  ],
+  "summary": "数据完整率7%,建议补充缺失月份数据。发现1个严重问题、23个高优先级问题、55个中等问题。"
+}

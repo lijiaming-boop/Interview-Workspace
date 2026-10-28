@@ -1,0 +1,4 @@
+model,successes,total,success_rate_pct
+基座模型,48,50,96
+head-only+自定义统计,41,50,82
+head-only+基座统计,37,50,74

@@ -1,0 +1,101 @@
+# HVAC Energy Agent — M1 部署编排
+# 用法: docker compose up -d --build
+# 说明:
+#   - api 使用 PostgreSQL 持久化（REQUIRE_AUTH=true 强制网关身份头）
+#   - 生产认证链路（P1 修复后闭环）：
+#       浏览器 → proxy:8080（OIDC 登录，服务端签名身份头）→ web:3000
+#       （Next.js 同源 /api rewrites 透传已签名身份头）→ api:8000
+#         （HMAC 校验 X-User-Info-Sig，未签名/错签名一律 401）
+#     proxy 只入口暴露 8080；web/api 仅内网可达，无法绕过网关直连
+#   - AUTH_SECRET 必须显式设置（compose :? 语法强制）：proxy 的身份 Cookie
+#     签名与 API 的身份头签名共用该密钥，缺失时拒绝启动
+services:
+  db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: hvac
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-hvac_dev_password}
+      POSTGRES_DB: hvac
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U hvac"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+    restart: unless-stopped
+
+  redis:
+    image: redis:7-alpine
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+    restart: unless-stopped
+
+  api:
+    build: .
+    environment:
+      DATABASE_URL: postgresql+psycopg2://hvac:${POSTGRES_PASSWORD:-hvac_dev_password}@db:5432/hvac
+      REDIS_URL: redis://redis:6379/0
+      REQUIRE_AUTH: "true"
+      ENVIRONMENT: production
+      # 身份头签名密钥（必须与 proxy 的 COOKIE_SECRET 一致；compose 强制显式设置）
+      AUTH_SECRET: ${AUTH_SECRET:?AUTH_SECRET 必须显式设置——网关与 API 共享的身份签名密钥}
+      # 生产 CORS：显式设置站点来源（逗号分隔），不用开发默认
+      CORS_ALLOW_ORIGINS: ${CORS_ALLOW_ORIGINS:-}
+      ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY:-}
+      ANTHROPIC_BASE_URL: ${ANTHROPIC_BASE_URL:-}
+      ANTHROPIC_MODEL: ${ANTHROPIC_MODEL:-}
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    volumes:
+      - sessions:/app/tmp
+    # P0 安全改造：不对外发布端口（原 `ports: ["8000:8000"]` 允许绕过网关直连）
+    expose:
+      - "8000"
+    restart: unless-stopped
+
+  web:
+    build:
+      context: ./apps/web
+      args:
+        # 同源 BFF：浏览器只访问 web 自身的 /api，由 Next.js rewrites 转发
+        NEXT_PUBLIC_API_BASE: /api
+    environment:
+      API_INTERNAL_URL: http://api:8000
+      NEXT_PUBLIC_API_BASE: /api
+    # P1 认证闭环：web 仅内网可达——唯一入口是 proxy（经 OIDC 登录后
+    # 由网关注入签名身份头）。绕过 proxy 无法获得有效签名。
+    expose:
+      - "3000"
+    depends_on:
+      - api
+    restart: unless-stopped
+
+  proxy:
+    build: ./proxy
+    environment:
+      # OIDC（Casdoor/自建 oauth-server）
+      OAUTH_SERVER_URL: ${OAUTH_SERVER_URL:?OAUTH_SERVER_URL 必须设置}
+      CLIENT_ID: ${CLIENT_ID:?CLIENT_ID 必须设置}
+      CLIENT_SECRET: ${CLIENT_SECRET:?CLIENT_SECRET 必须设置}
+      REDIRECT_URI: ${REDIRECT_URI:?REDIRECT_URI 必须设置（proxy 的公网回调地址）}
+      # 身份 Cookie / 身份头签名密钥：与 api 的 AUTH_SECRET 一致
+      COOKIE_SECRET: ${AUTH_SECRET:?AUTH_SECRET 必须显式设置——网关与 API 共享的身份签名密钥}
+      # 认证后的下一跳：Next.js BFF（身份头经 rewrites 透传到 api）
+      BACKEND_URL: http://web:3000
+      PROXY_PORT: "8080"
+    ports:
+      - "8080:8080"
+    depends_on:
+      - web
+    restart: unless-stopped
+
+volumes:
+  pgdata:
+  sessions:

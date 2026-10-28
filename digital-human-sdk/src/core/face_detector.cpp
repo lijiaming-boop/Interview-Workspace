@@ -1,0 +1,376 @@
+#include "core/face_detector.h"
+
+#include <algorithm>
+#include <array>
+#include <cmath>
+#include <utility>
+
+#include <layer.h>
+#include <net.h>
+#include <opencv2/dnn.hpp>
+#include <opencv2/imgproc.hpp>
+
+#include "digital_human/log_macros.h"
+
+namespace digital_human {
+namespace core {
+namespace {
+
+constexpr int kDetectorInputSize = 640;
+constexpr int kLandmarkInputSize = 192;
+constexpr float kScoreThreshold = 0.50f;
+constexpr float kNmsThreshold = 0.40f;
+
+// 2D106 (JD/InsightFace layout) -> the iBUG 68-point order used downstream.
+constexpr std::array<int, 68> kLandmark106To68 = {
+    1, 10, 12, 14, 16, 3, 5, 7, 0, 23, 21, 19, 32, 30, 28, 26, 17,
+    43, 48, 49, 51, 50, 102, 103, 104, 105, 101, 72, 73, 74, 86, 78,
+    79, 80, 85, 84, 35, 41, 42, 39, 37, 36, 89, 95, 96, 93, 91, 90,
+    52, 64, 63, 71, 67, 68, 61, 58, 59, 53, 56, 55, 65, 66, 62, 70,
+    69, 57, 60, 54
+};
+
+struct Proposal {
+    cv::Rect2f rect;
+    float score = 0.0f;
+};
+
+float IntersectionArea(const Proposal& a, const Proposal& b) {
+    return (a.rect & b.rect).area();
+}
+
+void Nms(std::vector<Proposal>& proposals) {
+    std::sort(proposals.begin(), proposals.end(), [](const Proposal& a, const Proposal& b) {
+        return a.score > b.score;
+    });
+
+    std::vector<Proposal> kept;
+    kept.reserve(proposals.size());
+    for (const auto& candidate : proposals) {
+        bool keep = true;
+        for (const auto& selected : kept) {
+            const float intersection = IntersectionArea(candidate, selected);
+            const float union_area = candidate.rect.area() + selected.rect.area() - intersection;
+            if (union_area > 0.0f && intersection / union_area > kNmsThreshold) {
+                keep = false;
+                break;
+            }
+        }
+        if (keep) kept.push_back(candidate);
+    }
+    proposals = std::move(kept);
+}
+
+cv::Mat EnsureBgr8(const cv::Mat& image, const char* operation) {
+    if (image.empty()) return {};
+    if (image.type() == CV_8UC3) return image;
+
+    cv::Mat bgr;
+    if (image.type() == CV_8UC1) {
+        cv::cvtColor(image, bgr, cv::COLOR_GRAY2BGR);
+    } else if (image.type() == CV_8UC4) {
+        cv::cvtColor(image, bgr, cv::COLOR_BGRA2BGR);
+    } else {
+        DH_LOG_ERROR("face_detector") << operation
+                  << ": expected CV_8UC1, CV_8UC3, or CV_8UC4; got type "
+                  << image.type();
+    }
+    return bgr;
+}
+
+}  // namespace
+
+struct FaceDetector::Impl {
+    ncnn::Net detector_net;
+    cv::dnn::Net landmark_net;
+    bool model_loaded = false;
+
+    bool loadModel(const std::filesystem::path& model_dir) {
+        const auto detector_param = model_dir / "scrfd_2.5g_kps-opt2.param";
+        const auto detector_bin = model_dir / "scrfd_2.5g_kps-opt2.bin";
+        const auto landmark_onnx = model_dir / "2d106det.onnx";
+
+        if (!std::filesystem::is_directory(model_dir) ||
+            !std::filesystem::is_regular_file(detector_param) ||
+            !std::filesystem::is_regular_file(detector_bin) ||
+            !std::filesystem::is_regular_file(landmark_onnx)) {
+            DH_LOG_ERROR("face_detector") << "model directory must contain "
+                      << "scrfd_2.5g_kps-opt2.param/.bin and 2d106det.onnx: "
+                      << model_dir;
+            model_loaded = false;
+            return false;
+        }
+
+        detector_net.clear();
+        landmark_net = cv::dnn::Net();
+
+        const int detector_param_result =
+            detector_net.load_param(detector_param.string().c_str());
+        const int detector_model_result = detector_param_result == 0
+            ? detector_net.load_model(detector_bin.string().c_str())
+            : -1;
+        if (detector_param_result != 0 || detector_model_result != 0) {
+            DH_LOG_ERROR("face_detector") << "failed to load SCRFD model from " << model_dir
+                      << " (param=" << detector_param_result
+                      << ", bin=" << detector_model_result << ")";
+            model_loaded = false;
+            return false;
+        }
+
+        try {
+            landmark_net = cv::dnn::readNetFromONNX(landmark_onnx.string());
+        } catch (const cv::Exception& e) {
+            DH_LOG_ERROR("face_detector") << "failed to load 2D106 model: " << e.what();
+            detector_net.clear();
+            model_loaded = false;
+            return false;
+        }
+
+        model_loaded = !landmark_net.empty();
+        if (!model_loaded) {
+            DH_LOG_ERROR("face_detector") << "2D106 ONNX network is empty after load: "
+                      << landmark_onnx;
+        }
+        return model_loaded;
+    }
+
+    void GenerateProposals(const ncnn::Mat& score_blob, const ncnn::Mat& bbox_blob,
+                           int stride, std::vector<Proposal>& proposals) const {
+        if (score_blob.empty() || bbox_blob.empty()) {
+            return;
+        }
+
+        // NCNN SCRFD exports are seen in two equivalent layouts:
+        //   1) [anchor * 2, grid_h, grid_w] and [anchor * 4, grid_h, grid_w]
+        //   2) [1, anchor * grid_h * grid_w, 1] and
+        //      [1, anchor * grid_h * grid_w, 4].
+        // The second layout is emitted by the GitHub NCNN model used by this
+        // project.  Treating it as the first layout silently produced zero
+        // proposals because c == 1.
+        if (score_blob.c >= 2 && bbox_blob.c >= 8) {
+            for (int anchor = 0; anchor < 2; ++anchor) {
+                const ncnn::Mat scores = score_blob.channel(anchor);
+                const ncnn::Mat boxes = bbox_blob.channel_range(anchor * 4, 4);
+                for (int y = 0; y < scores.h; ++y) {
+                    for (int x = 0; x < scores.w; ++x) {
+                        const int index = y * scores.w + x;
+                        const float score = scores[index];
+                        if (score < kScoreThreshold) continue;
+
+                        const float cx = static_cast<float>(x * stride);
+                        const float cy = static_cast<float>(y * stride);
+                        const float left = boxes.channel(0)[index] * stride;
+                        const float top = boxes.channel(1)[index] * stride;
+                        const float right = boxes.channel(2)[index] * stride;
+                        const float bottom = boxes.channel(3)[index] * stride;
+                        proposals.push_back({cv::Rect2f(cx - left, cy - top,
+                                                         left + right, top + bottom), score});
+                    }
+                }
+            }
+            return;
+        }
+
+        const int score_count = score_blob.w * score_blob.h * score_blob.c;
+        const int box_count = bbox_blob.w * bbox_blob.h * bbox_blob.c;
+        if (score_count <= 0 || box_count != score_count * 4 ||
+            score_blob.elempack != 1 || bbox_blob.elempack != 1 ||
+            score_blob.elemsize != sizeof(float) || bbox_blob.elemsize != sizeof(float)) {
+            return;
+        }
+
+        const int grid_width = kDetectorInputSize / stride;
+        const float* score_data = static_cast<const float*>(score_blob.data);
+        const float* box_data = static_cast<const float*>(bbox_blob.data);
+        for (int index = 0; index < score_count; ++index) {
+            const float score = score_data[index];
+            if (score < kScoreThreshold) continue;
+
+            // SCRFD flattens points in row-major order and appends the two
+            // anchors for each point: (y, x, anchor), not all points of one
+            // anchor followed by all points of the other anchor.
+            const int location = index / 2;
+            const int x = location % grid_width;
+            const int y = location / grid_width;
+
+            const float left = box_data[index * 4] * stride;
+            const float top = box_data[index * 4 + 1] * stride;
+            const float right = box_data[index * 4 + 2] * stride;
+            const float bottom = box_data[index * 4 + 3] * stride;
+            proposals.push_back({cv::Rect2f(static_cast<float>(x * stride) - left,
+                                             static_cast<float>(y * stride) - top,
+                                             left + right, top + bottom), score});
+        }
+    }
+
+    std::vector<cv::Rect> detect(const cv::Mat& image) {
+        std::vector<cv::Rect> faces;
+        if (!model_loaded) {
+            DH_LOG_ERROR("face_detector") << "model is not loaded";
+            return faces;
+        }
+
+        const cv::Mat bgr = EnsureBgr8(image, "detect");
+        if (bgr.empty()) return faces;
+
+        const float scale = std::min(static_cast<float>(kDetectorInputSize) / bgr.cols,
+                                     static_cast<float>(kDetectorInputSize) / bgr.rows);
+        const int resized_w = std::max(1, static_cast<int>(bgr.cols * scale));
+        const int resized_h = std::max(1, static_cast<int>(bgr.rows * scale));
+        const int pad_x = (kDetectorInputSize - resized_w) / 2;
+        const int pad_y = (kDetectorInputSize - resized_h) / 2;
+        cv::Mat resized;
+        cv::resize(bgr, resized, cv::Size(resized_w, resized_h));
+        cv::Mat padded_bgr(kDetectorInputSize, kDetectorInputSize, CV_8UC3,
+                           cv::Scalar(0, 0, 0));
+        resized.copyTo(padded_bgr(cv::Rect(pad_x, pad_y, resized_w, resized_h)));
+        ncnn::Mat padded = ncnn::Mat::from_pixels(
+            padded_bgr.data, ncnn::Mat::PIXEL_BGR2RGB,
+            kDetectorInputSize, kDetectorInputSize);
+        const float mean_values[3] = {127.5f, 127.5f, 127.5f};
+        const float norm_values[3] = {1.0f / 128.0f, 1.0f / 128.0f, 1.0f / 128.0f};
+        padded.substract_mean_normalize(mean_values, norm_values);
+
+        ncnn::Extractor extractor = detector_net.create_extractor();
+        if (extractor.input("input.1", padded) != 0) {
+            DH_LOG_ERROR("face_detector") << "SCRFD input blob 'input.1' is unavailable";
+            return faces;
+        }
+
+        std::vector<Proposal> proposals;
+        for (const int stride : {8, 16, 32}) {
+            ncnn::Mat scores;
+            ncnn::Mat boxes;
+            const std::string score_name = "score_" + std::to_string(stride);
+            const std::string box_name = "bbox_" + std::to_string(stride);
+            if (extractor.extract(score_name.c_str(), scores) != 0 ||
+                extractor.extract(box_name.c_str(), boxes) != 0) {
+                DH_LOG_ERROR("face_detector") << "unsupported SCRFD model outputs; expected score_"
+                          << stride << " and bbox_" << stride;
+                return {};
+            }
+            GenerateProposals(scores, boxes, stride, proposals);
+        }
+
+        Nms(proposals);
+        const float pad_x_f = static_cast<float>(pad_x);
+        const float pad_y_f = static_cast<float>(pad_y);
+        for (const auto& proposal : proposals) {
+            const float x0 = std::clamp((proposal.rect.x - pad_x_f) / scale,
+                                        0.0f, static_cast<float>(bgr.cols - 1));
+            const float y0 = std::clamp((proposal.rect.y - pad_y_f) / scale,
+                                        0.0f, static_cast<float>(bgr.rows - 1));
+            const float x1 = std::clamp((proposal.rect.x + proposal.rect.width - pad_x_f) / scale,
+                                        0.0f, static_cast<float>(bgr.cols));
+            const float y1 = std::clamp((proposal.rect.y + proposal.rect.height - pad_y_f) / scale,
+                                        0.0f, static_cast<float>(bgr.rows));
+            const int left = static_cast<int>(std::floor(x0));
+            const int top = static_cast<int>(std::floor(y0));
+            const int right = static_cast<int>(std::ceil(x1));
+            const int bottom = static_cast<int>(std::ceil(y1));
+            if (right > left && bottom > top) faces.emplace_back(left, top, right - left, bottom - top);
+        }
+        return faces;
+    }
+
+    std::vector<cv::Point2f> getLandmarksFloat(const cv::Mat& image, const cv::Rect& face_rect) {
+        if (!model_loaded || image.empty() || face_rect.width < 2 || face_rect.height < 2) {
+            return {};
+        }
+
+        const cv::Mat bgr = EnsureBgr8(image, "getLandmarks");
+        if (bgr.empty()) return {};
+        const cv::Rect image_rect(0, 0, bgr.cols, bgr.rows);
+        const cv::Rect bounded_face = face_rect & image_rect;
+        if (bounded_face.width < 2 || bounded_face.height < 2) return {};
+
+        const cv::Point2f center(bounded_face.x + bounded_face.width * 0.5f,
+                                 bounded_face.y + bounded_face.height * 0.5f);
+        const double scale = static_cast<double>(kLandmarkInputSize) /
+                             (static_cast<double>(std::max(bounded_face.width, bounded_face.height)) * 1.5);
+        cv::Mat transform = cv::getRotationMatrix2D(center, 0.0, scale);
+        transform.at<double>(0, 2) += kLandmarkInputSize * 0.5 - center.x;
+        transform.at<double>(1, 2) += kLandmarkInputSize * 0.5 - center.y;
+
+        cv::Mat aligned;
+        cv::warpAffine(bgr, aligned, transform,
+                       cv::Size(kLandmarkInputSize, kLandmarkInputSize),
+                       cv::INTER_LINEAR, cv::BORDER_CONSTANT);
+        const cv::Mat blob = cv::dnn::blobFromImage(
+            aligned, 1.0, cv::Size(kLandmarkInputSize, kLandmarkInputSize),
+            cv::Scalar(), true, false);
+
+        cv::Mat output;
+        try {
+            landmark_net.setInput(blob);
+            output = landmark_net.forward();
+        } catch (const cv::Exception& e) {
+            DH_LOG_ERROR("face_detector") << "2D106 inference failed: " << e.what();
+            return {};
+        }
+
+        if (output.total() != 212) {
+            DH_LOG_ERROR("face_detector") << "2D106 output must contain 212 values; got "
+                      << output.total();
+            return {};
+        }
+        const cv::Mat flat = output.reshape(1, 1);
+        cv::Mat inverse;
+        cv::invertAffineTransform(transform, inverse);
+
+        std::array<cv::Point2f, 106> points106;
+        for (int i = 0; i < 106; ++i) {
+            const float x = (flat.at<float>(0, i * 2) + 1.0f) * (kLandmarkInputSize / 2.0f);
+            const float y = (flat.at<float>(0, i * 2 + 1) + 1.0f) * (kLandmarkInputSize / 2.0f);
+            points106[i] = cv::Point2f(
+                static_cast<float>(inverse.at<double>(0, 0) * x + inverse.at<double>(0, 1) * y + inverse.at<double>(0, 2)),
+                static_cast<float>(inverse.at<double>(1, 0) * x + inverse.at<double>(1, 1) * y + inverse.at<double>(1, 2)));
+        }
+
+        std::vector<cv::Point2f> landmarks;
+        landmarks.reserve(kLandmark106To68.size());
+        for (const int index : kLandmark106To68) {
+            landmarks.emplace_back(points106[index]);
+        }
+        return landmarks;
+    }
+
+    std::vector<cv::Point> getLandmarks(const cv::Mat& image, const cv::Rect& face_rect) {
+        const auto landmarks_float = getLandmarksFloat(image, face_rect);
+        std::vector<cv::Point> landmarks;
+        landmarks.reserve(landmarks_float.size());
+        for (const auto& point : landmarks_float) {
+            landmarks.emplace_back(cvRound(point.x), cvRound(point.y));
+        }
+        return landmarks;
+    }
+};
+
+FaceDetector::FaceDetector() : impl_(std::make_unique<Impl>()) {}
+FaceDetector::~FaceDetector() = default;
+FaceDetector::FaceDetector(FaceDetector&&) noexcept = default;
+FaceDetector& FaceDetector::operator=(FaceDetector&&) noexcept = default;
+
+bool FaceDetector::loadModel(const std::filesystem::path& model_path) {
+    return impl_->loadModel(model_path);
+}
+
+bool FaceDetector::isModelLoaded() const {
+    return impl_->model_loaded;
+}
+
+std::vector<cv::Point> FaceDetector::getLandmarks(const cv::Mat& image, const cv::Rect& face_rect) {
+    return impl_->getLandmarks(image, face_rect);
+}
+
+std::vector<cv::Point2f> FaceDetector::getLandmarksFloat(
+    const cv::Mat& image, const cv::Rect& face_rect) {
+    return impl_->getLandmarksFloat(image, face_rect);
+}
+
+std::vector<cv::Rect> FaceDetector::detect(const cv::Mat& image) {
+    return impl_->detect(image);
+}
+
+}  // namespace core
+}  // namespace digital_human

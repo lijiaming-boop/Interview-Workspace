@@ -1,0 +1,64 @@
+{
+  "schema_version": 1,
+  "diagram_type": "architecture",
+  "meta": {
+    "title": "Digital Human SDK 系统架构",
+    "locale": "zh-CN",
+    "quality_profile": "showcase",
+    "viewBox": [1780, 1300],
+    "views": [
+      { "id": "conversation-loop", "label": "实时会话链路", "focus": ["host", "session", "llmc", "llmsvc", "ttsc", "ttssvc", "bridge", "facade", "pub", "target"], "note": "从用户文本到口型推流的完整闭环。" },
+      { "id": "lip-pipeline", "label": "口型流水线", "focus": ["facade", "audiop", "videop", "infer", "render", "bridge"], "note": "音频与视频两条输入在推理 worker 汇合。" },
+      { "id": "media-out", "label": "编码与推流", "focus": ["bridge", "pub", "target"], "note": "原始 TTS PCM 与渲染 BGR 进入编码器。" }
+    ]
+  },
+  "components": [
+    { "id": "host", "type": "frontend", "label": "宿主应用 / 调用方", "sublabel": "前端 · 终端 · 网关", "pos": [40, 70], "size": [220, 96] },
+    { "id": "llmsvc", "type": "external", "label": "LLM 服务", "sublabel": "llama.cpp / OpenAI 兼容", "tag": "HTTP · SSE", "pos": [1260, 50], "size": [250, 88] },
+    { "id": "ttssvc", "type": "external", "label": "TTS 服务", "sublabel": "HTTP · PCM s16/f32", "tag": "16 kHz mono", "pos": [1540, 50], "size": [220, 88] },
+    { "id": "capi", "type": "backend", "label": "C API", "sublabel": "c_api.h · ABI 桥", "sources": [{ "path": "include/digital_human/c_api.h" }], "pos": [120, 300], "size": [240, 78] },
+    { "id": "facade", "type": "backend", "label": "DigitalHumanSDK", "sublabel": "Init/Start · PushAudio·Video · GetOutputFrame · ProcessFile", "sources": [{ "path": "include/digital_human_sdk.h" }], "pos": [450, 288], "size": [420, 108] },
+    { "id": "session", "type": "backend", "label": "ConversationSession", "sublabel": "回合状态机 · 增量分句 · 历史预算", "tag": "barge-in", "sources": [{ "path": "include/dialog/conversation_session.h" }], "pos": [330, 560], "size": [330, 104] },
+    { "id": "llmc", "type": "backend", "label": "文本生成客户端", "sublabel": "LlamaCpp / HTTP 适配", "sources": [{ "path": "include/dialog/llama_cpp_text_generation_client.h" }, { "path": "include/dialog/http_text_generation_client.h" }], "pos": [720, 560], "size": [290, 104] },
+    { "id": "ttsc", "type": "backend", "label": "TTS 客户端", "sublabel": "HttpTTSClient · PCM 契约", "sources": [{ "path": "include/tts/http_tts_client.h" }], "pos": [1070, 560], "size": [290, 104] },
+    { "id": "audiop", "type": "backend", "label": "AudioProcessor", "sublabel": "降噪→分帧→VAD→Mel 行", "sources": [{ "path": "include/core/audio_processor.h" }, { "path": "include/audio/audio_mel_feature_extract.h" }], "pos": [70, 800], "size": [290, 108] },
+    { "id": "videop", "type": "backend", "label": "VideoProcessor", "sublabel": "SCRFD 检测→2D106 对齐→口唇遮罩", "tag": "人脸缓存", "sources": [{ "path": "include/core/video_processor.h" }, { "path": "include/core/face_detector.h" }, { "path": "include/core/face_aligner.h" }], "pos": [420, 800], "size": [290, 108] },
+    { "id": "infer", "type": "backend", "label": "InferenceWorker · AVMatcher", "sublabel": "装配 16 帧 Mel 窗 · Wav2Lip 推理", "tag": "ncnn · Vulkan", "sources": [{ "path": "include/core/inference_worker.h" }, { "path": "include/model/model_inferencer.h" }], "pos": [770, 800], "size": [310, 108] },
+    { "id": "render", "type": "backend", "label": "RenderThread", "sublabel": "ROI 融合/锐化/色彩 · 帧节奏调度", "sources": [{ "path": "include/core/render_thread.h" }, { "path": "include/core/frame_scheduler.h" }], "pos": [1140, 800], "size": [310, 108] },
+    { "id": "bridge", "type": "backend", "label": "ConversationStreamBridge", "sublabel": "PCM 扇出 · 轮询渲染帧", "sources": [{ "path": "include/media/conversation_stream_bridge.h" }], "pos": [200, 1060], "size": [360, 104] },
+    { "id": "pub", "type": "backend", "label": "StreamPublisher", "sublabel": "H.264 / AAC · FLV 封装", "tag": "FFmpeg", "sources": [{ "path": "include/media/stream_publisher.h" }], "pos": [680, 1060], "size": [360, 104] },
+    { "id": "target", "type": "external", "label": "流媒体接收端", "sublabel": "RTMP / RTSP 服务或 FLV", "pos": [1400, 1070], "size": [280, 88] }
+  ],
+  "boundaries": [
+    { "kind": "region", "label": "接入层 · 公共 API", "wraps": ["capi", "facade"] },
+    { "kind": "region", "label": "会话层 · 对话编排", "wraps": ["session", "llmc", "ttsc"] },
+    { "kind": "region", "label": "流水线层 · 实时音视频处理", "wraps": ["audiop", "videop", "infer", "render"] },
+    { "kind": "region", "label": "媒体层 · 编码与推流", "wraps": ["bridge", "pub"] }
+  ],
+  "connections": [
+    { "id": "e1", "from": "host", "to": "session", "label": "SubmitUserText · 头像" },
+    { "id": "e2", "from": "host", "to": "capi", "label": "调用公开接口" },
+    { "id": "e3", "from": "capi", "to": "facade", "label": "封装转发" },
+    { "id": "e4", "from": "facade", "to": "audiop", "label": "PCM 入队" },
+    { "id": "e5", "from": "facade", "to": "videop", "label": "BGR 帧入队" },
+    { "id": "e6", "from": "session", "to": "llmc", "label": "流式文本请求" },
+    { "id": "e7", "from": "llmc", "to": "llmsvc", "label": "HTTP/SSE 请求", "variant": "dashed" },
+    { "id": "e8", "from": "session", "to": "ttsc", "label": "分句 TTS 请求" },
+    { "id": "e9", "from": "ttsc", "to": "ttssvc", "label": "HTTP · 返回 PCM", "variant": "dashed" },
+    { "id": "e10", "from": "ttsc", "to": "session", "label": "PCM 分块回传", "variant": "dashed" },
+    { "id": "e11", "from": "audiop", "to": "infer", "label": "Mel 特征" },
+    { "id": "e12", "from": "videop", "to": "infer", "label": "对齐脸 + 遮罩" },
+    { "id": "e13", "from": "infer", "to": "render", "label": "推理结果" },
+    { "id": "e14", "from": "session", "to": "bridge", "label": "PCM · 底图帧", "variant": "emphasis" },
+    { "id": "e15", "from": "bridge", "to": "facade", "label": "SDK 输入 / 输出轮询" },
+    { "id": "e16", "from": "bridge", "to": "pub", "label": "原始 TTS PCM + 渲染 BGR", "variant": "emphasis" },
+    { "id": "e17", "from": "pub", "to": "target", "label": "H.264+AAC 推流" },
+    { "id": "e18", "from": "facade", "to": "host", "label": "输出帧 / 回调", "variant": "dashed" }
+  ],
+  "cards": [
+    { "dot": "cyan", "title": "接入与会话", "items": ["C API 与 C++ Facade 统一生命周期与流式输入", "ConversationSession 回合状态机，每回合恰好一次 on_turn_complete", "增量分句 + 多轮历史三重预算"] },
+    { "dot": "violet", "title": "核心流水线", "items": ["音频：PCM → Mel（Wav2Lip 前端规范）", "视频：SCRFD + 2D106 替代 dlib，静态底图人脸缓存", "EOS 是流结束的唯一权威信号，反压走有界队列"] },
+    { "dot": "emerald", "title": "媒体层", "items": ["Bridge 将 TTS PCM 扇出到 SDK 与编码器", "RenderThread 输出经 GetOutputFrame 轮询进入编码", "H.264 硬编回退 + AAC，输出 FLV / RTMP / RTSP"] },
+    { "dot": "rose", "title": "外部服务", "items": ["LLM 与 TTS 均为外部 HTTP 服务（不内置模型推理）", "RTMP/RTSP 接收端需由业务方提供", "libcurl 传输与 FFmpeg 编码均在公共 ABI 之后"] }
+  ]
+}

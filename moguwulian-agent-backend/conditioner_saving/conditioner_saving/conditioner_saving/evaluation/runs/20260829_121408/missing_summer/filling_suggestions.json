@@ -1,0 +1,26 @@
+{
+  "can_proceed": false,
+  "unfillable_fields": [
+    {
+      "field": "cooling_pump_freq",
+      "reason": "仅有0个月的冷却泵频率数据,不足以推断全年,建议至少提供6个月数据"
+    },
+    {
+      "field": "freezing_pump_freq",
+      "reason": "仅有0个月的冷冻泵频率数据,不足以推断全年,建议至少提供6个月数据"
+    },
+    {
+      "field": "cooling_water_temp_diff",
+      "reason": "仅有0个月的冷却水温差数据,不足以推断全年,建议至少提供6个月数据"
+    },
+    {
+      "field": "freezing_water_temp_diff",
+      "reason": "仅有0个月的冷冻水温差数据,不足以推断全年,建议至少提供6个月数据"
+    },
+    {
+      "field": "cooling_tower_outlet_temp",
+      "reason": "仅有0个月的冷却塔出水温度数据,不足以推断全年,建议至少提供6个月数据"
+    }
+  ],
+  "fillable_suggestions": []
+}

@@ -1,0 +1,303 @@
+{
+  "defaults_version": "1.0.0",
+  "can_proceed": true,
+  "unfillable_fields": [],
+  "fillable_suggestions": [
+    {
+      "field": "monthly_data[1].chiller_supply_temp",
+      "original_value": null,
+      "suggested_value": 7.0,
+      "method": "linear_interpolation",
+      "confidence": "high",
+      "reasoning": "基于1月(7.0)和3月(7.0)的线性插值"
+    },
+    {
+      "field": "monthly_data[3].chiller_supply_temp",
+      "original_value": null,
+      "suggested_value": 6.6,
+      "method": "linear_interpolation",
+      "confidence": "high",
+      "reasoning": "基于3月(7.0)和5月(6.25)的线性插值"
+    },
+    {
+      "field": "monthly_data[5].chiller_supply_temp",
+      "original_value": null,
+      "suggested_value": 6.1,
+      "method": "linear_interpolation",
+      "confidence": "high",
+      "reasoning": "基于5月(6.25)和7月(6.0)的线性插值"
+    },
+    {
+      "field": "monthly_data[7].chiller_supply_temp",
+      "original_value": null,
+      "suggested_value": 6.4,
+      "method": "linear_interpolation",
+      "confidence": "high",
+      "reasoning": "基于7月(6.0)和9月(6.75)的线性插值"
+    },
+    {
+      "field": "monthly_data[9].chiller_supply_temp",
+      "original_value": null,
+      "suggested_value": 6.8,
+      "method": "linear_interpolation",
+      "confidence": "high",
+      "reasoning": "基于9月(6.75)和12月(7.0)的线性插值"
+    },
+    {
+      "field": "monthly_data[10].chiller_supply_temp",
+      "original_value": null,
+      "suggested_value": 6.9,
+      "method": "linear_interpolation",
+      "confidence": "high",
+      "reasoning": "基于9月(6.75)和12月(7.0)的线性插值"
+    },
+    {
+      "field": "monthly_data[1].cooling_pump_freq",
+      "original_value": null,
+      "suggested_value": 36,
+      "method": "linear_interpolation",
+      "confidence": "high",
+      "reasoning": "基于1月(35.0)和3月(37.5)的线性插值"
+    },
+    {
+      "field": "monthly_data[1].freezing_pump_freq",
+      "original_value": null,
+      "suggested_value": 36,
+      "method": "linear_interpolation",
+      "confidence": "high",
+      "reasoning": "基于1月(35.0)和3月(37.5)的线性插值"
+    },
+    {
+      "field": "monthly_data[1].cooling_water_temp_diff",
+      "original_value": null,
+      "suggested_value": 3.2,
+      "method": "linear_interpolation",
+      "confidence": "high",
+      "reasoning": "基于1月(3.0)和3月(3.5)的线性插值"
+    },
+    {
+      "field": "monthly_data[1].freezing_water_temp_diff",
+      "original_value": null,
+      "suggested_value": 3.0,
+      "method": "linear_interpolation",
+      "confidence": "high",
+      "reasoning": "基于1月(3.0)和3月(3.0)的线性插值"
+    },
+    {
+      "field": "monthly_data[1].cooling_tower_outlet_temp",
+      "original_value": null,
+      "suggested_value": 20.5,
+      "method": "linear_interpolation",
+      "confidence": "high",
+      "reasoning": "基于1月(18.0)和3月(23.0)的线性插值"
+    },
+    {
+      "field": "monthly_data[3].cooling_pump_freq",
+      "original_value": null,
+      "suggested_value": 40,
+      "method": "linear_interpolation",
+      "confidence": "high",
+      "reasoning": "基于3月(37.5)和5月(42.5)的线性插值"
+    },
+    {
+      "field": "monthly_data[3].freezing_pump_freq",
+      "original_value": null,
+      "suggested_value": 40,
+      "method": "linear_interpolation",
+      "confidence": "high",
+      "reasoning": "基于3月(37.5)和5月(42.5)的线性插值"
+    },
+    {
+      "field": "monthly_data[3].cooling_water_temp_diff",
+      "original_value": null,
+      "suggested_value": 3.5,
+      "method": "linear_interpolation",
+      "confidence": "high",
+      "reasoning": "基于3月(3.5)和5月(3.5)的线性插值"
+    },
+    {
+      "field": "monthly_data[3].freezing_water_temp_diff",
+      "original_value": null,
+      "suggested_value": 3.0,
+      "method": "linear_interpolation",
+      "confidence": "high",
+      "reasoning": "基于3月(3.0)和5月(3.0)的线性插值"
+    },
+    {
+      "field": "monthly_data[3].cooling_tower_outlet_temp",
+      "original_value": null,
+      "suggested_value": 25.5,
+      "method": "linear_interpolation",
+      "confidence": "high",
+      "reasoning": "基于3月(23.0)和5月(28.0)的线性插值"
+    },
+    {
+      "field": "monthly_data[5].cooling_pump_freq",
+      "original_value": null,
+      "suggested_value": 46,
+      "method": "linear_interpolation",
+      "confidence": "high",
+      "reasoning": "基于5月(42.5)和7月(50.0)的线性插值"
+    },
+    {
+      "field": "monthly_data[5].freezing_pump_freq",
+      "original_value": null,
+      "suggested_value": 46,
+      "method": "linear_interpolation",
+      "confidence": "high",
+      "reasoning": "基于5月(42.5)和7月(50.0)的线性插值"
+    },
+    {
+      "field": "monthly_data[5].cooling_water_temp_diff",
+      "original_value": null,
+      "suggested_value": 3.8,
+      "method": "linear_interpolation",
+      "confidence": "high",
+      "reasoning": "基于5月(3.5)和7月(4.0)的线性插值"
+    },
+    {
+      "field": "monthly_data[5].freezing_water_temp_diff",
+      "original_value": null,
+      "suggested_value": 4.0,
+      "method": "linear_interpolation",
+      "confidence": "high",
+      "reasoning": "基于5月(3.0)和7月(5.0)的线性插值"
+    },
+    {
+      "field": "monthly_data[5].cooling_tower_outlet_temp",
+      "original_value": null,
+      "suggested_value": 31.0,
+      "method": "linear_interpolation",
+      "confidence": "high",
+      "reasoning": "基于5月(28.0)和7月(34.0)的线性插值"
+    },
+    {
+      "field": "monthly_data[7].cooling_pump_freq",
+      "original_value": null,
+      "suggested_value": 49,
+      "method": "linear_interpolation",
+      "confidence": "high",
+      "reasoning": "基于7月(50.0)和9月(47.5)的线性插值"
+    },
+    {
+      "field": "monthly_data[7].freezing_pump_freq",
+      "original_value": null,
+      "suggested_value": 49,
+      "method": "linear_interpolation",
+      "confidence": "high",
+      "reasoning": "基于7月(50.0)和9月(47.5)的线性插值"
+    },
+    {
+      "field": "monthly_data[7].cooling_water_temp_diff",
+      "original_value": null,
+      "suggested_value": 3.8,
+      "method": "linear_interpolation",
+      "confidence": "high",
+      "reasoning": "基于7月(4.0)和9月(3.5)的线性插值"
+    },
+    {
+      "field": "monthly_data[7].freezing_water_temp_diff",
+      "original_value": null,
+      "suggested_value": 5.0,
+      "method": "linear_interpolation",
+      "confidence": "high",
+      "reasoning": "基于7月(5.0)和9月(5.0)的线性插值"
+    },
+    {
+      "field": "monthly_data[7].cooling_tower_outlet_temp",
+      "original_value": null,
+      "suggested_value": 32.5,
+      "method": "linear_interpolation",
+      "confidence": "high",
+      "reasoning": "基于7月(34.0)和9月(31.0)的线性插值"
+    },
+    {
+      "field": "monthly_data[9].cooling_pump_freq",
+      "original_value": null,
+      "suggested_value": 43,
+      "method": "linear_interpolation",
+      "confidence": "high",
+      "reasoning": "基于9月(47.5)和12月(35.0)的线性插值"
+    },
+    {
+      "field": "monthly_data[9].freezing_pump_freq",
+      "original_value": null,
+      "suggested_value": 43,
+      "method": "linear_interpolation",
+      "confidence": "high",
+      "reasoning": "基于9月(47.5)和12月(35.0)的线性插值"
+    },
+    {
+      "field": "monthly_data[9].cooling_water_temp_diff",
+      "original_value": null,
+      "suggested_value": 3.3,
+      "method": "linear_interpolation",
+      "confidence": "high",
+      "reasoning": "基于9月(3.5)和12月(3.0)的线性插值"
+    },
+    {
+      "field": "monthly_data[9].freezing_water_temp_diff",
+      "original_value": null,
+      "suggested_value": 4.3,
+      "method": "linear_interpolation",
+      "confidence": "high",
+      "reasoning": "基于9月(5.0)和12月(3.0)的线性插值"
+    },
+    {
+      "field": "monthly_data[9].cooling_tower_outlet_temp",
+      "original_value": null,
+      "suggested_value": 27.3,
+      "method": "linear_interpolation",
+      "confidence": "high",
+      "reasoning": "基于9月(31.0)和12月(20.0)的线性插值"
+    },
+    {
+      "field": "monthly_data[10].cooling_pump_freq",
+      "original_value": null,
+      "suggested_value": 39,
+      "method": "linear_interpolation",
+      "confidence": "high",
+      "reasoning": "基于9月(47.5)和12月(35.0)的线性插值"
+    },
+    {
+      "field": "monthly_data[10].freezing_pump_freq",
+      "original_value": null,
+      "suggested_value": 39,
+      "method": "linear_interpolation",
+      "confidence": "high",
+      "reasoning": "基于9月(47.5)和12月(35.0)的线性插值"
+    },
+    {
+      "field": "monthly_data[10].cooling_water_temp_diff",
+      "original_value": null,
+      "suggested_value": 3.2,
+      "method": "linear_interpolation",
+      "confidence": "high",
+      "reasoning": "基于9月(3.5)和12月(3.0)的线性插值"
+    },
+    {
+      "field": "monthly_data[10].freezing_water_temp_diff",
+      "original_value": null,
+      "suggested_value": 3.7,
+      "method": "linear_interpolation",
+      "confidence": "high",
+      "reasoning": "基于9月(5.0)和12月(3.0)的线性插值"
+    },
+    {
+      "field": "monthly_data[10].cooling_tower_outlet_temp",
+      "original_value": null,
+      "suggested_value": 23.7,
+      "method": "linear_interpolation",
+      "confidence": "high",
+      "reasoning": "基于9月(31.0)和12月(20.0)的线性插值"
+    },
+    {
+      "field": "electricity_price",
+      "original_value": null,
+      "suggested_value": 0.66,
+      "method": "region_lookup",
+      "confidence": "medium",
+      "reasoning": "根据项目所在地区(华南)查表获取工业用电参考电价"
+    }
+  ]
+}

@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="zh-CN" data-theme="light">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>暖通节能测算系统 · 模块架构图索引</title>
+<style>
+  /* 与各模块架构图共用同一套字体 token（统一设计规范） */
+  :root{
+    --bg:#f4f6fb; --panel:#ffffff; --ink:#17233b; --mut:#5b6b82; --line:#cbd3e0;
+    --accent:#4f46e5;
+    --font-ui:"PingFang SC","HarmonyOS Sans SC","Microsoft YaHei","Source Han Sans SC","Noto Sans SC",sans-serif;
+    --font-mono:"JetBrains Mono","Cascadia Code",Consolas,"SFMono-Regular",Menlo,monospace;
+    --fs-title:22px; --fs-lead:13px; --fs-card-t:15px; --fs-card-b:12.5px;
+    --fs-cap:11px; --fs-foot:11.5px;
+    --ls-title:.015em; --lh-head:1.35; --lh-loose:1.6;
+  }
+  html[data-theme="dark"]{
+    --bg:#0b1120; --panel:#101a2e; --ink:#e4ecf7; --mut:#94a3b8; --line:#2a3a52;
+    --accent:#818cf8;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--ink);font:400 var(--fs-card-b)/var(--lh-loose) var(--font-ui)}
+  main{max-width:1060px;margin:0 auto;padding:44px 22px}
+  h1{margin:0 0 6px;font:700 var(--fs-title)/var(--lh-head) var(--font-ui);letter-spacing:var(--ls-title)}
+  p.lead{color:var(--mut);margin:0 0 26px;font:400 var(--fs-lead)/var(--lh-loose) var(--font-ui)}
+  .g{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:16px}
+  a{display:block;text-decoration:none;color:var(--ink);border:1px solid var(--line);border-radius:14px;background:var(--panel);padding:18px 18px 16px;transition:.15s}
+  a:hover{border-color:var(--accent);transform:translateY(-2px);box-shadow:0 10px 26px rgba(0,0,0,.08)}
+  h2{margin:0 0 4px;font:600 var(--fs-card-t)/var(--lh-head) var(--font-ui);display:flex;align-items:center;gap:8px}
+  .p{color:var(--mut);font:400 var(--fs-card-b)/var(--lh-loose) var(--font-ui);margin-bottom:10px}
+  .chip{display:inline-block;font:400 var(--fs-cap)/1.4 var(--font-mono);color:var(--accent);border:1px solid color-mix(in srgb,var(--accent) 40%,transparent);border-radius:20px;padding:1px 10px}
+  .dot{width:9px;height:9px;border-radius:50%;display:inline-block}
+  .foot{color:var(--mut);font:400 var(--fs-foot)/var(--lh-loose) var(--font-ui);text-align:center;padding:28px 0 8px}
+</style>
+</head>
+<body>
+<main>
+  <h1>暖通节能智能测算 · 模块系统架构图</h1>
+  <p class="lead">四张模块架构图 + 一张依赖总览；自包含 HTML，支持明/暗主题切换，悬停节点可高亮其上下游连线。浏览器的“打印 / 另存为 PDF / 截图”可直接导出用于文档。</p>
+  <div class="g">
+    <a href="module-air-conditioner.html"><h2><span class="dot" style="background:#4f46e5"></span>空调模块</h2>
+      <div class="p">空调节能率智能测算：规则提取 → Excel 公式引擎 → 结果/报价/方案，含“进入仿真”出口。</div><span class="chip">Workflow.tsx · excel_calculator.py</span></a>
+    <a href="module-air-compressor.html"><h2><span class="dot" style="background:#0ea5e9"></span>空压模块</h2>
+      <div class="p">空压机节能率智能测算：LLM 提取 → AirCompressorCalculator → 结果/报价/方案，无仿真出口。</div><span class="chip">Workflow.tsx · air_compressor_calculator.py</span></a>
+    <a href="module-quote.html"><h2><span class="dot" style="background:#f59e0b"></span>报价模块</h2>
+      <div class="p">标准能管智能报价：AI/本地解析 → 底稿计算 → 逐项审核台（5 态）→ 生成下载，独立子系统。</div><span class="chip">QuoteWorkflow.tsx · quote_module/</span></a>
+    <a href="module-topology.html"><h2><span class="dot" style="background:#10b981"></span>设备拓扑模块</h2>
+      <div class="p">冷站性能仿真的拓扑输入链：拓扑 → COP → 工况 → 8760h 仿真；接收空调 source_session。</div><span class="chip">sim/TopologyStage.tsx · plant-simulation</span></a>
+    <a href="module-dependencies.html"><h2><span class="dot" style="background:#8b5cf6"></span>四模块依赖总览</h2>
+      <div class="p">空调 / 空压 / 报价 / 设备拓扑的业务线定位、唯一数据桥与共享平台层。</div><span class="chip">overview</span></a>
+  </div>
+  <div class="foot">架构事实取自仓库代码审计 · 输出目录：e:/contion simulation/architecture/</div>
+</main>
+</body>
+</html>

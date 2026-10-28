@@ -1,0 +1,57 @@
+{
+  "source_repository": "https://huggingface.co/GRAD04/Wav2LipGAN",
+  "source_url": "https://huggingface.co/GRAD04/Wav2LipGAN/resolve/main/Wav2Lip-SD-GAN.pt",
+  "source_sha256_verified_against_huggingface_lfs": true,
+  "conversion": {
+    "tool": "pnnx 20261020",
+    "tool_source": "https://github.com/pnnx/pnnx/releases/tag/20261020",
+    "inputshape": [
+      [
+        1,
+        1,
+        80,
+        16
+      ],
+      [
+        1,
+        6,
+        96,
+        96
+      ]
+    ],
+    "fp16": false,
+    "blob_renames": {
+      "in0": "audio_sequences",
+      "in1": "face_sequences",
+      "out0": "output"
+    },
+    "note": "Fresh conversion from the downloaded TorchScript model; not claimed byte-identical to historical benchmark weights."
+  },
+  "files": {
+    "Wav2Lip-SD-GAN.pt": {
+      "bytes": 145829145,
+      "sha256": "180cfd49d31d47f195d5bfc62830ffe2c40724b7bbbce6faadc73ac6ab1a3b8e"
+    },
+    "Wav2Lip-SD-GAN-opt.param": {
+      "bytes": 12502,
+      "sha256": "c0160fc2d5412bc5abc111650ac9d3beeae22ac996f5369ea2f41e6eb5a25749"
+    },
+    "Wav2Lip-SD-GAN-opt.bin": {
+      "bytes": 145101336,
+      "sha256": "31eca0a186caf8695c00c62eddbe80f72307b92932321a3489f9a7f862331a3a"
+    }
+  },
+  "smoke_validation": {
+    "runtime": "1.0.20260526",
+    "backend": "CPU",
+    "output_chw": [
+      3,
+      96,
+      96
+    ],
+    "output_min": 0.06331932544708252,
+    "output_max": 0.9014577269554138,
+    "audio_change_mean_absolute_output_difference": 0.01372256688773632,
+    "note": "Synthetic input compatibility check, not real-avatar lip-sync quality or performance acceptance."
+  }
+}

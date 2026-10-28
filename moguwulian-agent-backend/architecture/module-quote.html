@@ -1,0 +1,324 @@
+<!doctype html>
+<html lang="zh-CN" data-theme="light">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>报价模块 · 系统架构</title>
+<style>
+  /* ============================================================
+     统一设计规范（全部模块架构图共用同一套 token）
+     字体族  ：中文优先无衬线（--font-ui）+ 等宽（--font-mono，仅代码/路径）
+     字号层级：页面标题 18 > 区域标签/节点标题 14 > 卡片标题 13.5 >
+               正文 12 / 页面副标 12.5 / 连线标签·注释 11.5 / 代码行 10.5
+     字重    ：仅 400（正文）/ 600（强调）/ 700（标题）三档
+     行高    ：标题 1.35 / 图内正文 1.55 / 页面与列表 1.6
+     ============================================================ */
+  :root{
+    --bg:#f4f6fb; --panel:#ffffff; --ink:#17233b; --mut:#5b6b82; --code:#44546a;
+    --line:#cbd3e0;
+    --f-frontend:#eef1ff; --s-frontend:#4f46e5; --t-frontend:#3730a3;
+    --f-backend:#eaf2ff; --s-backend:#1d6fe0; --t-backend:#1c4f9c;
+    --f-database:#f4f0ff; --s-database:#7c3aed; --t-database:#5b21b6;
+    --f-external:#fff4e6; --s-external:#ea580c; --t-external:#9a3412;
+    --f-messagebus:#e6f8f9; --s-messagebus:#0891b2; --t-messagebus:#155e75;
+    --f-region:#ffffff; --s-region:#94a3b8; --l-region:#5b6b82;
+    --edge:#64748b; --edge-em:#4f46e5; --relw:1.5; --relw-em:2.1;
+    --font-ui:"PingFang SC","HarmonyOS Sans SC","Microsoft YaHei","Source Han Sans SC","Noto Sans SC",sans-serif;
+    --font-mono:"JetBrains Mono","Cascadia Code",Consolas,"SFMono-Regular",Menlo,monospace;
+    --fs-page:18px; --fs-sub:12.5px; --fs-region:14px; --fs-cap:11px;
+    --fs-node:14px; --fs-code:10.5px; --fs-body:12px; --fs-soft:11.5px;
+    --fs-card-t:13.5px; --fs-card-b:12.5px; --fs-foot:11.5px;
+    --ls-title:.015em; --lh-head:1.35; --lh-body:1.55; --lh-loose:1.6;
+  }
+  html[data-theme="dark"]{
+    --bg:#0b1120; --panel:#101a2e; --ink:#e4ecf7; --mut:#94a3b8; --code:#b6c2d4;
+    --line:#2a3a52;
+    --f-frontend:#182241; --s-frontend:#818cf8; --t-frontend:#c7d2fe;
+    --f-backend:#10243f; --s-backend:#60a5fa; --t-backend:#bfdbfe;
+    --f-database:#241b41; --s-database:#a78bfa; --t-database:#ddd6fe;
+    --f-external:#3a2410; --s-external:#fb923c; --t-external:#fed7aa;
+    --f-messagebus:#0e3340; --s-messagebus:#22d3ee; --t-messagebus:#a5f3fc;
+    --f-region:#0d1626; --s-region:#475569; --l-region:#94a3b8;
+    --edge:#64748b; --edge-em:#818cf8;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--ink);font:400 var(--fs-card-b)/var(--lh-loose) var(--font-ui)}
+  /* 页头 */
+  .top{position:sticky;top:0;z-index:5;display:flex;align-items:baseline;gap:14px;padding:10px 22px;background:color-mix(in srgb,var(--panel) 88%,transparent);backdrop-filter:blur(6px);border-bottom:1px solid var(--line)}
+  .top h1{margin:0;font:700 var(--fs-page)/var(--lh-head) var(--font-ui);letter-spacing:var(--ls-title)}
+  .top .sub{color:var(--mut);font:400 var(--fs-sub)/var(--lh-head) var(--font-ui)}
+  .top .sp{flex:1}
+  button{font:400 var(--fs-sub)/1 var(--font-ui);border:1px solid var(--line);background:var(--panel);color:var(--ink);border-radius:8px;padding:5px 12px;cursor:pointer}
+  button:hover{border-color:var(--s-backend)}
+  main{max-width:1800px;margin:0 auto;padding:14px 18px 8px}
+  /* 图例 */
+  .legend{display:flex;flex-wrap:wrap;gap:8px 16px;color:var(--mut);font:400 var(--fs-body)/var(--lh-body) var(--font-ui);padding:4px 2px 10px}
+  .legend b{font-weight:600;color:var(--ink)}
+  .lg{display:inline-flex;align-items:center;gap:6px}
+  .sw{width:13px;height:13px;border-radius:4px;display:inline-block}
+  .ln{width:22px;height:0;border-top:2px solid;display:inline-block}
+  .lns{width:22px;height:0;border-top:2px dashed;display:inline-block}
+  .frame{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:10px;overflow:auto}
+  svg{display:block;width:100%;height:auto;min-width:1180px}
+  /* 节点卡片：标题(700) → 代码行(等宽) → 正文(400) */
+  .card{font:400 var(--fs-body)/var(--lh-body) var(--font-ui);padding:9px 12px 10px;height:100%;overflow:hidden}
+  .t1{font:700 var(--fs-node)/var(--lh-head) var(--font-ui);letter-spacing:var(--ls-title);color:var(--t-type,var(--ink))}
+  .t2{margin-top:3px;font:400 var(--fs-code)/1.4 var(--font-mono);color:var(--code);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .t3{margin-top:7px;font:400 var(--fs-body)/var(--lh-body) var(--font-ui);color:var(--mut)}
+  .t3 .k,.t3 b{font-weight:600;color:var(--ink)}
+  .node rect{border-radius:10px;stroke-width:1.3}
+  /* 区域边界：标签(700) + 代码副标(等宽) */
+  .bdr rect{fill:var(--f-region);stroke:var(--s-region);stroke-dasharray:8 6;stroke-width:1.4;rx:18}
+  .bdr.ext rect{stroke:var(--s-external);stroke-dasharray:2.5 5}
+  .bdr .bl{font:700 var(--fs-region)/var(--lh-head) var(--font-ui);letter-spacing:var(--ls-title);fill:var(--l-region)}
+  .bdr .bs{font:400 var(--fs-cap)/var(--lh-head) var(--font-mono);fill:var(--mut)}
+  /* 关系连线：标签 400，强调 600 */
+  .rel path{fill:none;stroke:var(--edge);stroke-width:var(--relw);stroke-linecap:round}
+  .rel.dash path{stroke-dasharray:7 6}
+  .rel.em path{stroke:var(--edge-em);stroke-width:var(--relw-em)}
+  .rel text{font:400 var(--fs-soft)/var(--lh-body) var(--font-ui);fill:var(--mut);paint-order:stroke;stroke:color-mix(in srgb,var(--panel) 82%,transparent);stroke-width:4px}
+  .rel .hl{font-weight:600;fill:var(--ink)}
+  .note{font:400 var(--fs-soft)/var(--lh-body) var(--font-ui);fill:var(--mut)}
+  /* 悬停高亮 */
+  .node,.rel{transition:opacity .16s ease}
+  body.dim-on .node:not(.lit){opacity:.18}
+  body.dim-on .rel:not(.lit){opacity:.12}
+  .rel.lit path{stroke-width:2.6}
+  /* 底部结论卡 */
+  .cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:14px;padding:14px 2px 4px}
+  .cardx{border:1px solid var(--line);border-radius:12px;background:var(--panel);padding:12px 14px}
+  .cardx h3{margin:0 0 8px;font:600 var(--fs-card-t)/var(--lh-head) var(--font-ui);display:flex;align-items:center;gap:8px}
+  .dot{width:10px;height:10px;border-radius:50%;display:inline-block}
+  .cardx ul{margin:0;padding-left:17px;color:var(--mut);font:400 var(--fs-card-b)/var(--lh-loose) var(--font-ui)}
+  .cardx li{margin:4px 0}
+  .cardx li b{font-weight:600;color:var(--ink)}
+  .cardx code{font:400 var(--fs-cap)/1.4 var(--font-mono);background:color-mix(in srgb,var(--line) 30%,transparent);border-radius:4px;padding:1px 4px}
+  .foot{color:var(--mut);font:400 var(--fs-foot)/var(--lh-body) var(--font-ui);text-align:center;padding:8px 0 18px}
+  .sw-f{background:var(--f-frontend);border:1.5px solid var(--s-frontend)}
+  .sw-b{background:var(--f-backend);border:1.5px solid var(--s-backend)}
+  .sw-d{background:var(--f-database);border:1.5px solid var(--s-database)}
+  .sw-e{background:var(--f-external);border:1.5px solid var(--s-external)}
+  .sw-m{background:var(--f-messagebus);border:1.5px solid var(--s-messagebus)}
+</style>
+</head>
+<body>
+<div class="top">
+  <h1>报价模块 · 标准能管智能报价（quote）</h1>
+  <span class="sub">独立子系统 · “上传 → 预检 → AI/本地解析 → 项目复核 → 底稿计算 → 逐项审核 → 生成下载”</span>
+  <span class="sp"></span>
+  <button id="theme">切换深色/浅色</button>
+</div>
+<main>
+  <div class="legend">
+    <span class="lg"><i class="sw sw-f"></i><b>前端</b> QuoteWorkflow</span>
+    <span class="lg"><i class="sw sw-b"></i><b>后端</b> FastAPI / quote_module</span>
+    <span class="lg"><i class="sw sw-d"></i><b>会话/产物</b></span>
+    <span class="lg"><i class="sw sw-m"></i><b>技能/规则脚本</b></span>
+    <span class="lg"><i class="sw sw-e"></i><b>外部模型服务</b></span>
+    <span class="lg"><i class="ln" style="border-color:var(--edge)"></i> 请求/数据</span>
+    <span class="lg"><i class="lns" style="border-color:var(--edge)"></i> 异步 / 降级路径</span>
+    <span class="lg"><i class="ln" style="border-color:var(--edge-em);border-top-width:2.5px"></i> 主流程调用</span>
+  </div>
+
+  <div class="frame">
+  <svg viewBox="0 0 1760 1450" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="报价模块系统架构">
+    <defs>
+      <marker id="mk" markerWidth="8" markerHeight="8" refX="6.5" refY="3.4" orient="auto"><path d="M0,0 L7,3.4 L0,6.8 Z" fill="var(--edge)"/></marker>
+      <marker id="mkEm" markerWidth="8" markerHeight="8" refX="6.5" refY="3.4" orient="auto"><path d="M0,0 L7,3.4 L0,6.8 Z" fill="var(--edge-em)"/></marker>
+    </defs>
+
+    <g class="bdr"><rect x="50" y="150" width="560" height="1160"/>
+      <text class="bl" x="70" y="180">前端层 · QuoteWorkflow 状态机</text>
+      <text class="bs" x="70" y="200">src/components/QuoteWorkflow.tsx（无 props、独立会话）</text></g>
+    <g class="bdr"><rect x="660" y="150" width="560" height="520"/>
+      <text class="bl" x="680" y="180">FastAPI /api/quote 接入与异步管线</text>
+      <text class="bs" x="680" y="200">apps/api · routers.py · services.py</text></g>
+    <g class="bdr"><rect x="1280" y="150" width="430" height="840"/>
+      <text class="bl" x="1300" y="180">报价引擎 quote_module（“一字不改”独立包）</text>
+      <text class="bs" x="1300" y="200">quote_module/ · apps/api/quote_local_parser.py</text></g>
+    <g class="bdr"><rect x="660" y="700" width="560" height="430"/>
+      <text class="bl" x="680" y="730">quote 会话与产物</text>
+      <text class="bs" x="680" y="750">bottom_sheet · generated_&lt;session_id&gt;/ · 调研表副本</text></g>
+    <g class="bdr ext"><rect x="1280" y="1040" width="430" height="150"/>
+      <text class="bl" x="1300" y="1070" style="fill:var(--t-external)">外部模型服务（OpenAI 兼容）</text>
+      <text class="bs" x="1300" y="1090">ANTHROPIC_BASE_URL · AIClient 直连</text></g>
+
+    <!-- FE -->
+    <g class="node" data-type="frontend" id="fe-wf">
+      <rect x="90" y="210" width="470" height="170" fill="var(--f-frontend)" stroke="var(--s-frontend)"/>
+      <foreignObject x="92" y="211" width="466" height="168"><div class="card" style="--t-type:var(--t-frontend)">
+        <div class="t1">QuoteWorkflow 流程外壳</div>
+        <div class="t2">状态：upload→uploaded→precheck→extracting→extracted→calculating→calculated→generating→done / error</div>
+        <div class="t3">首页点击进入（无 props）；failedStage 分级重试；consumeSSE 订阅（事件名 log / complete / error，与空调线的 done/error 不同）。</div>
+      </div></foreignObject></g>
+
+    <g class="node" data-type="frontend" id="fe-parse">
+      <rect x="90" y="430" width="470" height="170" fill="var(--f-frontend)" stroke="var(--s-frontend)"/>
+      <foreignObject x="92" y="431" width="466" height="168"><div class="card" style="--t-type:var(--t-frontend)">
+        <div class="t1">解析结果与项目复核</div>
+        <div class="t2">parse_mode = ai | local · project_data</div>
+        <div class="t3">展示 QuoteProjectData（客户/项目/计量点位/第三方系统/可选模块/项目现状·目标·问题）；对 data_warnings 与 logic_gaps 做人工确认。</div>
+      </div></foreignObject></g>
+
+    <g class="node" data-type="frontend" id="fe-audit">
+      <rect x="90" y="660" width="470" height="210" fill="var(--f-frontend)" stroke="var(--s-frontend)"/>
+      <foreignObject x="92" y="661" width="466" height="208"><div class="card" style="--t-type:var(--t-frontend)">
+        <div class="t1">报价底稿 + 逐项审核台</div>
+        <div class="t2">bottom_sheet · software/hardware/construction 三区 · itemKey=sw_i/hw_i/ct_i</div>
+        <div class="t3">单项状态五态：<span class="k">AUTO / CONFIRM / INQUIRY / NONSTANDARD / BLOCKED</span>；候选选型、改标准价/渠道价、非标阻断；NONSTANDARD+BLOCKED&gt;0 或 CONFIRM/INQUIRY 需 riskSkip 才能生成。</div>
+      </div></foreignObject></g>
+
+    <g class="node" data-type="frontend" id="fe-gen">
+      <rect x="90" y="930" width="470" height="170" fill="var(--f-frontend)" stroke="var(--s-frontend)"/>
+      <foreignObject x="92" y="931" width="466" height="168"><div class="card" style="--t-type:var(--t-frontend)">
+        <div class="t1">生成与下载</div>
+        <div class="t2">files[] · /api/quote/download/{session_id}/{filename}</div>
+        <div class="t3">下载报价表（标准价 / 渠道价）与技术方案 docx；tax_breakdown 与 status_summary 汇总展示。</div>
+      </div></foreignObject></g>
+
+    <g class="node" data-type="frontend" id="fe-api">
+      <rect x="90" y="1150" width="470" height="100" fill="var(--f-frontend)" stroke="var(--s-frontend)"/>
+      <foreignObject x="92" y="1151" width="466" height="98"><div class="card" style="--t-type:var(--t-frontend)">
+        <div class="t1">API 客户端（quote 组）</div>
+        <div class="t2">src/lib/api.ts · quoteUpload / quotePrecheck / quoteAudit …</div>
+        <div class="t3">upload · precheck · extract · calculate · audit(PUT) · generate · download —— 独立 /quote 前缀。</div>
+      </div></foreignObject></g>
+
+    <!-- API -->
+    <g class="node" data-type="backend" id="api-router">
+      <rect x="700" y="210" width="470" height="180" fill="var(--f-backend)" stroke="var(--s-backend)"/>
+      <foreignObject x="702" y="211" width="466" height="178"><div class="card" style="--t-type:var(--t-backend)">
+        <div class="t1">/api/quote 路由层</div>
+        <div class="t2">apps/api/routers.py · routers 1090–1378</div>
+        <div class="t3">quote/upload · precheck · extract(POST/GET) · calculate(POST/GET) · audit(PUT) · generate(POST/GET) · download —— acl_guard 归属校验。</div>
+      </div></foreignObject></g>
+
+    <g class="node" data-type="backend" id="api-svc">
+      <rect x="700" y="450" width="470" height="190" fill="var(--f-backend)" stroke="var(--s-backend)"/>
+      <foreignObject x="702" y="451" width="466" height="188"><div class="card" style="--t-type:var(--t-backend)">
+        <div class="t1">异步管线（后台线程 + 任务锁）</div>
+        <div class="t2">apps/api/services.py · _run_quote_extract_in_thread 等</div>
+        <div class="t3">解析走 AI（read_survey_with_ai）→ 失败降级本地解析；计算＝section9 + scripts/calculate；记录 parse_mode=ai|local；SSE 事件推流。</div>
+      </div></foreignObject></g>
+
+    <!-- ENGINE -->
+    <g class="node" data-type="backend" id="en-ai">
+      <rect x="1320" y="200" width="350" height="130" fill="var(--f-backend)" stroke="var(--s-backend)"/>
+      <foreignObject x="1322" y="201" width="346" height="128"><div class="card" style="--t-type:var(--t-backend)">
+        <div class="t1">AI 解析 read_survey_with_ai</div>
+        <div class="t2">quote_module/ai_client.py · AIClient</div>
+        <div class="t3">OpenAI 兼容直连（ANTHROPIC_BASE_URL 代理）；_normalize_project_json 统一可选模块 schema；preview 模式供预检。</div>
+      </div></foreignObject></g>
+
+    <g class="node" data-type="messagebus" id="en-local">
+      <rect x="1320" y="370" width="350" height="140" fill="var(--f-messagebus)" stroke="var(--s-messagebus)"/>
+      <foreignObject x="1322" y="371" width="346" height="138"><div class="card" style="--t-type:var(--t-messagebus)">
+        <div class="t1">本地解析（降级）</div>
+        <div class="t2">apps/api/quote_local_parser.py</div>
+        <div class="t3">read_survey_local 硬编码读取“标准调研表”sheet；enrich_project_data 做“可选软件未选却填内容”等矛盾检测 → data_warnings / logic_gaps。</div>
+      </div></foreignObject></g>
+
+    <g class="node" data-type="backend" id="en-calc">
+      <rect x="1320" y="560" width="350" height="180" fill="var(--f-backend)" stroke="var(--s-backend)"/>
+      <foreignObject x="1322" y="561" width="346" height="178"><div class="card" style="--t-type:var(--t-backend)">
+        <div class="t1">底稿计算 scripts/calculate.py</div>
+        <div class="t2">quote_module/scripts/calculate.py</div>
+        <div class="t3">点位系数（电12点/流3点/三方1000点）· 梯级单价 · 网关配比 · CT 规格分组 · DN 匹配 · 部署模式冲突 · API 方向 · 板块九非标并入 NONSTANDARD → bottom_sheet。</div>
+      </div></foreignObject></g>
+
+    <g class="node" data-type="backend" id="en-gen">
+      <rect x="1320" y="790" width="350" height="150" fill="var(--f-backend)" stroke="var(--s-backend)"/>
+      <foreignObject x="1322" y="791" width="346" height="148"><div class="card" style="--t-type:var(--t-backend)">
+        <div class="t1">文档生成</div>
+        <div class="t2">scripts/generate_quote.py · generate_solution.py</div>
+        <div class="t3">标准价/渠道价双 xlsx；方案 docx 以“标准能管方案模板”做禁入内容删除与 AI→能耗趋势替换；产物进 generated_&lt;session_id&gt;/。</div>
+      </div></foreignObject></g>
+
+    <g class="node" data-type="external" id="ext-llm">
+      <rect x="1320" y="1090" width="350" height="82" fill="var(--f-external)" stroke="var(--s-external)"/>
+      <foreignObject x="1322" y="1091" width="346" height="80"><div class="card" style="--t-type:var(--t-external)">
+        <div class="t1">Anthropic / OpenAI 兼容端点</div>
+        <div class="t2">AIClient httpx 直连</div>
+        <div class="t3">AI 解析 / 预检 / 板块九语义判断。</div>
+      </div></foreignObject></g>
+
+    <!-- STORE -->
+    <g class="node" data-type="database" id="db-store">
+      <rect x="700" y="790" width="470" height="310" fill="var(--f-database)" stroke="var(--s-database)"/>
+      <foreignObject x="702" y="791" width="466" height="308"><div class="card" style="--t-type:var(--t-database)">
+        <div class="t1">quote 会话与产物存储</div>
+        <div class="t2">apps/api/storage.py · init_quote_session（module_type=quote）</div>
+        <div class="t3">会话目录：调研表副本 · <code>bottom_sheet_{id}.json</code>（含 edited_items）· <code>generated_{id}/</code>（xlsx/docx）；同步价目表 <code>quote_module/outputs/price_catalog.json</code>（构建器 build_price_catalog 解析“2025年报价体系-全产品线11.xlsx”）。</div>
+      </div></foreignObject></g>
+
+    <!-- RELS -->
+    <g class="rels">
+      <g class="rel em" data-from="fe-wf" data-to="fe-parse"><path d="M 300 380 L 300 430" marker-end="url(#mkEm)"/><text class="hl" x="308" y="411">解析完成 → 复核</text></g>
+      <g class="rel em" data-from="fe-parse" data-to="fe-audit"><path d="M 330 600 L 330 660" marker-end="url(#mkEm)"/><text class="hl" x="338" y="636">底稿计算 → 审核台</text></g>
+      <g class="rel em" data-from="fe-audit" data-to="fe-gen"><path d="M 360 870 L 360 930" marker-end="url(#mkEm)"/><text class="hl" x="368" y="906">门槛通过 → 生成文档</text></g>
+      <g class="rel em" data-from="fe-wf" data-to="fe-api"><path d="M 560 300 L 600 300 L 600 1125 L 540 1125 L 540 1150" marker-end="url(#mkEm)"/>
+        <text class="hl" transform="rotate(-90 612 640)" x="612" y="640" text-anchor="start">各阶段 API 调用 · SSE 日志</text></g>
+      <g class="rel em" data-from="fe-api" data-to="api-router"><path d="M 560 1196 L 625 1196 L 625 300 L 700 300" marker-end="url(#mkEm)"/>
+        <text class="hl" x="630" y="286">HTTP · /api/quote/*（upload / precheck / extract / calculate / audit / generate / download）</text></g>
+      <g class="rel em" data-from="api-router" data-to="api-svc"><path d="M 930 390 L 930 450" marker-end="url(#mkEm)"/><text class="hl" x="938" y="426">触发后台管线（任务锁）</text></g>
+      <g class="rel em" data-from="api-svc" data-to="en-ai"><path d="M 1170 520 L 1270 520 L 1270 255 L 1320 255" marker-end="url(#mkEm)"/>
+        <text class="hl" x="1178" y="512">read_survey_with_ai（预检/解析）</text></g>
+      <g class="rel dash" data-from="api-svc" data-to="en-local"><path d="M 1170 590 L 1240 590 L 1240 440 L 1320 440" marker-end="url(#mk)"/>
+        <text x="1178" y="582">AI 失败 → read_survey_local</text></g>
+      <g class="rel em" data-from="api-svc" data-to="en-calc"><path d="M 1170 620 L 1250 620 L 1250 650 L 1320 650" marker-end="url(#mkEm)"/>
+        <text class="hl" x="1178" y="612">scripts/calculate（tax_mode=exclusive）</text></g>
+      <g class="rel em" data-from="en-ai" data-to="ext-llm"><path d="M 1670 250 L 1740 250 L 1740 1120 L 1670 1120" marker-end="url(#mkEm)"/>
+        <text class="hl" x="1710" y="240" text-anchor="end">AIClient 调用</text></g>
+      <g class="rel" data-from="api-svc" data-to="db-store"><path d="M 770 640 L 770 790" marker-end="url(#mk)"/><text x="778" y="700">会话 / 审计落库</text></g>
+      <g class="rel" data-from="en-local" data-to="db-store"><path d="M 1320 470 L 1250 470 L 1250 840 L 1170 840" marker-end="url(#mk)"/>
+        <text x="1260" y="462">warnings / project 回写</text></g>
+      <g class="rel em" data-from="en-calc" data-to="en-gen"><path d="M 1500 740 L 1500 790" marker-end="url(#mkEm)"/><text class="hl" x="1508" y="771">标准/渠道价 + 方案生成</text></g>
+      <g class="rel" data-from="en-gen" data-to="db-store"><path d="M 1320 880 L 1250 880 L 1250 1000 L 1170 1000" marker-end="url(#mk)"/>
+        <text x="1260" y="872">产物落 generated_&lt;sid&gt;/</text></g>
+      <g class="rel dash" data-from="api-svc" data-to="fe-wf"><path d="M 700 530 L 560 530" marker-end="url(#mk)"/>
+        <text x="640" y="518">SSE（log / complete / error）</text></g>
+    </g>
+
+    <text class="note" x="60" y="1390">数据流要点：解析两条路径（AI 优先、本地降级）产出统一 project_data；计算按业务规则与价目表生成 bottom_sheet，审核台逐项回写状态；通过 canGenerate 门槛后才生成 xlsx/docx。</text>
+    <text class="note" x="60" y="1414">模块边界：quote 使用独立 /quote session，不消费空调/空压/仿真会话；共享 FastAPI + M1 底座与前端 API 契约层，AI 通道为 OpenAI 兼容客户端。</text>
+    <text class="note" x="60" y="1438">验收：tests/quote/test_five_project_acceptance.py 以仓库外“标准能管5项目模拟测试包_20260807”（P01–P05 调研表/报价清单）跑 read_survey_with_ai → calculate → write_quote_xlsx 回归。</text>
+  </svg>
+  </div>
+
+  <div class="cards">
+    <div class="cardx"><h3><i class="dot" style="background:#22c55e"></i>职责边界</h3>
+      <ul>
+        <li>负责：标准能管报价的完整闭环——调研表解析（AI/本地）、预检、项目复核、底稿计算、<b>人工逐项审核</b>、报价表与方案文档生成。</li>
+        <li>不负责：不接管空调/空压的节能计算产物（它们各自的报价单由各自管线生成）；不入 agent 统一编排；非标风险项必须人工确认而非自动放行。</li>
+      </ul></div>
+    <div class="cardx"><h3><i class="dot" style="background:#0ea5e9"></i>核心数据流</h3>
+      <ul>
+        <li>调研表 → project_data（含 optional_modules / logic_gaps）→ <code>bottom_sheet_{id}.json</code>（software/hardware/construction + totals + status_summary）。</li>
+        <li>审核台 PUT <code>/api/quote/audit/{id}</code> 逐项改状态/选候选/改价；<code>section9_analyzer</code> 把“AI/闭环/节能承诺”等判为 NONSTANDARD。</li>
+        <li>生成：标准价/渠道价 xlsx + 技术方案 docx → <code>/api/quote/download</code>。</li>
+      </ul></div>
+    <div class="cardx"><h3><i class="dot" style="background:#8b5cf6"></i>模块间依赖</h3>
+      <ul>
+        <li>共享：FastAPI /api、M1 会话/锁/事件底座、<code>lib/api.ts</code>、外部 LLM（OpenAI 兼容通道）。</li>
+        <li>与空调/空压/仿真<b>无会话级耦合</b>；依赖价目表产物 <code>quote_module/outputs/price_catalog.json</code>。</li>
+      </ul></div>
+  </div>
+</main>
+<div class="foot">源码证据：apps/web/src/components/QuoteWorkflow.tsx · src/lib/api.ts · quote_module/ · apps/api/quote_local_parser.py · apps/api/services.py · tests/quote/test_five_project_acceptance.py</div>
+
+<script>
+  (function(){
+    var root=document.documentElement;
+    document.getElementById('theme').addEventListener('click',function(){root.setAttribute('data-theme',root.getAttribute('data-theme')==='light'?'dark':'light');});
+    var nodes=[].slice.call(document.querySelectorAll('.node')),rels=[].slice.call(document.querySelectorAll('.rels .rel')),graph={};
+    rels.forEach(function(r){var a=r.getAttribute('data-from'),b=r.getAttribute('data-to');if(a&&b){(graph[a]=graph[a]||[]).push(r);(graph[b]=graph[b]||[]).push(r);}});
+    nodes.forEach(function(n){n.addEventListener('mouseenter',function(){
+      document.body.classList.add('dim-on');var id=n.id,rs=graph[id]||[],near={};
+      rs.forEach(function(r){near[r.getAttribute('data-from')]=1;near[r.getAttribute('data-to')]=1;});
+      rels.forEach(function(r){if(rs.indexOf(r)>=0)r.classList.add('lit');else r.classList.remove('lit');});
+      nodes.forEach(function(m){if(m.id===id||near[m.id])m.classList.add('lit');else m.classList.remove('lit');});
+    });n.addEventListener('mouseleave',function(){document.body.classList.remove('dim-on');nodes.forEach(function(m){m.classList.remove('lit')});rels.forEach(function(r){r.classList.remove('lit')});});});
+  })();
+</script>
+</body>
+</html>

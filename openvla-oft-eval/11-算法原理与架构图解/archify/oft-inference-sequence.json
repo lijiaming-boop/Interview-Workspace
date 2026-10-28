@@ -1,0 +1,194 @@
+{
+  "schema_version": 1,
+  "diagram_type": "sequence",
+  "meta": {
+    "title": "OpenVLA-OFT 一次动作查询的推理时序",
+    "locale": "zh-CN",
+    "quality_profile": "showcase",
+    "viewBox": [
+      1040,
+      560
+    ],
+    "column_fit": "spread",
+    "views": [
+      {
+        "id": "forward-inside",
+        "label": "前向内部",
+        "focus": [
+          "prep",
+          "vla",
+          "head"
+        ],
+        "note": "输入如何组装、56 个动作位置如何被并行读出。"
+      },
+      {
+        "id": "control-loop",
+        "label": "控制闭环",
+        "focus": [
+          "env",
+          "ctrl"
+        ],
+        "note": "队列空才重新查询，执行期间开环不观察。"
+      }
+    ]
+  },
+  "participants": [
+    {
+      "id": "env",
+      "type": "external",
+      "label": "LIBERO 环境",
+      "sublabel": "robosuite · 20 Hz"
+    },
+    {
+      "id": "ctrl",
+      "type": "backend",
+      "label": "控制循环",
+      "sublabel": "run_libero_eval"
+    },
+    {
+      "id": "prep",
+      "type": "backend",
+      "label": "输入构造",
+      "sublabel": "裁剪 · 归一化"
+    },
+    {
+      "id": "vla",
+      "type": "backend",
+      "label": "VLA 前向",
+      "sublabel": "一次 forward · 视觉+LLM"
+    },
+    {
+      "id": "head",
+      "type": "backend",
+      "label": "动作头",
+      "sublabel": "MLPResNet"
+    }
+  ],
+  "segments": [
+    {
+      "from": 140,
+      "to": 252,
+      "label": "感知与输入构造"
+    },
+    {
+      "from": 268,
+      "to": 380,
+      "label": "一次前向 · 并行解码"
+    },
+    {
+      "from": 396,
+      "to": 480,
+      "label": "开环执行"
+    }
+  ],
+  "messages": [
+    {
+      "from": "env",
+      "to": "ctrl",
+      "y": 160,
+      "label": "返回观测：双相机 RGB + 8 维本体状态",
+      "variant": "emphasis"
+    },
+    {
+      "from": "ctrl",
+      "to": "prep",
+      "y": 196,
+      "label": "队列空 → 构造模型输入"
+    },
+    {
+      "from": "prep",
+      "to": "vla",
+      "y": 232,
+      "label": "图像 + 指令 + proprio + 56 占位 token",
+      "variant": "emphasis",
+      "note": "占位 token 的 embedding 清零，只保留位置信息"
+    },
+    {
+      "from": "vla",
+      "to": "head",
+      "y": 286,
+      "label": "56 × 4096 末层 hidden states"
+    },
+    {
+      "from": "head",
+      "to": "vla",
+      "y": 322,
+      "label": "8×7 归一化动作",
+      "variant": "return"
+    },
+    {
+      "from": "vla",
+      "to": "ctrl",
+      "y": 358,
+      "label": "反归一化动作块 (8, 7)",
+      "variant": "return",
+      "note": "q01/q99 还原 + 夹爪二值化"
+    },
+    {
+      "from": "ctrl",
+      "to": "env",
+      "y": 412,
+      "label": "逐条执行动作队列 ≤ 8 步 @ 20 Hz",
+      "variant": "emphasis"
+    },
+    {
+      "from": "env",
+      "to": "ctrl",
+      "y": 454,
+      "label": "队列空 → 携新观测重新查询",
+      "variant": "dashed"
+    }
+  ],
+  "activations": [
+    {
+      "participant": "ctrl",
+      "from": 152,
+      "to": 460,
+      "type": "backend"
+    },
+    {
+      "participant": "prep",
+      "from": 190,
+      "to": 224,
+      "type": "backend"
+    },
+    {
+      "participant": "vla",
+      "from": 226,
+      "to": 366,
+      "type": "backend"
+    },
+    {
+      "participant": "head",
+      "from": 280,
+      "to": 330,
+      "type": "backend"
+    }
+  ],
+  "cards": [
+    {
+      "dot": "cyan",
+      "title": "一次查询的成本",
+      "items": [
+        "一次 forward 产出 8×7 动作块，A10 FP16 实测约 219.5 ms（query FPS ≈ 4.56）",
+        "56 个动作位置在同一 forward 内批量算出，没有自回归链"
+      ]
+    },
+    {
+      "dot": "orange",
+      "title": "并行解码的关键",
+      "items": [
+        "占位 token 的 embedding 清零，充当纯位置查询",
+        "动作块在给定观测下条件独立，联合预测在结构上合法"
+      ]
+    },
+    {
+      "dot": "emerald",
+      "title": "开环执行的代价",
+      "items": [
+        "队列执行期间不观察环境，漂移风险随 open_loop 增大",
+        "open_loop=8 预算 400 ms 达标率 97.8%；open_loop=4 预算 200 ms 实测全部超时"
+      ]
+    }
+  ]
+}

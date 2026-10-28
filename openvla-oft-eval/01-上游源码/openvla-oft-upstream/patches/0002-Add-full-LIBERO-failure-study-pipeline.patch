@@ -1,0 +1,1585 @@
+From 56e00ea049adf81b3b61784cd43403d26f455cc5 Mon Sep 17 00:00:00 2001
+From: Lijiaming <2701398761@qq.com>
+Date: Sat, 29 Aug 2026 23:17:43 -0400
+Subject: [PATCH 2/2] Add full LIBERO failure study pipeline
+
+---
+ .../failure_study/CONCLUSION_TEMPLATE.md      | 169 ++++++++
+ .../libero/failure_study/OPERATION_MANUAL.md  | 393 ++++++++++++++++++
+ .../robot/libero/failure_study/README.md      |  20 +
+ .../failure_study/analyze_action_chunks.py    | 208 +++++++++
+ .../failure_study/run_dagger_finetune.sh      |  65 +++
+ .../failure_study/run_inference_study.sh      |  35 ++
+ .../failure_study/run_simulation_study.sh     |  43 ++
+ .../failure_study/run_top_drawer_sweep.sh     |  31 ++
+ .../libero/failure_study/study_common.sh      |  73 ++++
+ .../failure_study/summarize_targeted_eval.py  |  81 ++++
+ experiments/robot/libero/libero_utils.py      |   9 +-
+ experiments/robot/libero/run_libero_eval.py   | 194 ++++++++-
+ prismatic/vla/datasets/rlds/oxe/configs.py    |   7 +
+ prismatic/vla/datasets/rlds/oxe/mixtures.py   |   7 +
+ prismatic/vla/datasets/rlds/oxe/transforms.py |   1 +
+ 15 files changed, 1326 insertions(+), 10 deletions(-)
+ create mode 100644 experiments/robot/libero/failure_study/CONCLUSION_TEMPLATE.md
+ create mode 100644 experiments/robot/libero/failure_study/OPERATION_MANUAL.md
+ create mode 100644 experiments/robot/libero/failure_study/README.md
+ create mode 100644 experiments/robot/libero/failure_study/analyze_action_chunks.py
+ create mode 100644 experiments/robot/libero/failure_study/run_dagger_finetune.sh
+ create mode 100644 experiments/robot/libero/failure_study/run_inference_study.sh
+ create mode 100644 experiments/robot/libero/failure_study/run_simulation_study.sh
+ create mode 100644 experiments/robot/libero/failure_study/run_top_drawer_sweep.sh
+ create mode 100644 experiments/robot/libero/failure_study/study_common.sh
+ create mode 100644 experiments/robot/libero/failure_study/summarize_targeted_eval.py
+
+diff --git a/experiments/robot/libero/failure_study/CONCLUSION_TEMPLATE.md b/experiments/robot/libero/failure_study/CONCLUSION_TEMPLATE.md
+new file mode 100644
+index 0000000..17fbd3e
+--- /dev/null
++++ b/experiments/robot/libero/failure_study/CONCLUSION_TEMPLATE.md
+@@ -0,0 +1,169 @@
++# OpenVLA-OFT LIBERO-Spatial 三侧改进实验结论
++
++> 填写规则：保留原始数值和文件路径；未完成项写“未执行”，不要按视频反推统计结果。
++
++## 1. 实验信息
++
++| 项目 | 内容 |
++|---|---|
++| 日期 | 待填写 |
++| GPU | 待填写 |
++| OpenVLA-OFT commit | 待填写 |
++| LIBERO commit | 待填写 |
++| Checkpoint | 待填写 |
++| Seed | 待填写 |
++| Python / Torch / Transformers | 待填写 |
++| 结果根目录 | 待填写 |
++
++## 2. 推理侧结论
++
++### 2.1 Open-loop 8步与前4步重规划
++
++| Episode/状态 | 8步成功 | 4步成功 | 8步重规划次数 | 4步重规划次数 | 关键行为差异 |
++|---|---|---|---:|---:|---|
++| 233 / task4-state32 | 待填写 | 待填写 | 待填写 | 待填写 | 待填写 |
++| 321 / task6-state20 | 待填写 | 待填写 | 待填写 | 待填写 | 待填写 |
++| 378 / task7-state27 | 待填写 | 待填写 | 待填写 | 待填写 | 待填写 |
++
++结论：
++
++```text
++待填写：前4步重规划是否减少空抓继续执行或推动现象；证据路径是什么。
++```
++
++### 2.2 相机输入与腕部权重
++
++| 状态 | 主相机正常 | 腕部相机正常 | 遮挡阶段 | 权重1.0结果 | 权重1.25结果 |
++|---|---|---|---|---|---|
++| 230 / task4-state29 | 待填写 | 待填写 | 待填写 | 待填写 | 待填写 |
++| 286 / task5-state35 | 待填写 | 待填写 | 待填写 | 待填写 | 待填写 |
++
++图片证据：
++
++```text
++待填写：05_wrist_model_input.png路径和关键replan编号。
++```
++
++结论：
++
++```text
++待填写：问题来自遮挡、预处理异常、视角不足，还是动作控制；是否支持提高腕部权重。
++```
++
++## 3. 仿真与控制侧结论
++
++### 3.1 Chunk边界
++
++| 状态 | 第一次闭合位置 | 闭合是否在边界 | 第一次transfer位置 | 是否有被截断的闭合候选 | 结论 |
++|---|---|---|---|---:|---|
++| 233 | 待填写 | 待填写 | 待填写 | 待填写 | 待填写 |
++| 378 | 待填写 | 待填写 | 待填写 | 待填写 | 待填写 |
++
++证据文件：
++
++```text
++待填写：chunks.jsonl、steps.jsonl、chunk_summary.csv。
++```
++
++边界检测插入建议：
++
++```text
++待填写：应在第几个chunk、哪个动作后检查物体是否跟随夹爪。
++```
++
++### 3.2 推移后重新定位
++
++| 配置 | 成功 | 最大chunk间目标位移 | 强制重规划次数 | 是否停止继续推移 |
++|---|---|---:|---:|---|
++| 4步固定重规划 | 待填写 | 待填写 | 0 | 待填写 |
++| 目标移动1 cm触发 | 待填写 | 待填写 | 待填写 | 待填写 |
++
++结论：
++
++```text
++待填写：特权位姿重规划是否有效；换成视觉目标跟踪时需要哪些输入。
++```
++
++### 3.3 20 Hz与50 Hz
++
++| 配置 | Episodes | 成功率 | 平均推理时延 | Deadline | Deadline满足率 | 平均仿真时长 |
++|---|---:|---:|---:|---:|---:|---:|
++| 20 Hz / 4步 | 待填写 | 待填写 | 待填写 | 200 ms | 待填写 | 待填写 |
++| 50 Hz / 4步 | 待填写 | 待填写 | 待填写 | 80 ms | 待填写 | 待填写 |
++
++结论：
++
++```text
++待填写：是否真正满足实时50 Hz；成功率变化是否可能来自控制分布偏移。
++```
++
++## 4. 训练侧结论
++
++### 4.1 Top drawer专项统计
++
++| Trials | 成功 | 失败 | 成功率 | 主要失败位姿/类型 |
++|---:|---:|---:|---:|---|
++| 待填写 | 待填写 | 待填写 | 待填写 | 待填写 |
++
++失败类型分布：
++
++| 类型 | 数量 | 状态下标 | 是否收集专家修正 |
++|---|---:|---|---|
++| DRAWER_OCCLUSION | 待填写 | 待填写 | 待填写 |
++| GRIPPER_COLLISION | 待填写 | 待填写 | 待填写 |
++| EMPTY_GRASP | 待填写 | 待填写 | 待填写 |
++| STALL_IN_DRAWER | 待填写 | 待填写 | 待填写 |
++| OTHER | 待填写 | 待填写 | 待填写 |
++
++### 4.2 DAgger数据与微调
++
++| 项目 | 数值/路径 |
++|---|---|
++| 专家修正轨迹数 | 待填写 |
++| RLDS数据集路径 | 待填写 |
++| 数据混合配置 | 待填写 |
++| 起始checkpoint | 待填写 |
++| 学习率/步数 | 待填写 |
++| 最佳训练loss | 待填写 |
++| 最佳checkpoint | 待填写 |
++
++微调前后对比：
++
++| 指标 | Baseline | DAgger后 | 变化 |
++|---|---:|---:|---:|
++| Top drawer成功率 | 待填写 | 待填写 | 待填写 |
++| LIBERO-Spatial成功率 | 99.0% | 待填写 | 待填写 |
++| 新增失败类型数 | 0 | 待填写 | 待填写 |
++
++## 5. 最终结论
++
++### 已被证据支持
++
++```text
++1. 待填写
++2. 待填写
++3. 待填写
++```
++
++### 尚未被证据支持
++
++```text
++1. 待填写
++2. 待填写
++```
++
++### 最终采用配置
++
++```text
++num_open_loop_steps = 待填写
++wrist_image_weight = 待填写
++control_freq = 待填写
++grasp/boundary detector = 待填写
++checkpoint = 待填写
++```
++
++### 下一步
++
++```text
++待填写：下一轮最小实验、所需episodes、判定阈值和预计耗时。
++```
+diff --git a/experiments/robot/libero/failure_study/OPERATION_MANUAL.md b/experiments/robot/libero/failure_study/OPERATION_MANUAL.md
+new file mode 100644
+index 0000000..9552bad
+--- /dev/null
++++ b/experiments/robot/libero/failure_study/OPERATION_MANUAL.md
+@@ -0,0 +1,393 @@
++# OpenVLA-OFT LIBERO-Spatial 三侧改进实验操作手册
++
++## 1. 目标与边界
++
++本实验包围绕五个已确认失败状态开展三组实验：
++
++| 全局 Episode | Task ID | 初始状态下标 | 场景 | 主要实验 |
++|---:|---:|---:|---|---|
++| 230 | 4 | 29 | 顶部抽屉黑碗 | 相机遮挡诊断、抽屉专项统计、DAgger采集 |
++| 233 | 4 | 32 | 顶部抽屉黑碗 | 8→4步重规划、chunk边界、抓取命令检查 |
++| 286 | 5 | 35 | ramekin上的黑碗 | 腕部相机输入与特征权重 |
++| 321 | 6 | 20 | cookie box旁黑碗 | 推移后重新观测、目标位姿变化触发重规划 |
++| 378 | 7 | 27 | 炉灶黑碗 | 8→4步重规划、chunk边界、抓取命令检查 |
++
++需要区分三件事：
++
++1. `NUM_ACTIONS_CHUNK=8` 是模型每次预测的动作数量，本实验不改变模型输出形状。
++2. `num_open_loop_steps=4` 表示只执行预测chunk的前4步，随后重新获取图像并推理。
++3. `control_freq=50` 表示仿真控制器以50 Hz推进；它不保证模型真的能实时达到50 Hz，必须看实测推理时延。
++
++## 2. 修改后的关键链路
++
++```text
++LIBERO观察
++  ├─ 第三人称图像
++  ├─ 腕部图像
++  ├─ proprio
++  └─ 仿真目标位姿（只用于诊断）
++       ↓
++OpenVLA-OFT一次预测8×7动作
++       ↓
++保存完整8×7 chunk、原始/处理后gripper、推理时延
++       ↓
++只把前N步放入执行队列（N=8或4）
++       ↓
++env.step
++       ↓
++chunk边界重新读取最新观察
++  ├─ 正常重规划
++  └─ 诊断消融：目标被推移超过阈值且夹爪仍打开时，丢弃余下动作并提前重规划
++```
++
++代码证据：
++
++- `run_libero_eval.py::run_episode`：动作队列、chunk日志、目标位姿触发重规划。
++- `openvla_utils.py::get_vla_action`：两路图片预处理和模型输入dump。
++- `modeling_prismatic.py::PrismaticVisionBackbone.forward`：腕部patch特征缩放。
++- `libero_utils.py::get_libero_env`：向LIBERO传递 `control_freq`。
++
++## 3. 运行前准备
++
++### 3.1 激活正确的Miniconda环境
++
++不要直接 `source common.sh && activate_env`，因为旧函数失败时会关闭当前终端。使用：
++
++```bash
++source "$(conda info --base)/etc/profile.d/conda.sh"
++conda activate oft
++
++which python
++python -c "import draccus, torch, transformers, libero; print('runtime ok')"
++```
++
++### 3.2 基本检查
++
++```bash
++cd /mnt/workspace/openvla-oft
++
++python -m py_compile \
++  experiments/robot/libero/run_libero_eval.py \
++  experiments/robot/openvla_utils.py \
++  experiments/robot/libero/failure_study/analyze_action_chunks.py \
++  experiments/robot/libero/failure_study/summarize_targeted_eval.py \
++  prismatic/extern/hf/modeling_prismatic.py
++
++for SCRIPT in experiments/robot/libero/failure_study/*.sh; do
++  bash -n "$SCRIPT"
++done
++```
++
++所有实验默认输出到：
++
++```text
++/mnt/workspace/openvla-oft/experiments/failure_study_runs/<时间>/
++```
++
++需要把多条命令写入同一目录时，先设置固定标签：
++
++```bash
++export RUN_TAG=study-01
++```
++
++## 4. 推理侧实验
++
++### 4.1 8步基线对照
++
++```bash
++cd /mnt/workspace/openvla-oft
++bash experiments/robot/libero/failure_study/run_inference_study.sh chunk8_control
++```
++
++运行状态：233、321、378。
++
++### 4.2 执行前4步后提前重规划
++
++```bash
++bash experiments/robot/libero/failure_study/run_inference_study.sh chunk4
++```
++
++验收日志必须出现：
++
++```text
++Open-loop execution steps: 4/8
++queued first 4
++```
++
++不能出现“保留最后4步”的行为。实现中使用无界 `deque` 并显式加入 `actions[:4]`。
++
++### 4.3 相机链路基线
++
++```bash
++bash experiments/robot/libero/failure_study/run_inference_study.sh camera_control
++```
++
++运行状态：230、286。每个重规划点产生：
++
++```text
++00_agent_raw.png
++01_wrist_raw.png
++02_agent_resized.png
++03_wrist_resized.png
++04_agent_model_input.png
++05_wrist_model_input.png
++06_metadata.json
++```
++
++先检查 `05_wrist_model_input.png`：
++
++- 是否全黑、翻转、颜色异常或裁剪错误；
++- 230中黑碗是否被抽屉边缘或夹爪遮挡；
++- 286中黑碗与ramekin边界是否可分；
++- 主相机清楚但腕部相机不清楚时，不应提高腕部权重。
++
++### 4.4 腕部特征权重1.25
++
++仅在图片正常后执行：
++
++```bash
++bash experiments/robot/libero/failure_study/run_inference_study.sh camera_w125
++```
++
++这里的“权重”是把第二路及后续图片的视觉patch特征乘以1.25。它是推理消融，不是重新训练出的注意力权重，必须与1.0对照，不能直接当最终改进。
++
++## 5. 仿真与控制侧实验
++
++### 5.1 Action chunk边界
++
++先比较233、378的8步和4步：
++
++```bash
++bash experiments/robot/libero/failure_study/run_simulation_study.sh boundary8
++bash experiments/robot/libero/failure_study/run_simulation_study.sh boundary4
++```
++
++每个状态输出：
++
++```text
++actions/task_XX/state_YY/
++├── chunks.jsonl
++├── steps.jsonl
++├── events.jsonl
++└── episode_summary.json
++```
++
++`chunks.jsonl` 保存：
++
++- 完整8×7原始动作；
++- 处理后的8×7环境动作；
++- 原始和最终gripper命令；
++- 实际计划执行的前N个动作下标；
++- chunk开始时的目标物位姿和接触对；
++- 推理时延及当前控制频率下的deadline。
++
++自动分析结果在每次运行的 `analysis/`：
++
++```text
++episode_summary.csv
++chunk_summary.csv
++analysis.md
++```
++
++重点字段：
++
++- `first_close_chunk/action_index`：第一次闭合发生在哪个chunk和动作位置；
++- `discarded_close_candidates`：闭合命令是否落在4步截断后的尾部；
++- `first_transfer_at_boundary`：抓取后的移动是否从chunk边界开始；
++- `contact_pairs_at_boundary`：边界处是否仍在接触；
++- `deadline_met_rate`：推理是否满足实时deadline。
++
++这些是日志启发式指标，不等于真实抓取成功标签。真实结论还要结合视频和物体位姿。
++
++### 5.2 Episode 321推移后重新定位
++
++对照组只使用固定4步重规划：
++
++```bash
++bash experiments/robot/libero/failure_study/run_simulation_study.sh relocalize_control
++```
++
++诊断组在夹爪仍打开且黑碗相对chunk起点移动超过1 cm时，丢弃剩余队列并立即用新观察重规划：
++
++```bash
++bash experiments/robot/libero/failure_study/run_simulation_study.sh relocalize_motion
++```
++
++成功触发时日志出现：
++
++```text
++Target moved ... m while gripper was open; discarded ... queued actions and will replan
++```
++
++注意：该检测使用MuJoCo真实物体位姿，属于“特权仿真信息”。它用于证明“推移后重规划是否有帮助”，不能直接作为真实机器人部署方案。若有效，下一步应换成视觉检测或腕部相机目标跟踪。
++
++### 5.3 20 Hz与50 Hz
++
++```bash
++bash experiments/robot/libero/failure_study/run_simulation_study.sh freq20
++bash experiments/robot/libero/failure_study/run_simulation_study.sh freq50
++```
++
++脚本按频率同比例放大最大步数和稳定等待步数，使20 Hz和50 Hz覆盖近似相同的仿真时间。
++
++4步、50 Hz时，每个chunk只有：
++
++```text
++4 / 50 = 0.08秒 = 80 ms
++```
++
++因此必须满足：
++
++```text
++mean_inference_latency_ms < 80 ms
++deadline_met_rate 接近100%
++```
++
++否则只能说“仿真控制器设置为50 Hz”，不能说“系统实现实时50 Hz控制”。此外，checkpoint在20 Hz动作分布上训练，直接改为50 Hz存在控制分布偏移；若成功率下降，需要50 Hz数据重新训练，而不是继续提高频率。
++
++## 6. 训练侧：抽屉专项与DAgger
++
++### 6.1 运行50个抽屉状态
++
++```bash
++export RUN_TAG=top-drawer-50
++TRIALS=50 bash experiments/robot/libero/failure_study/run_top_drawer_sweep.sh
++```
++
++如果只做快速检查：
++
++```bash
++export RUN_TAG=top-drawer-20
++TRIALS=20 bash experiments/robot/libero/failure_study/run_top_drawer_sweep.sh
++```
++
++推荐完整50次，因为已知失败状态29和32不在前20个状态内。
++
++输出：
++
++```text
++summary/targeted_results.csv
++summary/dagger_collection_manifest.csv
++```
++
++### 6.2 失败状态分组
++
++人工填写manifest中的：
++
++```text
++failure_category
++expert_demo_status
++expert_demo_path
++notes
++```
++
++建议分类：
++
++```text
++DRAWER_OCCLUSION
++GRIPPER_COLLISION
++EMPTY_GRASP
++STALL_IN_DRAWER
++WRONG_GRASP_HEIGHT
++OTHER
++```
++
++只有失败集中在特定碗位姿或遮挡模式时，才进入针对性增训。如果50次失败很分散，应优先修复通用抓取反馈，而不是只补抽屉数据。
++
++### 6.3 收集专家修正轨迹
++
++对manifest中 `needs_expert_correction=True` 的状态，用LIBERO遥操作、脚本专家或可信专家策略复现同一 `task_id/state_index`，从失败前的状态开始完成正确抓取。
++
++每条专家轨迹必须包含与原LIBERO-Spatial一致的字段：
++
++```text
++image
++wrist_image
++EEF_state
++gripper_state
++action
++language_instruction
++```
++
++然后转换成RLDS/TFDS数据集，目录名使用：
++
++```text
++libero_spatial_top_drawer_dagger
++```
++
++本补丁已经注册：
++
++- 单独修正数据：`libero_spatial_top_drawer_dagger_only`
++- 原Spatial数据+5倍采样修正数据：`libero_spatial_plus_top_drawer_dagger`
++
++不要把失败策略产生的动作当专家数据。DAgger的关键是“策略访问到的困难状态 + 专家给出的正确修正动作”。
++
++### 6.4 启动微调
++
++数据根目录需要同时包含原始Spatial RLDS和新增修正RLDS：
++
++```bash
++export DAGGER_RLDS_ROOT=/mnt/workspace/rlds
++export VLA_PATH=/mnt/workspace/openvla-oft-ckpts/openvla-7b-oft-finetuned-libero-spatial
++export RUN_ROOT=/mnt/workspace/openvla-oft-training-runs/top-drawer-dagger
++export DATASET_NAME=libero_spatial_plus_top_drawer_dagger
++
++bash experiments/robot/libero/failure_study/run_dagger_finetune.sh
++```
++
++默认增训参数是实验起点，不是论文确认的最优参数：
++
++```text
++batch_size=1
++grad_accumulation=8
++learning_rate=1e-4
++max_steps=5000
++save_freq=1000
++LoRA rank=32
++W&B offline
++```
++
++官方估算batch size 1约需25 GB显存，因此24 GB A10很可能OOM。推荐至少32 GB，优先A100 40/80 GB。脚本会阻止低于25,000 MiB的GPU；只有明确接受OOM风险时才设置 `ALLOW_LOW_VRAM=1`。
++
++## 7. 完整回归
++
++小规模实验选出候选方案后，至少执行：
++
++1. 五个已知失败状态；
++2. 每个相关任务20次；
++3. 完整LIBERO-Spatial 500 episodes；
++4. 最终候选至少3个seed。
++
++完整评测前将参数固化到命令和 `run_config.txt`。比较：
++
++```text
++总成功率
++每任务成功率
++空抓后继续放置次数
++推动替代抓取次数
++支撑物一起搬运次数
++平均推理时延
++deadline_met_rate
++单episode耗时
++新增失败类型
++```
++
++## 8. 结论规则
++
++- 只运行1次成功，写“该固定状态下成功”，不能写“显著提升”。
++- 50次任务统计后才能描述该任务的失败率变化。
++- 完整500次评测后才能描述suite成功率。
++- 3个seed后才能判断改进是否稳定。
++- 腕部图片异常时，权重实验无效，应先修复图像链路。
++- 50 Hz的deadline未满足时，不得宣称实时50 Hz。
++- 特权仿真位姿触发重规划有效，只能证明机制方向，不能直接外推真实机器人。
++
++## 9. 理解度自测
++
++1. 为什么不能把 `NUM_ACTIONS_CHUNK` 直接从8改成4？
++2. 为什么旧的 `deque(maxlen=4).extend(8步)` 不是执行前4步？
++3. 50 Hz控制频率与模型每秒能完成多少次推理有什么区别？
++4. 为什么321中的位姿触发重规划不能直接用于真实机器人？
++5. DAgger数据为什么不能使用失败策略自己的动作作为标签？
++
++答案要点：模型输出结构仍是8×7；有限deque会丢弃左侧保留后4步；控制器频率不等于推理吞吐；仿真真实位姿属于部署时不可见信息；DAgger标签必须来自专家修正。
+diff --git a/experiments/robot/libero/failure_study/README.md b/experiments/robot/libero/failure_study/README.md
+new file mode 100644
+index 0000000..d293dbc
+--- /dev/null
++++ b/experiments/robot/libero/failure_study/README.md
+@@ -0,0 +1,20 @@
++# LIBERO-Spatial failure-study package
++
++This directory contains the runnable package for the five targeted failure states.
++
++Start with [`OPERATION_MANUAL.md`](OPERATION_MANUAL.md). It defines the state mapping,
++safe Miniconda activation, experiment order, acceptance criteria, and the boundary
++between simulator-only diagnostics and deployable policy changes.
++
++Entry points:
++
++- `run_inference_study.sh`: 8-step control, first-4 execution, camera dumps, wrist-feature weighting.
++- `run_simulation_study.sh`: action-boundary logs, target-motion replanning, 20/50 Hz comparison.
++- `run_top_drawer_sweep.sh`: 20--50 top-drawer initial-state trials and a DAgger collection manifest.
++- `run_dagger_finetune.sh`: LoRA fine-tuning after expert corrections have been converted to RLDS.
++- `analyze_action_chunks.py`: produces episode/chunk CSV files and a Markdown diagnostic summary.
++- `summarize_targeted_eval.py`: produces per-state outcomes and the DAgger collection manifest.
++- `CONCLUSION_TEMPLATE.md`: fill this after the runs; do not infer missing measurements.
++
++The scripts intentionally do not activate Conda themselves. Activate the `oft`
++environment in the calling terminal so an activation failure cannot close the terminal.
+diff --git a/experiments/robot/libero/failure_study/analyze_action_chunks.py b/experiments/robot/libero/failure_study/analyze_action_chunks.py
+new file mode 100644
+index 0000000..02f512d
+--- /dev/null
++++ b/experiments/robot/libero/failure_study/analyze_action_chunks.py
+@@ -0,0 +1,208 @@
++#!/usr/bin/env python3
++"""Summarize chunk boundaries, gripper transitions, target motion, and inference deadlines."""
++
++import argparse
++import csv
++import json
++import math
++from pathlib import Path
++
++
++def read_jsonl(path: Path):
++    if not path.exists():
++        return []
++    records = []
++    for line in path.read_text(encoding="utf-8").splitlines():
++        if line.strip():
++            records.append(json.loads(line))
++    return records
++
++
++def target_position(chunk):
++    objects = chunk.get("sim_snapshot_before_chunk", {}).get("objects", {})
++    for name, state in objects.items():
++        if "bowl" in name.lower():
++            return name, state.get("position")
++    return None, None
++
++
++def distance(left, right):
++    if left is None or right is None or len(left) != len(right):
++        return None
++    return math.sqrt(sum((float(a) - float(b)) ** 2 for a, b in zip(left, right)))
++
++
++def write_csv(path: Path, rows):
++    path.parent.mkdir(parents=True, exist_ok=True)
++    if not rows:
++        path.write_text("", encoding="utf-8")
++        return
++    with path.open("w", newline="", encoding="utf-8-sig") as f:
++        writer = csv.DictWriter(f, fieldnames=list(rows[0].keys()))
++        writer.writeheader()
++        writer.writerows(rows)
++
++
++def analyze_episode(summary_path: Path, translation_threshold: float):
++    episode_dir = summary_path.parent
++    episode = json.loads(summary_path.read_text(encoding="utf-8"))
++    chunks = read_jsonl(episode_dir / "chunks.jsonl")
++    steps = read_jsonl(episode_dir / "steps.jsonl")
++    events = read_jsonl(episode_dir / "events.jsonl")
++
++    executed_pairs = {(step["chunk_index"], step["action_index_in_chunk"]) for step in steps}
++    chunk_rows = []
++    previous_target_position = None
++    previous_executed_gripper = -1.0
++    first_close = None
++    first_transfer = None
++    discarded_close_candidates = 0
++
++    for chunk in chunks:
++        chunk_idx = int(chunk["chunk_index"])
++        processed_actions = chunk.get("processed_actions", [])
++        open_loop_steps = int(chunk.get("open_loop_steps", len(processed_actions)))
++        target_name, current_target_position = target_position(chunk)
++        target_motion = distance(previous_target_position, current_target_position)
++        previous_target_position = current_target_position
++
++        local_previous_gripper = previous_executed_gripper
++        first_close_idx = None
++        first_transfer_idx = None
++        for action_idx, action in enumerate(processed_actions):
++            gripper = float(action[-1])
++            is_executed = (chunk_idx, action_idx) in executed_pairs
++            if local_previous_gripper < 0 <= gripper and first_close_idx is None:
++                first_close_idx = action_idx
++                if is_executed and first_close is None:
++                    first_close = (chunk_idx, action_idx)
++                elif not is_executed:
++                    discarded_close_candidates += 1
++            if is_executed:
++                if gripper >= 0:
++                    translation_norm = math.sqrt(sum(float(value) ** 2 for value in action[:3]))
++                    if translation_norm >= translation_threshold and first_transfer_idx is None:
++                        first_transfer_idx = action_idx
++                        if first_transfer is None:
++                            first_transfer = (chunk_idx, action_idx)
++                local_previous_gripper = gripper
++        previous_executed_gripper = local_previous_gripper
++
++        chunk_rows.append(
++            {
++                "episode_dir": str(episode_dir),
++                "task_id": episode.get("task_id"),
++                "initial_state_index": episode.get("initial_state_index"),
++                "chunk_index": chunk_idx,
++                "control_step": chunk.get("control_step"),
++                "control_freq": chunk.get("control_freq"),
++                "open_loop_steps": open_loop_steps,
++                "predicted_actions": len(processed_actions),
++                "actually_executed_actions": sum(1 for pair in executed_pairs if pair[0] == chunk_idx),
++                "first_close_action_index": first_close_idx,
++                "close_at_chunk_boundary": first_close_idx == 0,
++                "close_inside_executed_prefix": first_close_idx is not None and first_close_idx < open_loop_steps,
++                "first_closed_motion_action_index": first_transfer_idx,
++                "transfer_at_chunk_boundary": first_transfer_idx == 0,
++                "target_name": target_name,
++                "target_motion_since_previous_chunk_m": target_motion,
++                "contact_pairs_at_boundary": len(chunk.get("sim_snapshot_before_chunk", {}).get("contacts", [])),
++                "inference_latency_ms": chunk.get("inference_latency_ms"),
++                "chunk_deadline_ms": chunk.get("chunk_deadline_ms"),
++                "chunk_deadline_met": chunk.get("chunk_deadline_met"),
++            }
++        )
++
++    latencies = [float(row["inference_latency_ms"]) for row in chunk_rows if row["inference_latency_ms"] is not None]
++    deadline_values = [bool(row["chunk_deadline_met"]) for row in chunk_rows if row["chunk_deadline_met"] is not None]
++    target_motions = [
++        float(row["target_motion_since_previous_chunk_m"])
++        for row in chunk_rows
++        if row["target_motion_since_previous_chunk_m"] is not None
++    ]
++    episode_row = {
++        "episode_dir": str(episode_dir),
++        "task_id": episode.get("task_id"),
++        "initial_state_index": episode.get("initial_state_index"),
++        "task_description": episode.get("task_description"),
++        "success": episode.get("success"),
++        "control_freq": episode.get("control_freq"),
++        "open_loop_steps": episode.get("num_open_loop_steps"),
++        "chunks": len(chunks),
++        "executed_steps": len(steps),
++        "forced_replans": episode.get("forced_replan_count", 0),
++        "first_close_chunk": first_close[0] if first_close else None,
++        "first_close_action_index": first_close[1] if first_close else None,
++        "first_close_at_boundary": bool(first_close and first_close[1] == 0),
++        "first_transfer_chunk": first_transfer[0] if first_transfer else None,
++        "first_transfer_action_index": first_transfer[1] if first_transfer else None,
++        "first_transfer_at_boundary": bool(first_transfer and first_transfer[1] == 0),
++        "discarded_close_candidates": discarded_close_candidates,
++        "max_target_motion_between_chunks_m": max(target_motions) if target_motions else None,
++        "mean_inference_latency_ms": sum(latencies) / len(latencies) if latencies else None,
++        "deadline_met_rate": sum(deadline_values) / len(deadline_values) if deadline_values else None,
++        "motion_replan_events": sum(1 for event in events if event.get("event") == "target_motion_forced_replan"),
++    }
++    return episode_row, chunk_rows
++
++
++def main():
++    parser = argparse.ArgumentParser()
++    parser.add_argument("--root", type=Path, required=True, help="Experiment directory containing task_*/state_*")
++    parser.add_argument("--output-dir", type=Path, required=True)
++    parser.add_argument("--translation-threshold", type=float, default=0.02)
++    args = parser.parse_args()
++
++    summary_paths = sorted(args.root.rglob("episode_summary.json"))
++    if not summary_paths:
++        raise SystemExit(f"No episode_summary.json found under {args.root}")
++
++    episode_rows, chunk_rows = [], []
++    for summary_path in summary_paths:
++        episode_row, per_chunk_rows = analyze_episode(summary_path, args.translation_threshold)
++        episode_rows.append(episode_row)
++        chunk_rows.extend(per_chunk_rows)
++
++    args.output_dir.mkdir(parents=True, exist_ok=True)
++    write_csv(args.output_dir / "episode_summary.csv", episode_rows)
++    write_csv(args.output_dir / "chunk_summary.csv", chunk_rows)
++
++    successful = sum(str(row["success"]).lower() == "true" for row in episode_rows)
++    report_lines = [
++        "# Action-chunk diagnostic summary",
++        "",
++        f"- Episodes: {len(episode_rows)}",
++        f"- Successes: {successful}",
++        f"- Failures: {len(episode_rows) - successful}",
++        "",
++        "| Task | State | Hz | Open-loop | Success | First close | First transfer | Deadline met | Forced replans |",
++        "|---:|---:|---:|---:|---|---|---|---:|---:|",
++    ]
++    for row in episode_rows:
++        close = f"c{row['first_close_chunk']}/a{row['first_close_action_index']}"
++        transfer = f"c{row['first_transfer_chunk']}/a{row['first_transfer_action_index']}"
++        deadline_rate = row["deadline_met_rate"]
++        report_lines.append(
++            f"| {row['task_id']} | {row['initial_state_index']} | {row['control_freq']} | "
++            f"{row['open_loop_steps']} | {row['success']} | {close} | {transfer} | "
++            f"{deadline_rate:.1%} | {row['forced_replans']} |"
++            if deadline_rate is not None
++            else f"| {row['task_id']} | {row['initial_state_index']} | {row['control_freq']} | "
++            f"{row['open_loop_steps']} | {row['success']} | {close} | {transfer} | N/A | "
++            f"{row['forced_replans']} |"
++        )
++    report_lines.extend(
++        [
++            "",
++            "> `First close` and `First transfer` are action-log heuristics, not ground-truth grasp labels.",
++            "> A 50 Hz claim is supported only when `deadline_met_rate` is near 100% on the target GPU.",
++        ]
++    )
++    (args.output_dir / "analysis.md").write_text("\n".join(report_lines) + "\n", encoding="utf-8")
++    print(f"Wrote {args.output_dir / 'episode_summary.csv'}")
++    print(f"Wrote {args.output_dir / 'chunk_summary.csv'}")
++    print(f"Wrote {args.output_dir / 'analysis.md'}")
++
++
++if __name__ == "__main__":
++    main()
+diff --git a/experiments/robot/libero/failure_study/run_dagger_finetune.sh b/experiments/robot/libero/failure_study/run_dagger_finetune.sh
+new file mode 100644
+index 0000000..48d4b3c
+--- /dev/null
++++ b/experiments/robot/libero/failure_study/run_dagger_finetune.sh
+@@ -0,0 +1,65 @@
++#!/usr/bin/env bash
++set -euo pipefail
++
++SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
++REPO_ROOT="$(cd "${SCRIPT_DIR}/../../../.." && pwd)"
++
++DAGGER_RLDS_ROOT="${DAGGER_RLDS_ROOT:?Set DAGGER_RLDS_ROOT to the directory containing base and correction RLDS datasets}"
++VLA_PATH="${VLA_PATH:-/mnt/workspace/openvla-oft-ckpts/openvla-7b-oft-finetuned-libero-spatial}"
++RUN_ROOT="${RUN_ROOT:-/mnt/workspace/openvla-oft-training-runs/top-drawer-dagger}"
++DATASET_NAME="${DATASET_NAME:-libero_spatial_plus_top_drawer_dagger}"
++MAX_STEPS="${MAX_STEPS:-5000}"
++SAVE_FREQ="${SAVE_FREQ:-1000}"
++LEARNING_RATE="${LEARNING_RATE:-1e-4}"
++GRAD_ACCUMULATION="${GRAD_ACCUMULATION:-8}"
++MIN_VRAM_MIB="${MIN_VRAM_MIB:-25000}"
++
++if ! python -c 'import torch, tensorflow, tensorflow_datasets, draccus' >/dev/null 2>&1; then
++  echo "The active Python does not contain the OpenVLA-OFT training dependencies." >&2
++  exit 1
++fi
++if [ ! -d "${DAGGER_RLDS_ROOT}" ]; then
++  echo "Missing RLDS root: ${DAGGER_RLDS_ROOT}" >&2
++  exit 1
++fi
++if [ ! -d "${VLA_PATH}" ]; then
++  echo "Missing starting checkpoint: ${VLA_PATH}" >&2
++  exit 1
++fi
++
++VRAM_MIB="$(nvidia-smi --query-gpu=memory.total --format=csv,noheader,nounits | head -1 | tr -d ' ')"
++if [ "${VRAM_MIB}" -lt "${MIN_VRAM_MIB}" ] && [ "${ALLOW_LOW_VRAM:-0}" != "1" ]; then
++  echo "GPU memory is ${VRAM_MIB} MiB; the official batch-size-1 estimate is about 25 GB." >&2
++  echo "Use a >=32 GB GPU, or set ALLOW_LOW_VRAM=1 to attempt the run at your own risk." >&2
++  exit 1
++fi
++
++export WANDB_MODE="${WANDB_MODE:-offline}"
++export TOKENIZERS_PARALLELISM=false
++mkdir -p "${RUN_ROOT}"
++
++cd "${REPO_ROOT}"
++torchrun --standalone --nnodes 1 --nproc-per-node 1 vla-scripts/finetune.py \
++  --vla_path "${VLA_PATH}" \
++  --data_root_dir "${DAGGER_RLDS_ROOT}" \
++  --dataset_name "${DATASET_NAME}" \
++  --run_root_dir "${RUN_ROOT}" \
++  --use_l1_regression True \
++  --use_diffusion False \
++  --use_film False \
++  --num_images_in_input 2 \
++  --use_proprio True \
++  --batch_size 1 \
++  --grad_accumulation_steps "${GRAD_ACCUMULATION}" \
++  --learning_rate "${LEARNING_RATE}" \
++  --num_steps_before_decay 4000 \
++  --max_steps "${MAX_STEPS}" \
++  --save_freq "${SAVE_FREQ}" \
++  --shuffle_buffer_size 10000 \
++  --save_latest_checkpoint_only False \
++  --merge_lora_during_training False \
++  --image_aug True \
++  --lora_rank 32 \
++  --wandb_entity local \
++  --wandb_project openvla-oft-top-drawer-dagger \
++  --run_id_note top-drawer-dagger
+diff --git a/experiments/robot/libero/failure_study/run_inference_study.sh b/experiments/robot/libero/failure_study/run_inference_study.sh
+new file mode 100644
+index 0000000..731ca30
+--- /dev/null
++++ b/experiments/robot/libero/failure_study/run_inference_study.sh
+@@ -0,0 +1,35 @@
++#!/usr/bin/env bash
++set -euo pipefail
++
++SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
++# shellcheck disable=SC1091
++source "${SCRIPT_DIR}/study_common.sh"
++study_require_runtime
++
++MODE="${1:-all}"
++case "${MODE}" in
++  chunk8_control)
++    study_run_eval "inference-chunk8-control" "4:32,6:20,7:27" 8 1.0 False True 0.0 20
++    ;;
++  chunk4)
++    study_run_eval "inference-chunk4-first4" "4:32,6:20,7:27" 4 1.0 False True 0.0 20
++    ;;
++  camera_control)
++    study_run_eval "inference-camera-w1" "4:29,5:35" 8 1.0 True True 0.0 20
++    ;;
++  camera_w125)
++    study_run_eval "inference-camera-w1p25" "4:29,5:35" 8 1.25 True True 0.0 20
++    ;;
++  all)
++    study_run_eval "inference-chunk8-control" "4:32,6:20,7:27" 8 1.0 False True 0.0 20
++    study_run_eval "inference-chunk4-first4" "4:32,6:20,7:27" 4 1.0 False True 0.0 20
++    study_run_eval "inference-camera-w1" "4:29,5:35" 8 1.0 True True 0.0 20
++    study_run_eval "inference-camera-w1p25" "4:29,5:35" 8 1.25 True True 0.0 20
++    ;;
++  *)
++    echo "Usage: $0 {chunk8_control|chunk4|camera_control|camera_w125|all}" >&2
++    exit 2
++    ;;
++esac
++
++echo "Inference study outputs: ${STUDY_OUTPUT_ROOT}"
+diff --git a/experiments/robot/libero/failure_study/run_simulation_study.sh b/experiments/robot/libero/failure_study/run_simulation_study.sh
+new file mode 100644
+index 0000000..342c413
+--- /dev/null
++++ b/experiments/robot/libero/failure_study/run_simulation_study.sh
+@@ -0,0 +1,43 @@
++#!/usr/bin/env bash
++set -euo pipefail
++
++SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
++# shellcheck disable=SC1091
++source "${SCRIPT_DIR}/study_common.sh"
++study_require_runtime
++
++MODE="${1:-all}"
++case "${MODE}" in
++  boundary8)
++    study_run_eval "sim-boundary-chunk8" "4:32,7:27" 8 1.0 True True 0.0 20
++    ;;
++  boundary4)
++    study_run_eval "sim-boundary-chunk4" "4:32,7:27" 4 1.0 True True 0.0 20
++    ;;
++  relocalize_control)
++    study_run_eval "sim-relocalize-control" "6:20" 4 1.0 True True 0.0 20
++    ;;
++  relocalize_motion)
++    study_run_eval "sim-relocalize-motion-1cm" "6:20" 4 1.0 True True 0.01 20
++    ;;
++  freq20)
++    study_run_eval "sim-frequency-20hz" "4:32,6:20,7:27" 4 1.0 False True 0.0 20
++    ;;
++  freq50)
++    study_run_eval "sim-frequency-50hz" "4:32,6:20,7:27" 4 1.0 False True 0.0 50
++    ;;
++  all)
++    study_run_eval "sim-boundary-chunk8" "4:32,7:27" 8 1.0 True True 0.0 20
++    study_run_eval "sim-boundary-chunk4" "4:32,7:27" 4 1.0 True True 0.0 20
++    study_run_eval "sim-relocalize-control" "6:20" 4 1.0 True True 0.0 20
++    study_run_eval "sim-relocalize-motion-1cm" "6:20" 4 1.0 True True 0.01 20
++    study_run_eval "sim-frequency-20hz" "4:32,6:20,7:27" 4 1.0 False True 0.0 20
++    study_run_eval "sim-frequency-50hz" "4:32,6:20,7:27" 4 1.0 False True 0.0 50
++    ;;
++  *)
++    echo "Usage: $0 {boundary8|boundary4|relocalize_control|relocalize_motion|freq20|freq50|all}" >&2
++    exit 2
++    ;;
++esac
++
++echo "Simulation study outputs: ${STUDY_OUTPUT_ROOT}"
+diff --git a/experiments/robot/libero/failure_study/run_top_drawer_sweep.sh b/experiments/robot/libero/failure_study/run_top_drawer_sweep.sh
+new file mode 100644
+index 0000000..c58ed58
+--- /dev/null
++++ b/experiments/robot/libero/failure_study/run_top_drawer_sweep.sh
+@@ -0,0 +1,31 @@
++#!/usr/bin/env bash
++set -euo pipefail
++
++SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
++# shellcheck disable=SC1091
++source "${SCRIPT_DIR}/study_common.sh"
++study_require_runtime
++
++TRIALS="${TRIALS:-50}"
++if ! [[ "${TRIALS}" =~ ^[0-9]+$ ]] || [ "${TRIALS}" -lt 1 ] || [ "${TRIALS}" -gt 50 ]; then
++  echo "TRIALS must be an integer in [1, 50], got ${TRIALS}" >&2
++  exit 2
++fi
++
++TARGETS=""
++for ((state_idx = 0; state_idx < TRIALS; state_idx++)); do
++  if [ -n "${TARGETS}" ]; then
++    TARGETS+=","
++  fi
++  TARGETS+="4:${state_idx}"
++done
++
++LABEL="training-top-drawer-sweep-${TRIALS}"
++study_run_eval "${LABEL}" "${TARGETS}" 8 1.0 False True 0.0 20
++
++python "${SCRIPT_DIR}/summarize_targeted_eval.py" \
++  --log "${STUDY_OUTPUT_ROOT}/${LABEL}/console.log" \
++  --output-dir "${STUDY_OUTPUT_ROOT}/${LABEL}/summary"
++
++echo "Top-drawer sweep complete: ${STUDY_OUTPUT_ROOT}/${LABEL}"
++echo "Fill expert corrections in summary/dagger_collection_manifest.csv before building the RLDS dataset."
+diff --git a/experiments/robot/libero/failure_study/study_common.sh b/experiments/robot/libero/failure_study/study_common.sh
+new file mode 100644
+index 0000000..122f061
+--- /dev/null
++++ b/experiments/robot/libero/failure_study/study_common.sh
+@@ -0,0 +1,73 @@
++#!/usr/bin/env bash
++
++STUDY_SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
++STUDY_REPO_ROOT="$(cd "${STUDY_SCRIPT_DIR}/../../../.." && pwd)"
++STUDY_CKPT_DIR="${CKPT_DIR:-/mnt/workspace/openvla-oft-ckpts/openvla-7b-oft-finetuned-libero-spatial}"
++STUDY_GPU_ID="${GPU:-0}"
++STUDY_RUN_TAG="${RUN_TAG:-$(date '+%Y%m%d-%H%M%S')}"
++STUDY_OUTPUT_ROOT="${OUTPUT_ROOT:-${STUDY_REPO_ROOT}/experiments/failure_study_runs/${STUDY_RUN_TAG}}"
++
++export CUDA_VISIBLE_DEVICES="${STUDY_GPU_ID}"
++export MUJOCO_GL="${MUJOCO_GL:-egl}"
++export PYOPENGL_PLATFORM="${PYOPENGL_PLATFORM:-egl}"
++
++study_require_runtime() {
++  if [ ! -d "${STUDY_CKPT_DIR}" ]; then
++    echo "Missing checkpoint: ${STUDY_CKPT_DIR}" >&2
++    return 1
++  fi
++  if ! python -c 'import draccus, torch, transformers, libero' >/dev/null 2>&1; then
++    echo "The active Python is not the OpenVLA-OFT environment." >&2
++    echo "Activate the Miniconda environment first, then rerun this script." >&2
++    echo "Current Python: $(command -v python)" >&2
++    return 1
++  fi
++  mkdir -p "${STUDY_OUTPUT_ROOT}"
++}
++
++study_run_eval() {
++  local label="$1"
++  local targets="$2"
++  local open_loop_steps="$3"
++  local wrist_weight="$4"
++  local dump_cameras="$5"
++  local dump_actions="$6"
++  local motion_threshold="$7"
++  local control_freq="$8"
++  local run_root="${STUDY_OUTPUT_ROOT}/${label}"
++
++  mkdir -p "${run_root}"
++  printf '%s\n' \
++    "label=${label}" \
++    "targets=${targets}" \
++    "open_loop_steps=${open_loop_steps}" \
++    "wrist_image_weight=${wrist_weight}" \
++    "target_motion_replan_threshold_m=${motion_threshold}" \
++    "control_freq=${control_freq}" \
++    "checkpoint=${STUDY_CKPT_DIR}" \
++    > "${run_root}/run_config.txt"
++
++  (
++    cd "${STUDY_REPO_ROOT}"
++    python experiments/robot/libero/run_libero_eval.py \
++      --pretrained_checkpoint "${STUDY_CKPT_DIR}" \
++      --task_suite_name libero_spatial \
++      --seed 7 \
++      --num_open_loop_steps "${open_loop_steps}" \
++      --target_episodes "${targets}" \
++      --wrist_image_weight "${wrist_weight}" \
++      --dump_camera_inputs "${dump_cameras}" \
++      --camera_dump_dir "${run_root}/cameras" \
++      --dump_action_chunks "${dump_actions}" \
++      --action_dump_dir "${run_root}/actions" \
++      --target_motion_replan_threshold_m "${motion_threshold}" \
++      --control_freq "${control_freq}" \
++      --run_id_note "${label}"
++  ) 2>&1 | tee "${run_root}/console.log"
++
++  if [ "${dump_actions}" = "True" ]; then
++    python "${STUDY_SCRIPT_DIR}/analyze_action_chunks.py" \
++      --root "${run_root}/actions" \
++      --output-dir "${run_root}/analysis"
++  fi
++}
+diff --git a/experiments/robot/libero/failure_study/summarize_targeted_eval.py b/experiments/robot/libero/failure_study/summarize_targeted_eval.py
+new file mode 100644
+index 0000000..78689c0
+--- /dev/null
++++ b/experiments/robot/libero/failure_study/summarize_targeted_eval.py
+@@ -0,0 +1,81 @@
++#!/usr/bin/env python3
++"""Extract targeted task/state outcomes and generate a DAgger collection manifest."""
++
++import argparse
++import csv
++import re
++from pathlib import Path
++
++
++START_RE = re.compile(r"Starting targeted task_id=(\d+), initial_state_index=(\d+)")
++SUCCESS_RE = re.compile(r"Success:\s*(True|False)")
++
++
++def write_csv(path, rows, fieldnames):
++    path.parent.mkdir(parents=True, exist_ok=True)
++    with path.open("w", newline="", encoding="utf-8-sig") as f:
++        writer = csv.DictWriter(f, fieldnames=fieldnames)
++        writer.writeheader()
++        writer.writerows(rows)
++
++
++def main():
++    parser = argparse.ArgumentParser()
++    parser.add_argument("--log", type=Path, required=True)
++    parser.add_argument("--output-dir", type=Path, required=True)
++    args = parser.parse_args()
++
++    current = None
++    rows = []
++    for line in args.log.read_text(encoding="utf-8", errors="replace").splitlines():
++        start_match = START_RE.search(line)
++        if start_match:
++            current = {
++                "task_id": int(start_match.group(1)),
++                "initial_state_index": int(start_match.group(2)),
++            }
++            continue
++        success_match = SUCCESS_RE.search(line)
++        if success_match and current is not None:
++            rows.append({**current, "success": success_match.group(1) == "True"})
++            current = None
++
++    if not rows:
++        raise SystemExit(f"No targeted episode outcomes found in {args.log}")
++
++    result_rows = [
++        {
++            "task_id": row["task_id"],
++            "initial_state_index": row["initial_state_index"],
++            "success": row["success"],
++        }
++        for row in rows
++    ]
++    manifest_rows = [
++        {
++            "task_id": row["task_id"],
++            "initial_state_index": row["initial_state_index"],
++            "policy_success": row["success"],
++            "needs_expert_correction": not row["success"],
++            "failure_category": "TO_FILL",
++            "expert_demo_status": "PENDING" if not row["success"] else "NOT_REQUIRED",
++            "expert_demo_path": "",
++            "notes": "",
++        }
++        for row in rows
++    ]
++
++    args.output_dir.mkdir(parents=True, exist_ok=True)
++    write_csv(args.output_dir / "targeted_results.csv", result_rows, list(result_rows[0].keys()))
++    write_csv(args.output_dir / "dagger_collection_manifest.csv", manifest_rows, list(manifest_rows[0].keys()))
++
++    successes = sum(row["success"] for row in rows)
++    print(f"Episodes: {len(rows)}")
++    print(f"Successes: {successes}")
++    print(f"Failures: {len(rows) - successes}")
++    print(f"Success rate: {successes / len(rows):.1%}")
++    print(f"Manifest: {args.output_dir / 'dagger_collection_manifest.csv'}")
++
++
++if __name__ == "__main__":
++    main()
+diff --git a/experiments/robot/libero/libero_utils.py b/experiments/robot/libero/libero_utils.py
+index 8e2c234..d3b7f3a 100644
+--- a/experiments/robot/libero/libero_utils.py
++++ b/experiments/robot/libero/libero_utils.py
+@@ -15,11 +15,16 @@ from experiments.robot.robot_utils import (
+ )
+ 
+ 
+-def get_libero_env(task, model_family, resolution=256):
++def get_libero_env(task, model_family, resolution=256, control_freq=20):
+     """Initializes and returns the LIBERO environment, along with the task description."""
+     task_description = task.language
+     task_bddl_file = os.path.join(get_libero_path("bddl_files"), task.problem_folder, task.bddl_file)
+-    env_args = {"bddl_file_name": task_bddl_file, "camera_heights": resolution, "camera_widths": resolution}
++    env_args = {
++        "bddl_file_name": task_bddl_file,
++        "camera_heights": resolution,
++        "camera_widths": resolution,
++        "control_freq": control_freq,
++    }
+     env = OffScreenRenderEnv(**env_args)
+     env.seed(0)  # IMPORTANT: seed seems to affect object positions even when using fixed initial state
+     return env, task_description
+diff --git a/experiments/robot/libero/run_libero_eval.py b/experiments/robot/libero/run_libero_eval.py
+index 4283ad9..77030fe 100644
+--- a/experiments/robot/libero/run_libero_eval.py
++++ b/experiments/robot/libero/run_libero_eval.py
+@@ -8,6 +8,7 @@ import json
+ import logging
+ import os
+ import sys
++import time
+ from collections import deque
+ from dataclasses import dataclass
+ from enum import Enum
+@@ -67,6 +68,7 @@ TASK_MAX_STEPS = {
+     TaskSuite.LIBERO_10: 520,  # longest training demo has 505 steps
+     TaskSuite.LIBERO_90: 400,  # longest training demo has 373 steps
+ }
++BASE_CONTROL_FREQ = 20
+ 
+ 
+ # Set up logging
+@@ -118,6 +120,10 @@ class GenerateConfig:
+     target_episodes: str = ""                        # Optional zero-based task:state pairs, e.g. "4:32,6:20,7:27"
+     dump_camera_inputs: bool = False                 # Save raw/resized/final camera inputs at every policy replan
+     camera_dump_dir: str = "./experiments/camera_dumps"  # Root directory for camera diagnostics
++    dump_action_chunks: bool = False                 # Save each predicted 8x7 chunk and executed gripper commands
++    action_dump_dir: str = "./experiments/action_dumps"  # Root directory for action/simulator diagnostics
++    target_motion_replan_threshold_m: float = 0.0    # Privileged sim ablation; 0 disables target-motion replanning
++    control_freq: int = BASE_CONTROL_FREQ            # LIBERO controller frequency; baseline is 20 Hz
+ 
+     #################################################################################################################
+     # Utils
+@@ -146,6 +152,8 @@ def validate_config(cfg: GenerateConfig) -> None:
+         f"num_open_loop_steps must be in [1, {NUM_ACTIONS_CHUNK}], got {cfg.num_open_loop_steps}"
+     )
+     assert cfg.wrist_image_weight > 0, "wrist_image_weight must be positive!"
++    assert cfg.target_motion_replan_threshold_m >= 0, "target_motion_replan_threshold_m must be non-negative!"
++    assert cfg.control_freq > 0, "control_freq must be positive!"
+ 
+     # Validate task suite
+     assert cfg.task_suite_name in [suite.value for suite in TaskSuite], f"Invalid task suite: {cfg.task_suite_name}"
+@@ -174,6 +182,66 @@ def parse_target_episodes(spec: str):
+     return targets
+ 
+ 
++def append_jsonl(path: Path, payload) -> None:
++    """Append one JSON-serializable record and flush it for crash-safe diagnostics."""
++    path.parent.mkdir(parents=True, exist_ok=True)
++    with open(path, "a", encoding="utf-8") as f:
++        f.write(json.dumps(payload, ensure_ascii=False) + "\n")
++        f.flush()
++
++
++def collect_sim_snapshot(env):
++    """Collect privileged object poses and MuJoCo contacts for diagnosis only."""
++    wrapped_env = getattr(env, "env", env)
++    sim = getattr(wrapped_env, "sim", None)
++    snapshot = {"objects": {}, "contacts": []}
++    if sim is None:
++        return snapshot
++
++    for collection_name in ("objects_dict", "fixtures_dict"):
++        collection = getattr(wrapped_env, collection_name, {}) or {}
++        for object_name, obj in collection.items():
++            body_name = getattr(obj, "root_body", None)
++            if body_name is None:
++                continue
++            try:
++                body_id = sim.model.body_name2id(body_name)
++                snapshot["objects"][str(object_name)] = {
++                    "kind": collection_name,
++                    "body_name": str(body_name),
++                    "position": np.asarray(sim.data.body_xpos[body_id]).astype(float).tolist(),
++                    "quaternion": np.asarray(sim.data.body_xquat[body_id]).astype(float).tolist(),
++                }
++            except Exception:
++                continue
++
++    try:
++        for contact_idx in range(int(sim.data.ncon)):
++            contact = sim.data.contact[contact_idx]
++            geom1 = sim.model.geom_id2name(int(contact.geom1))
++            geom2 = sim.model.geom_id2name(int(contact.geom2))
++            snapshot["contacts"].append([str(geom1), str(geom2)])
++    except Exception:
++        pass
++    return snapshot
++
++
++def max_named_object_motion(before, after, name_fragment="bowl"):
++    """Return the largest position change for matching objects in two privileged snapshots."""
++    before_objects, after_objects = before.get("objects", {}), after.get("objects", {})
++    motions = {}
++    for name, before_state in before_objects.items():
++        if name_fragment.lower() not in name.lower() or name not in after_objects:
++            continue
++        before_pos = np.asarray(before_state["position"], dtype=float)
++        after_pos = np.asarray(after_objects[name]["position"], dtype=float)
++        motions[name] = float(np.linalg.norm(after_pos - before_pos))
++    if not motions:
++        return 0.0, None
++    moved_name = max(motions, key=motions.get)
++    return motions[moved_name], moved_name
++
++
+ def initialize_model(cfg: GenerateConfig):
+     """Initialize model and associated components."""
+     # Load model
+@@ -353,15 +421,28 @@ def run_episode(
+     # Setup
+     t = 0
+     replay_images = []
+-    max_steps = TASK_MAX_STEPS[cfg.task_suite_name]
++    frequency_scale = cfg.control_freq / BASE_CONTROL_FREQ
++    max_steps = int(round(TASK_MAX_STEPS[cfg.task_suite_name] * frequency_scale))
++    wait_steps = int(round(cfg.num_steps_wait * frequency_scale))
+     replan_idx = 0
++    active_chunk_idx = -1
++    chunk_start_snapshot = None
++    diagnostic_dir = Path(cfg.action_dump_dir) / f"task_{task_id:02d}" / f"state_{episode_idx:02d}"
++    chunks_path = diagnostic_dir / "chunks.jsonl"
++    steps_path = diagnostic_dir / "steps.jsonl"
++    events_path = diagnostic_dir / "events.jsonl"
++    if cfg.dump_action_chunks:
++        diagnostic_dir.mkdir(parents=True, exist_ok=True)
++        for diagnostic_path in (chunks_path, steps_path, events_path):
++            diagnostic_path.write_text("", encoding="utf-8")
++    forced_replans = 0
+ 
+     # Run episode
+     success = False
+     try:
+-        while t < max_steps + cfg.num_steps_wait:
++        while t < max_steps + wait_steps:
+             # Do nothing for the first few timesteps to let objects stabilize
+-            if t < cfg.num_steps_wait:
++            if t < wait_steps:
+                 obs, reward, done, info = env.step(get_libero_dummy_action(cfg.model_family))
+                 t += 1
+                 continue
+@@ -377,13 +458,14 @@ def run_episode(
+                     observation["_camera_debug"].update(
+                         {
+                             "dump_dir": str(dump_dir),
+-                            "prefix": f"replan_{replan_idx:03d}_step_{t - cfg.num_steps_wait:03d}",
++                            "prefix": f"replan_{replan_idx:03d}_step_{t - wait_steps:03d}",
+                             "task_description": task_description,
+                             "task_id": task_id,
+                             "episode_idx": episode_idx,
+                         }
+                     )
+                 # Query model to get action
++                inference_started = time.perf_counter()
+                 actions = get_action(
+                     cfg,
+                     model,
+@@ -395,22 +477,95 @@ def run_episode(
+                     noisy_action_projector=noisy_action_projector,
+                     use_film=cfg.use_film,
+                 )
+-                action_queue.extend(actions[: cfg.num_open_loop_steps])
++                inference_latency_ms = (time.perf_counter() - inference_started) * 1000.0
++                actions_array = np.asarray(actions, dtype=float)
++                if actions_array.ndim != 2 or actions_array.shape[1] != 7:
++                    raise ValueError(f"Expected action chunk shaped (N, 7), got {actions_array.shape}")
++                queued_count = min(len(actions), cfg.num_open_loop_steps)
++                action_queue.extend((action_idx, actions[action_idx]) for action_idx in range(queued_count))
++                active_chunk_idx = replan_idx
++                chunk_start_snapshot = collect_sim_snapshot(env)
++                if cfg.dump_action_chunks:
++                    processed_actions = [
++                        process_action(np.asarray(chunk_action).copy(), cfg.model_family).astype(float).tolist()
++                        for chunk_action in actions
++                    ]
++                    append_jsonl(
++                        chunks_path,
++                        {
++                            "chunk_index": replan_idx,
++                            "control_step": t - wait_steps,
++                            "sim_time_seconds": (t - wait_steps) / cfg.control_freq,
++                            "control_freq": cfg.control_freq,
++                            "inference_latency_ms": inference_latency_ms,
++                            "chunk_deadline_ms": cfg.num_open_loop_steps / cfg.control_freq * 1000.0,
++                            "chunk_deadline_met": inference_latency_ms
++                            <= cfg.num_open_loop_steps / cfg.control_freq * 1000.0,
++                            "predicted_shape": list(actions_array.shape),
++                            "open_loop_steps": cfg.num_open_loop_steps,
++                            "executed_action_indices_planned": list(range(queued_count)),
++                            "raw_actions": actions_array.tolist(),
++                            "processed_actions": processed_actions,
++                            "raw_gripper_commands": actions_array[:, -1].tolist(),
++                            "processed_gripper_commands": [action[-1] for action in processed_actions],
++                            "proprio": np.asarray(observation["state"], dtype=float).tolist(),
++                            "sim_snapshot_before_chunk": chunk_start_snapshot,
++                        },
++                    )
+                 log_message(
+                     f"Replan {replan_idx}: predicted {len(actions)} actions; "
+-                    f"queued first {min(len(actions), cfg.num_open_loop_steps)}",
++                    f"queued first {min(len(actions), cfg.num_open_loop_steps)}; "
++                    f"inference {inference_latency_ms:.1f} ms",
+                     log_file,
+                 )
+                 replan_idx += 1
+ 
+             # Get action from queue
+-            action = action_queue.popleft()
++            action_idx_in_chunk, action = action_queue.popleft()
+ 
+             # Process action
+             action = process_action(action, cfg.model_family)
+ 
++            if cfg.dump_action_chunks:
++                append_jsonl(
++                    steps_path,
++                    {
++                        "chunk_index": active_chunk_idx,
++                        "action_index_in_chunk": action_idx_in_chunk,
++                        "control_step": t - wait_steps,
++                        "sim_time_seconds": (t - wait_steps) / cfg.control_freq,
++                        "processed_action": np.asarray(action, dtype=float).tolist(),
++                        "queue_remaining_before_step": len(action_queue),
++                    },
++                )
++
+             # Execute action in environment
+             obs, reward, done, info = env.step(action.tolist())
++            if cfg.target_motion_replan_threshold_m > 0 and action[-1] < 0 and chunk_start_snapshot is not None:
++                current_snapshot = collect_sim_snapshot(env)
++                target_motion, moved_target = max_named_object_motion(chunk_start_snapshot, current_snapshot, "bowl")
++                if target_motion >= cfg.target_motion_replan_threshold_m and len(action_queue) > 0:
++                    discarded_actions = len(action_queue)
++                    action_queue.clear()
++                    forced_replans += 1
++                    event = {
++                        "event": "target_motion_forced_replan",
++                        "chunk_index": active_chunk_idx,
++                        "action_index_in_chunk": action_idx_in_chunk,
++                        "control_step": t - wait_steps,
++                        "target_name": moved_target,
++                        "target_motion_m": target_motion,
++                        "threshold_m": cfg.target_motion_replan_threshold_m,
++                        "discarded_queued_actions": discarded_actions,
++                        "gripper_command": float(action[-1]),
++                    }
++                    if cfg.dump_action_chunks:
++                        append_jsonl(events_path, event)
++                    log_message(
++                        f"Target moved {target_motion:.4f} m while gripper was open; "
++                        f"discarded {discarded_actions} queued actions and will replan",
++                        log_file,
++                    )
+             if done:
+                 success = True
+                 break
+@@ -419,6 +574,24 @@ def run_episode(
+     except Exception as e:
+         log_message(f"Episode error: {e}", log_file)
+ 
++    if cfg.dump_action_chunks:
++        summary = {
++            "task_id": task_id,
++            "initial_state_index": episode_idx,
++            "task_description": task_description,
++            "success": success,
++            "control_freq": cfg.control_freq,
++            "num_open_loop_steps": cfg.num_open_loop_steps,
++            "target_motion_replan_threshold_m": cfg.target_motion_replan_threshold_m,
++            "replan_count": replan_idx,
++            "forced_replan_count": forced_replans,
++            "executed_control_steps": max(0, t - wait_steps),
++            "simulated_duration_seconds": max(0, t - wait_steps) / cfg.control_freq,
++        }
++        (diagnostic_dir / "episode_summary.json").write_text(
++            json.dumps(summary, ensure_ascii=False, indent=2), encoding="utf-8"
++        )
++
+     return success, replay_images
+ 
+ 
+@@ -445,7 +618,9 @@ def run_task(
+     initial_states, all_initial_states = load_initial_states(cfg, task_suite, task_id, log_file)
+ 
+     # Initialize environment and get task description
+-    env, task_description = get_libero_env(task, cfg.model_family, resolution=cfg.env_img_res)
++    env, task_description = get_libero_env(
++        task, cfg.model_family, resolution=cfg.env_img_res, control_freq=cfg.control_freq
++    )
+ 
+     # Start episodes
+     task_episodes, task_successes = 0, 0
+@@ -563,6 +738,9 @@ def eval_libero(cfg: GenerateConfig) -> float:
+     log_message(f"Wrist image feature weight: {cfg.wrist_image_weight}", log_file)
+     log_message(f"Target episodes (zero-based task:state): {target_episodes or 'ALL'}", log_file)
+     log_message(f"Camera input dump: {cfg.dump_camera_inputs} -> {cfg.camera_dump_dir}", log_file)
++    log_message(f"Action chunk dump: {cfg.dump_action_chunks} -> {cfg.action_dump_dir}", log_file)
++    log_message(f"Target-motion replan threshold: {cfg.target_motion_replan_threshold_m} m", log_file)
++    log_message(f"LIBERO control frequency: {cfg.control_freq} Hz", log_file)
+ 
+     # Start evaluation
+     total_episodes, total_successes = 0, 0
+diff --git a/prismatic/vla/datasets/rlds/oxe/configs.py b/prismatic/vla/datasets/rlds/oxe/configs.py
+index 3222e02..882d909 100644
+--- a/prismatic/vla/datasets/rlds/oxe/configs.py
++++ b/prismatic/vla/datasets/rlds/oxe/configs.py
+@@ -649,6 +649,13 @@ OXE_DATASET_CONFIGS = {
+         "state_encoding": StateEncoding.POS_EULER,
+         "action_encoding": ActionEncoding.EEF_POS,
+     },
++    "libero_spatial_top_drawer_dagger": {
++        "image_obs_keys": {"primary": "image", "secondary": None, "wrist": "wrist_image"},
++        "depth_obs_keys": {"primary": None, "secondary": None, "wrist": None},
++        "state_obs_keys": ["EEF_state", "gripper_state"],
++        "state_encoding": StateEncoding.POS_EULER,
++        "action_encoding": ActionEncoding.EEF_POS,
++    },
+     "libero_object_no_noops": {
+         "image_obs_keys": {"primary": "image", "secondary": None, "wrist": "wrist_image"},
+         "depth_obs_keys": {"primary": None, "secondary": None, "wrist": None},
+diff --git a/prismatic/vla/datasets/rlds/oxe/mixtures.py b/prismatic/vla/datasets/rlds/oxe/mixtures.py
+index c5a2862..25a607d 100644
+--- a/prismatic/vla/datasets/rlds/oxe/mixtures.py
++++ b/prismatic/vla/datasets/rlds/oxe/mixtures.py
+@@ -197,6 +197,13 @@ OXE_NAMED_MIXTURES: Dict[str, List[Tuple[str, float]]] = {
+     "libero_spatial_no_noops": [
+         ("libero_spatial_no_noops", 1.0),
+     ],
++    "libero_spatial_top_drawer_dagger_only": [
++        ("libero_spatial_top_drawer_dagger", 1.0),
++    ],
++    "libero_spatial_plus_top_drawer_dagger": [
++        ("libero_spatial_no_noops", 1.0),
++        ("libero_spatial_top_drawer_dagger", 5.0),
++    ],
+     "libero_object_no_noops": [
+         ("libero_object_no_noops", 1.0),
+     ],
+diff --git a/prismatic/vla/datasets/rlds/oxe/transforms.py b/prismatic/vla/datasets/rlds/oxe/transforms.py
+index bf848e9..02620fd 100644
+--- a/prismatic/vla/datasets/rlds/oxe/transforms.py
++++ b/prismatic/vla/datasets/rlds/oxe/transforms.py
+@@ -921,6 +921,7 @@ OXE_STANDARDIZATION_TRANSFORMS = {
+     "droid_wipe": droid_finetuning_transform,
+     ### LIBERO datasets (modified versions)
+     "libero_spatial_no_noops": libero_dataset_transform,
++    "libero_spatial_top_drawer_dagger": libero_dataset_transform,
+     "libero_object_no_noops": libero_dataset_transform,
+     "libero_goal_no_noops": libero_dataset_transform,
+     "libero_10_no_noops": libero_dataset_transform,
+-- 
+2.52.0.windows.1
+

@@ -1,0 +1,37 @@
+{
+  "version": 3,
+  "cmakeMinimumRequired": {
+    "major": 3,
+    "minor": 21,
+    "patch": 0
+  },
+  "configurePresets": [
+    {
+      "name": "windows-ucrt64-vulkan",
+      "displayName": "Windows UCRT64 + Vulkan (machine-specific, D: roots)",
+      "description": "Machine-specific preset kept out of version control. Uses D:/digital-human-dev dependency roots and D:/MSYC64 UCRT64 toolchain. Copy or edit this file on each developer machine; it is gitignored.",
+      "generator": "Ninja",
+      "binaryDir": "D:/digital-human-dev/build/digital-human-sdk-windows-ucrt64-vulkan",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Release",
+        "CMAKE_CXX_COMPILER": "D:/MSYC64/ucrt64/bin/g++.exe",
+        "CMAKE_PREFIX_PATH": "D:/digital-human-dev/ncnn/ucrt64-vulkan;D:/MSYC64/ucrt64",
+        "DIGITAL_HUMAN_REQUIRE_NCNN_VULKAN": "ON"
+      },
+      "environment": {
+        "PATH": "D:/MSYC64/ucrt64/bin;D:/MSYC64/usr/bin;$penv{PATH}",
+        "TMP": "D:/digital-human-dev/temp",
+        "TEMP": "D:/digital-human-dev/temp",
+        "XDG_CACHE_HOME": "D:/digital-human-dev/cache"
+      }
+    }
+  ],
+  "buildPresets": [
+    {
+      "name": "windows-ucrt64-vulkan",
+      "configurePreset": "windows-ucrt64-vulkan",
+      "configuration": "Release",
+      "jobs": 4
+    }
+  ]
+}

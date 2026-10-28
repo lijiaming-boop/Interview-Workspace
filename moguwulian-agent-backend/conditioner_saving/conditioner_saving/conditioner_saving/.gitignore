@@ -1,0 +1,60 @@
+# Temporary files
+tmp/
+*.pyc
+__pycache__/
+
+# Environment secrets
+.env
+
+# Streamlit secrets
+.streamlit/secrets.toml
+
+# Go proxy .env
+proxy/.env
+proxy/*.exe
+
+# IDE
+.vscode/
+.idea/
+
+# Python
+venv/
+.venv/
+*.egg-info/
+dist/
+build/
+
+# Jupyter
+.ipynb_checkpoints/
+*.ipynb_checkpoints/
+
+# Logs
+*.log
+
+# Temporary exports
+*_export.txt
+.worktrees/
+
+# Frontend (deleted, use Streamlit instead)
+frontend/
+
+# Auto-generated docs
+.qoder/
+
+# Temporary test outputs
+test_output*.json
+
+# Office lock files
+~$*
+
+# AI IDE local dirs
+.trae/
+.workbuddy/
+
+# 本地 SQLite（开发持久化）
+data/
+
+# Run outputs（评测的 baselines.json 与 report.md 保留在版本控制）
+output/
+outputs/
+evaluation/runs/

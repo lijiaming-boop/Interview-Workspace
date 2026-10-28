@@ -1,0 +1,108 @@
+############################## 构建产物
+# 覆盖所有 CMake 构建树（含历史 phase 目录与自定义名称），避免误入库
+build/
+build_*/
+build-*/
+build_wsl/
+build-wsl-*/
+build-windows-*/
+out/
+cmake-build-*/
+# 构建目录之外意外生成的 CMake 缓存、对象和覆盖率数据
+CMakeFiles/
+CMakeCache.txt
+cmake_install.cmake
+CTestTestfile.cmake
+Testing/
+*.o
+*.obj
+*.gch
+*.pch
+*.pdb
+*.ilk
+*.gcda
+*.gcno
+*.gcov
+
+############################## CMake 用户本地配置（含本机绝对路径，不入库）
+CMakeUserPresets.json
+CMakeUserPresets*.json
+
+############################## IDE / 编辑器
+.vs/
+.vscode/
+.idea/
+.cache/
+*.swp
+*.swo
+*~
+
+############################## 操作系统
+.DS_Store
+Thumbs.db
+desktop.ini
+
+############################## 资源：媒体输出与运行产物（不应入库）
+assets/output/
+artifacts/
+
+############################## 资源：模型文件（应走 Git LFS 或外部下载脚本）
+*.bin
+*.param
+*.onnx
+*.pb
+*.pt
+*.pth
+*.tar.gz
+*.tgz
+*.zip
+
+############################## 资源：媒体文件（视频/音频原始素材）
+*.mp4
+*.mp3
+*.wav
+*.aac
+*.flac
+*.avi
+*.mov
+*.mkv
+
+############################## 数据库 / 临时文件
+*.dat
+*.log
+*.tmp
+
+############################## 个人资料（不公开）
+数字人SDK项目面试题库_整合补充版.md
+数字人sdk面试文档_优化版.md
+docs/interview_faq_framework_inference.md
+
+############################## 调试输出
+face_detector_result.jpg
+landmark_result.jpg
+face_mask_debug.png
+assets/verify/
+assets/mask_debug/
+assets/after_roi_zoom.png
+assets/before_roi_zoom.png
+assets/fix_comparison.png
+assets/frame_first.jpg
+assets/frame_last.jpg
+assets/frame_mid.jpg
+assets/lip_edge_diff_after.png
+assets/lip_edge_profile.png
+assets/lip_edge_zoom_compare.png
+assets/montage*.png
+assets/openness_energy*.csv
+assets/plot.png
+assets/scatter.png
+
+# perf 原始采样与中间输出；历史 SVG 与分析报告继续保留
+docs/perf/perf.data*
+docs/perf/*.folded
+docs/perf/perf.script
+docs/perf/perf_report.txt
+
+############################## Python
+__pycache__/
+*.pyc

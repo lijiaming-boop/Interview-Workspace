@@ -1,0 +1,12 @@
+Traceback (most recent call last):
+  File "<string>", line 13, in <module>
+    print(f'[{idx}] {style}: {text}')
+    ~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+UnicodeEncodeError: 'gbk' codec can't encode character '\xb2' in position 20: illegal multibyte sequence
+[45] Heading 1: 1、战略层解耦：硬编码规则到行为原则
+[58] Heading 1: 2、策略层解耦：固定分支到候选动作池
+[85] Heading 1: 3、操作层解耦：裸调用到围栏、校验、恢复
+[88] Heading 2: 3.1 执行前校验：输入围栏
+[98] Heading 2: 3.2 执行后校验：输出围栏
+[104] Heading 2: 3.3 乘法奖励驱动的降级策略
+[105] Heading 3: 核心思路

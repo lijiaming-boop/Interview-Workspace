@@ -1,0 +1,5 @@
+config,state,model,cabinet_contact_step,bowl_contact_step,contact_lag_steps,cabinet_contact_count,cabinet_penetration_mm,bowl_penetration_mm
+State 11 - 基座,11,基座,55,58,3,9,0.194,0.699
+State 11 - head-only,11,head-only,57,65,8,9,0.047,1.737
+State 38 - 基座,38,基座,58,65,7,5,0.035,1.111
+State 38 - head-only,38,head-only,60,74,14,14,0.372,3.118

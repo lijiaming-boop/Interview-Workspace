@@ -1,0 +1,86 @@
+{
+  "can_proceed": true,
+  "unfillable_fields": [],
+  "fillable_suggestions": [
+    {
+      "field": "monthly_data[0].chiller_supply_temp",
+      "original_value": null,
+      "suggested_value": 7,
+      "method": "industry_default",
+      "confidence": "low",
+      "reasoning": "该参数缺少足够数据支撑,使用冬季行业默认值(7)"
+    },
+    {
+      "field": "monthly_data[1].chiller_supply_temp",
+      "original_value": null,
+      "suggested_value": 7,
+      "method": "industry_default",
+      "confidence": "low",
+      "reasoning": "该参数缺少足够数据支撑,使用冬季行业默认值(7)"
+    },
+    {
+      "field": "monthly_data[2].chiller_supply_temp",
+      "original_value": null,
+      "suggested_value": 7,
+      "method": "industry_default",
+      "confidence": "low",
+      "reasoning": "该参数缺少足够数据支撑,使用冬季行业默认值(7)"
+    },
+    {
+      "field": "monthly_data[0].freezing_pump_freq",
+      "original_value": null,
+      "suggested_value": 50,
+      "method": "industry_default",
+      "confidence": "low",
+      "reasoning": "该参数缺少足够数据支撑,使用冬季行业默认值(50)"
+    },
+    {
+      "field": "monthly_data[0].freezing_water_temp_diff",
+      "original_value": null,
+      "suggested_value": 4.0,
+      "method": "industry_default",
+      "confidence": "low",
+      "reasoning": "该参数缺少足够数据支撑,使用冬季行业默认值(4.0)"
+    },
+    {
+      "field": "monthly_data[1].freezing_pump_freq",
+      "original_value": null,
+      "suggested_value": 50,
+      "method": "industry_default",
+      "confidence": "low",
+      "reasoning": "该参数缺少足够数据支撑,使用冬季行业默认值(50)"
+    },
+    {
+      "field": "monthly_data[1].freezing_water_temp_diff",
+      "original_value": null,
+      "suggested_value": 4.0,
+      "method": "industry_default",
+      "confidence": "low",
+      "reasoning": "该参数缺少足够数据支撑,使用冬季行业默认值(4.0)"
+    },
+    {
+      "field": "monthly_data[2].freezing_pump_freq",
+      "original_value": null,
+      "suggested_value": 50,
+      "method": "industry_default",
+      "confidence": "low",
+      "reasoning": "该参数缺少足够数据支撑,使用冬季行业默认值(50)"
+    },
+    {
+      "field": "monthly_data[2].freezing_water_temp_diff",
+      "original_value": null,
+      "suggested_value": 4.0,
+      "method": "industry_default",
+      "confidence": "low",
+      "reasoning": "该参数缺少足够数据支撑,使用冬季行业默认值(4.0)"
+    },
+    {
+      "field": "electricity_price",
+      "original_value": null,
+      "suggested_value": 0.62,
+      "method": "region_lookup",
+      "confidence": "medium",
+      "reasoning": "根据项目所在地区(华北)查表获取工业用电参考电价"
+    }
+  ]
+}

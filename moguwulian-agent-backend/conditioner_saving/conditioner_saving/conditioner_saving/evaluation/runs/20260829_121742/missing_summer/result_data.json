@@ -1,0 +1,22 @@
+{
+  "energy_saving_rate_min": 0.1752091247324098,
+  "energy_saving_rate_max": 0.20959298725199454,
+  "energy_saving_rate_range": "17.5% - 21.0%",
+  "energy_saving_rate": 0.1752091247324098,
+  "chiller_saving_min": 11.810279999999999,
+  "chiller_saving_max": 15.202148000000001,
+  "chiller_saving": 11.810279999999999,
+  "pump_saving_min": 44.78074676517463,
+  "pump_saving_max": 51.62687089981591,
+  "pump_saving": 44.78074676517463,
+  "tower_saving_min": 0.5867189999999993,
+  "tower_saving_max": 1.5695565599999999,
+  "tower_saving": 0.5867189999999993,
+  "total_saving_min": 57.17774576517461,
+  "total_saving_max": 68.3985754598159,
+  "total_saving": 57.17774576517461,
+  "completeness": 0.95,
+  "filled_count": 61,
+  "calculation_timestamp": "2026-08-29T12:17:59.082661",
+  "calculation_method": "dual_sheet"
+}

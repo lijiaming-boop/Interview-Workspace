@@ -1,0 +1,367 @@
+{
+  "schema_version": 1,
+  "diagram_type": "architecture",
+  "meta": {
+    "title": "OpenVLA-OFT 系统架构：从上游数据到下游控制",
+    "locale": "zh-CN",
+    "quality_profile": "showcase",
+    "viewBox": [
+      1360,
+      720
+    ],
+    "views": [
+      {
+        "id": "inference-loop",
+        "label": "推理闭环主路径",
+        "focus": [
+          "env",
+          "vis",
+          "proj",
+          "llm",
+          "head",
+          "denorm",
+          "queue"
+        ],
+        "note": "从环境观察到动作执行的开环控制主路径。"
+      },
+      {
+        "id": "training",
+        "label": "训练侧路径",
+        "focus": [
+          "demos",
+          "rlds",
+          "finetune",
+          "llm",
+          "head"
+        ],
+        "note": "专家数据如何转化为 LoRA 与动作头权重。"
+      },
+      {
+        "id": "model-forward",
+        "label": "模型内部前向",
+        "focus": [
+          "vis",
+          "proj",
+          "proprio",
+          "llm",
+          "head"
+        ],
+        "note": "视觉 token、本体状态与动作查询的汇合点。"
+      }
+    ]
+  },
+  "components": [
+    {
+      "id": "demos",
+      "type": "database",
+      "label": "专家示教数据",
+      "sublabel": "HDF5 · 50 条轨迹",
+      "tag": "上游",
+      "pos": [
+        40,
+        40
+      ],
+      "size": [
+        190,
+        72
+      ]
+    },
+    {
+      "id": "rlds",
+      "type": "database",
+      "label": "RLDS / TFDS 数据集",
+      "sublabel": "libero_spatial_no_noops",
+      "pos": [
+        340,
+        40
+      ],
+      "size": [
+        190,
+        72
+      ]
+    },
+    {
+      "id": "finetune",
+      "type": "backend",
+      "label": "OFT 微调训练",
+      "sublabel": "L1 回归 · 150K 步",
+      "tag": "LoRA r=32",
+      "pos": [
+        340,
+        180
+      ],
+      "size": [
+        190,
+        72
+      ]
+    },
+    {
+      "id": "vis",
+      "type": "backend",
+      "label": "视觉编码器",
+      "sublabel": "DINOv2 + SigLIP 融合",
+      "tag": "冻结",
+      "pos": [
+        40,
+        330
+      ],
+      "size": [
+        190,
+        72
+      ]
+    },
+    {
+      "id": "proj",
+      "type": "backend",
+      "label": "视觉投影器",
+      "sublabel": "2176 → 4096 三层 MLP",
+      "pos": [
+        340,
+        330
+      ],
+      "size": [
+        190,
+        72
+      ]
+    },
+    {
+      "id": "llm",
+      "type": "backend",
+      "label": "Llama-2 7B 主干",
+      "sublabel": "32 层 · hidden 4096",
+      "tag": "冻结 + LoRA",
+      "pos": [
+        820,
+        330
+      ],
+      "size": [
+        190,
+        72
+      ]
+    },
+    {
+      "id": "head",
+      "type": "backend",
+      "label": "L1 回归动作头",
+      "sublabel": "MLPResNet · 8×7 输出",
+      "tag": "从零训练",
+      "pos": [
+        1120,
+        330
+      ],
+      "size": [
+        190,
+        72
+      ]
+    },
+    {
+      "id": "proprio",
+      "type": "backend",
+      "label": "Proprio 投影器",
+      "sublabel": "8 维 → 1 token",
+      "tag": "从零训练",
+      "pos": [
+        820,
+        470
+      ],
+      "size": [
+        190,
+        72
+      ]
+    },
+    {
+      "id": "denorm",
+      "type": "backend",
+      "label": "动作后处理",
+      "sublabel": "q01/q99 反归一化",
+      "pos": [
+        1120,
+        470
+      ],
+      "size": [
+        190,
+        72
+      ]
+    },
+    {
+      "id": "env",
+      "type": "external",
+      "label": "LIBERO 仿真环境",
+      "sublabel": "robosuite · MuJoCo",
+      "tag": "20 Hz",
+      "pos": [
+        820,
+        610
+      ],
+      "size": [
+        190,
+        72
+      ]
+    },
+    {
+      "id": "queue",
+      "type": "messagebus",
+      "label": "动作队列",
+      "sublabel": "开环执行 ≤ 8 步",
+      "pos": [
+        1120,
+        610
+      ],
+      "size": [
+        190,
+        72
+      ]
+    }
+  ],
+  "boundaries": [
+    {
+      "kind": "region",
+      "label": "上游 · 数据与训练",
+      "wraps": [
+        "demos",
+        "rlds",
+        "finetune"
+      ]
+    },
+    {
+      "kind": "region",
+      "label": "OpenVLA-OFT 7B 模型",
+      "wraps": [
+        "vis",
+        "proj",
+        "llm",
+        "head"
+      ]
+    },
+    {
+      "kind": "region",
+      "label": "下游 · 推理与控制",
+      "wraps": [
+        "env",
+        "queue"
+      ]
+    }
+  ],
+  "connections": [
+    {
+      "id": "demos-to-rlds",
+      "from": "demos",
+      "to": "rlds",
+      "label": "TFDS 转换"
+    },
+    {
+      "id": "rlds-to-finetune",
+      "from": "rlds",
+      "to": "finetune",
+      "label": "采样 1+7 动作块",
+      "labelAt": [
+        435,
+        146
+      ]
+    },
+    {
+      "id": "finetune-to-llm",
+      "from": "finetune",
+      "to": "llm",
+      "label": "LoRA 更新"
+    },
+    {
+      "id": "env-to-vis",
+      "from": "env",
+      "to": "vis",
+      "label": "双相机 RGB"
+    },
+    {
+      "id": "env-to-proprio",
+      "from": "env",
+      "to": "proprio",
+      "label": "本体状态 8 维",
+      "labelAt": [
+        910,
+        576
+      ]
+    },
+    {
+      "id": "vis-to-proj",
+      "from": "vis",
+      "to": "proj",
+      "label": "融合特征"
+    },
+    {
+      "id": "proj-to-llm",
+      "from": "proj",
+      "to": "llm",
+      "label": "512 视觉 token",
+      "variant": "emphasis",
+      "labelAt": [
+        600,
+        363
+      ]
+    },
+    {
+      "id": "llm-to-head",
+      "from": "llm",
+      "to": "head",
+      "label": "56×4096",
+      "variant": "emphasis"
+    },
+    {
+      "id": "proprio-to-llm",
+      "from": "proprio",
+      "to": "llm",
+      "label": "1 token"
+    },
+    {
+      "id": "head-to-denorm",
+      "from": "head",
+      "to": "denorm",
+      "label": "8×7 动作",
+      "labelAt": [
+        1215,
+        436
+      ]
+    },
+    {
+      "id": "denorm-to-queue",
+      "from": "denorm",
+      "to": "queue",
+      "label": "反归一化",
+      "labelAt": [
+        1215,
+        576
+      ]
+    },
+    {
+      "id": "queue-to-env",
+      "from": "queue",
+      "to": "env",
+      "label": "出队执行"
+    }
+  ],
+  "cards": [
+    {
+      "dot": "cyan",
+      "title": "上游 · 数据与训练",
+      "items": [
+        "专家 HDF5 → RLDS/TFDS：双相机 224×224、8 维本体状态、7 维动作，q01/q99 归一化",
+        "OFT 只训练 LoRA、动作头与 proprio 投影器，视觉与 LLM 主干冻结"
+      ]
+    },
+    {
+      "dot": "emerald",
+      "title": "中游 · 模型前向",
+      "items": [
+        "双相机各产 256 个视觉 token，2176 维融合特征投影到 4096 维；proprio 投影为 1 token",
+        "56 个动作占位 token 的 embedding 清零，一次 forward 并行读出全部动作"
+      ]
+    },
+    {
+      "dot": "rose",
+      "title": "下游 · 推理与控制",
+      "items": [
+        "动作头一次回归 8×7 连续动作，反归一化并做夹爪二值化后入队，开环执行 ≤8 步",
+        "20 Hz 下单次推理预算 400 ms；A10 FP16 实测约 219.5 ms、峰值显存 14.96 GiB"
+      ]
+    }
+  ]
+}

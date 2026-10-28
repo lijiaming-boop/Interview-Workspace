@@ -1,0 +1,58 @@
+# Local repositories keep their own history; this repository stores file snapshots.
+**/.git/
+
+# Installed dependencies, caches, and build trees.
+node_modules/
+.venv/
+venv/
+.test_deps/
+__pycache__/
+*.py[cod]
+.next/
+.cache/
+.mypy_cache/
+.pytest_cache/
+.ruff_cache/
+.tox/
+*.egg-info/
+build/
+build_*/
+build-*/
+cmake-build-*/
+CMakeFiles/
+.vs/
+
+# Local application state and temporary files.
+.workbuddy/
+.worktrees/
+.trae/
+.qoder/
+tmp/
+*.tmp
+*.db
+*.db-shm
+*.db-wal
+*.sqlite
+*.sqlite3
+~$*
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Credentials; keep configuration examples available.
+.env
+.env.*
+!.env.example
+!.env.*.example
+.streamlit/secrets.toml
+**/settings.local.json
+id_rsa
+id_ed25519
+*.pem
+*.key
+*.pfx
+*.p12
+
+# SDK runtime outputs; retain model files and input media through Git LFS.
+/digital-human-sdk/assets/output/
+/digital-human-sdk/artifacts/

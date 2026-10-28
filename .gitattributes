@@ -1,0 +1,25 @@
+# Model files and large assets use Git LFS.
+"digital-human-sdk/models/Wav2Lip-SD-GAN-opt.bin" filter=lfs diff=lfs merge=lfs -text
+"digital-human-sdk/models/Wav2Lip-SD-GAN.pt" filter=lfs diff=lfs merge=lfs -text
+"digital-human-sdk/models/face/2d106det.onnx" filter=lfs diff=lfs merge=lfs -text
+"digital-human-sdk/models/face/scrfd_2.5g_kps-opt2.bin" filter=lfs diff=lfs merge=lfs -text
+"moguwulian-agent-backend/conditioner_saving/conditioner_saving/conditioner_saving/00_sample/示例调研表/【齐全】15.2%惠州光弘-中央空调节能调研表.xlsx" filter=lfs diff=lfs merge=lfs -text
+"moguwulian-agent-backend/conditioner_saving/conditioner_saving/conditioner_saving/00_sample/示例调研表/空压调研表/Mogulinker -CAS Data Collection Form 2026.xls" filter=lfs diff=lfs merge=lfs -text
+"moguwulian-agent-backend/conditioner_saving/conditioner_saving/conditioner_saving/00_sample/示例调研表/空压调研表/【齐全】15.2%惠州光弘-中央空调节能调研表.xlsx" filter=lfs diff=lfs merge=lfs -text
+"moguwulian-agent-backend/conditioner_saving/conditioner_saving/conditioner_saving/00_sample/示例调研表/空压调研表/测试1：离心机压缩空气系统调研表(蜂巢遂宁)-较优质.doc" filter=lfs diff=lfs merge=lfs -text
+"moguwulian-agent-backend/conditioner_saving/conditioner_saving/conditioner_saving/00_sample/示例调研表/空压调研表/离心机压缩空气系统调研表(蜂巢遂宁基地)-较优质.doc" filter=lfs diff=lfs merge=lfs -text
+"moguwulian-agent-backend/conditioner_saving/conditioner_saving/conditioner_saving/oauth-server/oauth-server" filter=lfs diff=lfs merge=lfs -text
+"moguwulian-agent-backend/conditioner_saving/conditioner_saving/conditioner_saving/proxy/conditioner-proxy" filter=lfs diff=lfs merge=lfs -text
+"openvla-oft-eval/01-上游源码/LIBERO-upstream/libero/libero/assets/scenes/coffee_table_seats/FabricLeatherBuffaloRustic001_COL_VAR1_4K.png" filter=lfs diff=lfs merge=lfs -text
+"openvla-oft-eval/01-上游源码/LIBERO-upstream/libero/libero/assets/stable_scanned_objects/akita_black_bowl/texture.png" filter=lfs diff=lfs merge=lfs -text
+"openvla-oft-eval/01-上游源码/LIBERO-upstream/libero/libero/assets/stable_scanned_objects/basket/texture.png" filter=lfs diff=lfs merge=lfs -text
+"openvla-oft-eval/01-上游源码/LIBERO-upstream/libero/libero/assets/turbosquid_objects/desk_caddy/desk_caddy_texture.png" filter=lfs diff=lfs merge=lfs -text
+"openvla-oft-eval/01-上游源码/robosuite-1.4.1/docs/images/figures.pptx" filter=lfs diff=lfs merge=lfs -text
+"openvla-oft-eval/01-上游源码/robosuite-1.4.1/docs/images/renderers/vision_modalities_igibson.png" filter=lfs diff=lfs merge=lfs -text
+"openvla-oft-eval/01-上游源码/robosuite-1.4.1/robosuite/models/assets/demonstrations/handover/panda_panda/demo.hdf5" filter=lfs diff=lfs merge=lfs -text
+"openvla-oft-eval/01-上游源码/robosuite-1.4.1/robosuite/models/assets/demonstrations/lift/demo.hdf5" filter=lfs diff=lfs merge=lfs -text
+"openvla-oft-eval/01-上游源码/robosuite-1.4.1/robosuite/models/assets/demonstrations/wipe/panda/demo.hdf5" filter=lfs diff=lfs merge=lfs -text
+"openvla-oft-eval/01-上游源码/robosuite-1.4.1/robosuite/models/assets/light_maps/photo_studio_01_2k.hdr" filter=lfs diff=lfs merge=lfs -text
+"openvla-oft-eval/01-上游源码/robosuite-1.4.1/robosuite/models/assets/textures/plaster-wall-4k.jpg" filter=lfs diff=lfs merge=lfs -text
+"openvla-oft-eval/01-上游源码/robosuite-1.4.1/robosuite/models/assets/textures/plywood-4k.jpg" filter=lfs diff=lfs merge=lfs -text
+"openvla-oft-eval/results_state29/demos_state29.hdf5" filter=lfs diff=lfs merge=lfs -text

@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>登录 - 智能驾驶冷站</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;
+            background: linear-gradient(135deg, #e8f1fb 0%, #cfe2f7 55%, #b3d0f0 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            padding: 20px;
+            padding-right: 10%;
+            position: relative;
+        }
+
+        /* 左上角 Logo */
+        .logo {
+            position: fixed;
+            top: 20px;
+            left: 5%;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            z-index: 10;
+        }
+
+        .logo-icon {
+            width: 128px;
+            height: 40px;
+        }
+
+        .logo-icon img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+
+        .logo-text {
+            font-size: 20px;
+            color: #1a1a1a;
+            font-weight: 600;
+        }
+
+        /* 响应式 Logo */
+        @media (max-width: 968px) {
+            .logo {
+                left: 20px;
+            }
+        }
+
+        /* 登录卡片 */
+        .login-card {
+            background: #ffffff;
+            border-radius: 16px;
+            box-shadow: 0 8px 32px rgba(26, 115, 232, 0.08);
+            padding: 40px;
+            width: 100%;
+            max-width: 420px;
+            position: relative;
+            z-index: 2;
+        }
+
+        .login-header {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 16px;
+        }
+
+        .mascot-wrapper {
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+        }
+
+        .login-title {
+            font-family: 'PingFang SC-Medium', 'PingFang SC', sans-serif;
+            font-size: 30px;
+            font-weight: 500;
+            color: rgba(0, 0, 0, 0.9);
+            text-align: center;
+            line-height: 38px;
+        }
+
+        .form-group {
+            margin-bottom: 24px;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 14px 18px;
+            background: #f5f7fa;
+            border: 1px solid transparent;
+            border-radius: 12px;
+            font-size: 15px;
+            transition: all 0.3s;
+            outline: none;
+        }
+
+        .form-group input:focus {
+            background: #ffffff;
+            border-color: #1a73e8;
+            box-shadow: 0 0 0 3px rgba(26, 115, 232, 0.08);
+        }
+
+        .form-group input::placeholder {
+            color: #999;
+        }
+
+        /* 密码输入框 */
+        .password-wrapper {
+            position: relative;
+        }
+
+        .password-toggle {
+            position: absolute;
+            right: 14px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: #999;
+            font-size: 16px;
+            padding: 4px;
+        }
+
+        .password-toggle:hover {
+            color: #1a73e8;
+        }
+
+        .submit-btn {
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(135deg, #1a73e8 0%, #4da3ff 100%);
+            color: #ffffff;
+            border: none;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-top: 8px;
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(26, 115, 232, 0.35);
+        }
+
+        .submit-btn:active {
+            transform: translateY(0);
+        }
+
+        .forgot-password {
+            text-align: center;
+            margin-top: 16px;
+        }
+
+        .forgot-password a {
+            color: #666;
+            text-decoration: none;
+            font-size: 14px;
+            transition: color 0.2s;
+        }
+
+        .forgot-password a:hover {
+            color: #1a73e8;
+        }
+
+        /* 底部版权信息 */
+        .footer {
+            position: fixed;
+            bottom: 20px;
+            left: 0;
+            right: 0;
+            text-align: center;
+            color: #999;
+            font-size: 13px;
+            width: 100%;
+        }
+
+        .footer a {
+            color: #666;
+            text-decoration: none;
+        }
+
+        .footer a:hover {
+            color: #1a73e8;
+        }
+
+        /* 响应式 */
+        @media (max-width: 968px) {
+            body {
+                justify-content: center;
+                padding: 20px;
+            }
+
+            .illustration {
+                display: none;
+            }
+
+            .login-card {
+                margin: 0 auto;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 左上角 Logo -->
+    <div class="logo">
+        <div class="logo-text">智能驾驶冷站</div>
+    </div>
+
+    <!-- 登录卡片 -->
+    <div class="login-card">
+        <div class="login-header">
+            <div class="mascot-wrapper">
+                <h1 class="login-title">欢迎登录</h1>
+            </div>
+        </div>
+
+        <form method="POST" action="/oauth/login">
+            <input type="hidden" name="client_id" value="{{.ClientID}}">
+            <input type="hidden" name="redirect_uri" value="{{.RedirectURI}}">
+            <input type="hidden" name="response_type" value="{{.ResponseType}}">
+            <input type="hidden" name="scope" value="{{.Scope}}">
+            <input type="hidden" name="state" value="{{.State}}">
+            <input type="hidden" name="nonce" value="{{.Nonce}}">
+
+            <div class="form-group">
+                <input
+                    type="text"
+                    name="username"
+                    placeholder="请输入账号"
+                    required
+                    autocomplete="username"
+                >
+            </div>
+
+            <div class="form-group">
+                <div class="password-wrapper">
+                    <input
+                        type="password"
+                        id="password"
+                        name="password"
+                        placeholder="请输入密码"
+                        required
+                        autocomplete="current-password"
+                    >
+                    <button type="button" class="password-toggle" onclick="togglePassword()">
+                        👁️
+                    </button>
+                </div>
+            </div>
+
+            <button type="submit" class="submit-btn">登 录</button>
+
+        </form>
+    </div>
+
+    <!-- 底部版权信息 -->
+    <div class="footer">
+        <p>智能驾驶冷站</p>
+    </div>
+
+    <script>
+        function togglePassword() {
+            const passwordInput = document.getElementById('password');
+            const toggleBtn = document.querySelector('.password-toggle');
+
+            if (passwordInput.type === 'password') {
+                passwordInput.type = 'text';
+                toggleBtn.textContent = '🔒';
+            } else {
+                passwordInput.type = 'password';
+                toggleBtn.textContent = '👁️';
+            }
+        }
+
+        // AJAX 表单提交
+        document.querySelector('form').addEventListener('submit', function(e) {
+            e.preventDefault(); // 阻止默认表单提交
+
+            const form = this;
+            const btn = form.querySelector('.submit-btn');
+            const formData = new FormData(form);
+
+            // 显示加载状态
+            btn.innerHTML = '登录中...';
+            btn.disabled = true;
+            btn.style.opacity = '0.7';
+
+            // 发送 AJAX 请求
+            fetch('/oauth/login', {
+                method: 'POST',
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest',
+                    'Accept': 'application/json'
+                },
+                body: formData
+            })
+            .then(response => {
+                // 检查响应状态
+                if (response.redirected) {
+                    // 如果服务器返回重定向，跳转到新页面
+                    window.location.href = response.url;
+                    return null;
+                }
+
+                // 尝试解析 JSON 响应
+                return response.json().then(data => {
+                    return { ok: response.ok, status: response.status, data: data };
+                }).catch(() => {
+                    // 如果不是 JSON，返回错误
+                    return { ok: false, status: response.status, data: { error: 'parse_error', error_description: '响应格式错误' } };
+                });
+            })
+            .then(result => {
+                if (!result) return; // 重定向的情况
+
+                const { ok, status, data } = result;
+
+                if (!ok || data.error) {
+                    // 显示错误信息
+                    const errorMsg = data.error_description || data.error || '登录失败';
+                    alert(errorMsg);
+                    // 恢复按钮状态
+                    btn.innerHTML = '登 录';
+                    btn.disabled = false;
+                    btn.style.opacity = '1';
+                } else if (data.redirect_uri) {
+                    // 手动处理重定向
+                    window.location.href = data.redirect_uri;
+                }
+            })
+            .catch(error => {
+                console.error('登录失败:', error);
+                alert('网络错误，请稍后重试');
+                // 恢复按钮状态
+                btn.innerHTML = '登 录';
+                btn.disabled = false;
+                btn.style.opacity = '1';
+            });
+        });
+    </script>
+</body>
+</html>
