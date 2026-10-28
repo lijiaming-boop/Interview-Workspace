@@ -8,8 +8,6 @@
 | moguwulian-agent-backend | Agent 后端、节能测算、报价流程与项目资料 | [项目说明](moguwulian-agent-backend/conditioner_saving/conditioner_saving/conditioner_saving/README.md) |
 | openvla-oft-eval | OpenVLA-OFT 评测、量化、微调与机器人实验 | [项目说明](openvla-oft-eval/README.md) |
 
-工作区索引：[简历终版](RESUME_FINAL.md)、[代码定位与项目映射](RESUME_CODE_MAP.md)。
-
 ## 获取完整资源
 
 模型、数据集及较大的资源文件使用 Git LFS。安装 Git LFS 后运行：

@@ -1,6 +1,11 @@
 # Local repositories keep their own history; this repository stores file snapshots.
 **/.git/
 
+# Local interview instructions and resume documents.
+/CLAUDE.md
+/RESUME_CODE_MAP.md
+/RESUME_FINAL.md
+
 # Installed dependencies, caches, and build trees.
 node_modules/
 .venv/
